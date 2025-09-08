@@ -1,0 +1,76 @@
+{
+  "layer": "top",
+  "position": "top",
+  "output": "DP-1",
+  "height": 48, // keeps enough vertical space for font + underline
+
+  "modules-left": ["sway/workspaces", "sway/mode", "tray"],
+  "modules-center": [],
+  "modules-right": [
+    "load",
+    "cpu",
+    "custom/gpu",
+    "memory",
+    "custom/vram",
+    "disk",
+    "pulseaudio",
+    "clock",
+  ],
+
+  "load": {
+    "markup": true,
+    "format": "<span underline='single' underline_color='#5078FF'>LOAD {load1}</span>",
+    "interval": 5
+  },
+
+  "cpu": {
+    "markup": true,
+    "format": "<span underline='single' underline_color='#FFA040'>CPU {usage}%</span>",
+    "interval": 5
+  },
+
+  "custom/gpu": {
+    "markup": true,
+    "interval": 5,
+    "exec": "bash -c 'busy=$(cat /sys/class/drm/card0/device/gpu_busy_percent 2>/dev/null || echo 0); printf \"<span underline=\\\"single\\\" underline_color=\\\"#5078FF\\\">GPU %s%%</span>\\n\" \"$busy\"'"
+  },
+
+  "memory": {
+    "markup": true,
+    "format": "<span underline='single' underline_color='#FFA040'>MEM {avail:0.1f}GiB</span>",
+    "tooltip-format": "Used: {used:0.1f}GiB / Total: {total:0.1f}GiB",
+    "interval": 5
+  },
+
+  "custom/vram": {
+    "markup": true,
+    "interval": 5,
+    "exec": "bash -c 'used=$(cat /sys/class/drm/card0/device/mem_info_vram_used 2>/dev/null || echo 0); total=$(cat /sys/class/drm/card0/device/mem_info_vram_total 2>/dev/null || echo 1); free=$(( (total - used)/1024/1024 )); if [ $free -gt 1024 ]; then free_disp=$((free/1024))GiB; else free_disp=${free}MiB; fi; printf \"<span underline=\\\"single\\\" underline_color=\\\"#5078FF\\\">VRAM %s</span>\\n\" \"$free_disp\"'"
+  },
+
+  "disk": {
+    "markup": true,
+    "path": "/",
+    "format": "<span underline='single' underline_color='#FFA040'>DISK {free}</span>",
+    "interval": 30
+  },
+
+  "pulseaudio": {
+    "markup": true,
+    "format": "<span underline='single' underline_color='#5078FF'>VOL {volume}%</span>",
+    "format-muted": "<span underline='single' underline_color='#5078FF'>MUTED</span>",
+    "scroll-step": 2,
+    "tooltip": true,
+    "on-click": "~/.local/bin/select-audio-sink.sh",
+    "on-click-right": "pavucontrol"
+  },
+
+  "clock": {
+    "markup": true,
+    "format": "<span underline='single' underline_color='#FFFFFF'>{:%H:%M}</span>",
+    "tooltip-format": "{:%A, %d %B %Y %H:%M:%S}",
+    "interval": 1
+  },
+
+  "tray": { "spacing": 8 }
+}
