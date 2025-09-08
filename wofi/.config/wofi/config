@@ -1,0 +1,11 @@
+# minimal, fast, and themed by CSS
+show=drun,run
+term=foot
+prompt=Run:
+filter=contains
+insensitive=true
+hide_scroll=true
+no_actions=true
+location=center
+# optional niceties:
+matching=fuzzy

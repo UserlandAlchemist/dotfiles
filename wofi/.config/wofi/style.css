@@ -1,0 +1,77 @@
+/* Amiga / Topaz-flavoured wofi theme */
+
+* {
+  /* Try your Topaz family names; fall back to monospace */
+  font-family: "TopazPlus NF Mono", "TopazPlusNFMono", "Topaz Plus", monospace;
+  font-size: 13px;
+  color: #E6E6E6;
+}
+
+/* Window & containers */
+window {
+  background: #404040;
+  border: 1px solid #606060;
+  border-radius: 8px;
+}
+
+#outer-box {
+  margin: 8px;
+  padding: 8px;
+  background: transparent;
+}
+
+#input {
+  padding: 6px 8px;
+  margin-bottom: 8px;
+  border: 1px solid #606060;
+  border-radius: 6px;
+  background: #333333;
+  color: #E6E6E6;
+}
+
+#scroll {
+  background: transparent;
+}
+
+#inner-box {
+  background: transparent;
+}
+
+/* Rows */
+#entry {
+  padding: 6px 8px;
+  margin: 0 0 4px 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #E6E6E6;
+}
+
+#entry:selected {
+  background: #5078FF;
+  color: #FFFFFF;
+}
+
+/* Text & descriptions */
+#text {
+  color: inherit;
+}
+
+#text:selected {
+  color: #FFFFFF;
+}
+
+/* Urgent matches (e.g. categories) */
+#entry:urgent {
+  background: #FFA040;
+  color: #FFFFFF;
+}
+
+/* Icons (if shown) */
+image {
+  margin-right: 8px;
+}
+
+/* Subtle separator style (if used) */
+#separator {
+  color: #606060;
+}
