@@ -1,0 +1,8 @@
+[Unit]
+Description=Sync primary ESP to backup ESP
+Requires=boot-efi.mount boot-efi-backup.mount
+After=boot-efi.mount boot-efi-backup.mount
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rsync -a --delete /boot/efi/ /boot/efi-backup/

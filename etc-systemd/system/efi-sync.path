@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger ESP sync when kernel-install updates UKIs
+
+[Path]
+PathChanged=/boot/efi/EFI/Linux/
+Unit=efi-sync.service
+
+[Install]
+WantedBy=multi-user.target
+
