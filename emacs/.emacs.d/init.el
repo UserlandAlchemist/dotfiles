@@ -2,7 +2,20 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-(setq inhibit-startup-screen t)
+(show-paren-mode 1)
+(column-number-mode 1)
+
+(setq inhibit-startup-screen t
+      make-backup-files nil
+      tab-width 4
+      indent-tabs-mode nil
+      compilation-scroll-output t)
+
+;; --- Relative line numbers only in useful modes ---
+(setq display-line-numbers-type 'relative)
+
+(dolist (hook '(prog-mode-hook text-mode-hook conf-mode-hook))
+    (add-hook hook (lambda () (display-line-numbers-mode 1))))
 
 ;; --- Fonts: match foot.ini ---
 ;; --- UI Chrome in Topaz Plus NF Mono ---
