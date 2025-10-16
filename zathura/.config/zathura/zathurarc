@@ -1,0 +1,33 @@
+# --- Amiga-dark minimal theme for Zathura ---
+
+# Dark mode (invert page colors)
+set recolor true
+set recolor-keephue true                 # keep original hues when recoloring
+set recolor-lightcolor "#202020"         # page background
+set recolor-darkcolor  "#E6E6E6"         # text color
+
+# Window / base colors
+set default-bg "#303030"
+set default-fg "#E6E6E6"
+
+# UI theming
+set inputbar-bg "#2a2a2a"
+set inputbar-fg "#ffffff"
+set statusbar-bg "#2a2a2a"
+set statusbar-fg "#aaaaaa"
+set completion-bg "#2a2a2a"
+set completion-fg "#ffffff"
+set completion-highlight-bg "#444444"
+set completion-highlight-fg "#ffffff"
+set completion-group-bg "#2a2a2a"
+set completion-group-fg "#cccccc"
+set window-title-basename true
+set statusbar-basename true
+
+# Highlights
+set highlight-color "#5078FF"            # search matches
+set highlight-active-color "#FFA040"     # current match
+
+# Behavior
+set adjust-open "width"                   # fit-to-width on open
+set selection-clipboard "clipboard"       # use system clipboard
