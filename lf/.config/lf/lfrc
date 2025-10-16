@@ -1,0 +1,62 @@
+# --- navigation ---
+map <enter> open
+map gh cd ~
+map .. updir
+map q quit
+map r rename
+map d delete
+map y copy
+map p paste
+map g/ cd /
+map gd cd ~/Downloads
+map gp cd ~/Pictures
+map gv cd ~/Videos
+map gc cd ~/dotfiles
+
+# --- helpers ---
+# edit with Emacs: prefer emacsclient if a server is available; else fallback to emacs
+cmd edit ${{
+    if command -v emacsclient >/dev/null 2>&1; then
+        emacsclient -e '(daemonp)' >/dev/null 2>&1
+        if [ $? -eq 0 ]; then
+            setsid -f emacsclient -c -n "$f" >/dev/null 2>&1
+            exit
+        fi
+    fi
+    setsid -f emacs "$f" >/dev/null 2>&1
+}}
+
+# generic "open" with sensible tools (Wayland-friendly)
+cmd open ${{
+    case "$f" in
+        *.pdf)  setsid -f zathura "$f" >/dev/null 2>&1 ;;
+        *.png|*.jpg|*.jpeg|*.gif|*.webp|*.bmp|*.tiff)
+                setsid -f imv "$f" >/dev/null 2>&1 ;;
+        *.md|*.txt) edit ;;
+        *)
+            # last-resort handler
+            setsid -f xdg-open "$f" >/dev/null 2>&1 ;;
+    esac
+}}
+
+# archive extraction without extra deps
+cmd extract ${{
+    case "$f" in
+        *.tar.gz|*.tgz) tar xzf "$f" ;;
+        *.tar.bz2|*.tbz) tar xjf "$f" ;;
+        *.tar.xz|*.txz)  tar xJf "$f" ;;
+        *.zip)           unzip "$f" ;;
+        *) echo "Unsupported archive" ;;
+    esac
+}}
+
+# --- quality-of-life ---
+cmd mkcd ${{
+    printf "Directory name: "
+    read dir
+    [ -n "$dir" ] && mkdir -p "$dir" && cd "$dir"
+}}
+map m :mkcd 
+
+# make space toggle selection like many TUIs
+map <space> toggle
