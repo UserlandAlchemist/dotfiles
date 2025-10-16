@@ -114,6 +114,7 @@ fi
 
 . "$HOME/.local/bin/env"
 
+export SSH_ASKPASS_REQUIRE=never
+export GIT_TERMINAL_PROMPT=1
 unset SSH_ASKPASS
 unset GIT_ASKPASS
-unset SSH_ASKPASS_REQUIRE
