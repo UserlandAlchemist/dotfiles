@@ -19,3 +19,5 @@
 */.local/share/fonts/**/.uuid
 */.local/bin/test*
 */.local/bin/tmp*
+bin/.local/bin/uv
+bin/.local/bin/uvx
