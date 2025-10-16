@@ -113,3 +113,7 @@ if ! shopt -oq posix; then
 fi
 
 . "$HOME/.local/bin/env"
+
+unset SSH_ASKPASS
+unset GIT_ASKPASS
+unset SSH_ASKPASS_REQUIRE
