@@ -1,0 +1,22 @@
+# Root context
+R /
+P home/alchemist
+
+# Include all non-hidden top-level entries
++ /home/alchemist/*
+- /home/alchemist/.*
+
+# Exclude mountpoints and transient dirs
+- /home/alchemist/nas
+- /home/alchemist/Downloads
+- /home/alchemist/go
+
+# Exclude caches and bulky ephemeral data
+- /home/alchemist/.cache
+- /home/alchemist/.local/share/Trash
+- /home/alchemist/.thumbnails
+- /home/alchemist/.var
+- /home/alchemist/.npm
+- /home/alchemist/.cargo
+- /home/alchemist/.cache
+- /home/alchemist/.mozilla

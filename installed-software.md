@@ -17,3 +17,4 @@ zathura
 zathura-pdf-poppler
 lf
 imv
+borgbackup

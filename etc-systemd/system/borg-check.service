@@ -1,0 +1,9 @@
+[Unit]
+Description=Borg repo integrity check (Astute)
+
+[Service]
+Type=oneshot
+Environment="BORG_REPO=borg@192.168.1.154:/srv/nas/backups/audacious-borg"
+Environment="BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -o ConnectTimeout=20"
+Environment="BORG_PASSCOMMAND=cat /home/alchemist/.config/borg/passphrase"
+ExecStart=/usr/bin/borg check --verbose --verify-data

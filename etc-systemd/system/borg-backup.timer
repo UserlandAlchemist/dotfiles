@@ -1,0 +1,11 @@
+[Unit]
+Description=Hourly Borg backup of Audacious → Astute NAS
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+AccuracySec=5min
+RandomizedDelaySec=2min
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,11 @@
+[Unit]
+Description=Weekly Borg repo integrity check
+
+[Timer]
+OnCalendar=Sun 04:30
+Persistent=true
+AccuracySec=30min
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target
