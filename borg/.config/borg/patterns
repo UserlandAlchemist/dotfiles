@@ -1,22 +1,18 @@
-# Root context
-R /
-P home/alchemist
-
-# Include all non-hidden top-level entries
-+ /home/alchemist/*
-- /home/alchemist/.*
-
-# Exclude mountpoints and transient dirs
-- /home/alchemist/nas
-- /home/alchemist/Downloads
-- /home/alchemist/go
-
-# Exclude caches and bulky ephemeral data
-- /home/alchemist/.cache
-- /home/alchemist/.local/share/Trash
-- /home/alchemist/.thumbnails
-- /home/alchemist/.var
-- /home/alchemist/.npm
-- /home/alchemist/.cargo
-- /home/alchemist/.cache
-- /home/alchemist/.mozilla
+R /home/alchemist
+# 1) Exclude hidden anywhere (first match wins)
+- sh:**/.*
+# 2) Explicit excludes
+- sh:nas/**
+- sh:Downloads/**
+- sh:.cache/**
+- sh:.local/share/Trash/**
+- sh:.thumbnails/**
+- sh:.var/**
+- sh:.npm/**
+- sh:.cargo/**
+- sh:.mozilla/**
+- sh:go/**
+# 3) Include everything else under ~
++ sh:**
+# 4) Catch-all (anything not matched above is out)
+- sh:**

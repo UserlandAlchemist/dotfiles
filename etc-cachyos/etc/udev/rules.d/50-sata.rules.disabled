@@ -1,3 +1,7 @@
+# DISABLED on Audacious
+# Original CachyOS rule (forces max_performance; kept for reference only)
+# Not stowed on low-power systems.
+
 # SATA Active Link Power Management
 ACTION=="add", SUBSYSTEM=="scsi_host", KERNEL=="host*", \
     ATTR{link_power_management_policy}=="*", \

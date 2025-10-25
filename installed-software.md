@@ -18,3 +18,9 @@ zathura-pdf-poppler
 lf
 imv
 borgbackup
+powertop
+powerstat
+lm-sensors
+rocm-smi
+power-profiles-daemon
+usbutils

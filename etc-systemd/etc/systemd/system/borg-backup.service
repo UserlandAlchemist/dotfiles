@@ -5,10 +5,14 @@ After=network-online.target
 
 [Service]
 Type=oneshot
+User=alchemist
+Group=alchemist
+WorkingDirectory=/home/alchemist
+SuccessExitStatus=0 1
 
 # Repo, SSH key, and passphrase provider
-Environment="BORG_REPO=borg@192.168.1.154:/srv/nas/backups/audacious-borg"
-Environment="BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -o ConnectTimeout=20"
+Environment="BORG_REPO=borg@192.168.1.154:/srv/backups/audacious-borg"
+Environment="BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=120"
 Environment="BORG_PASSCOMMAND=cat /home/alchemist/.config/borg/passphrase"
 
 # Be nice to foreground work
@@ -18,18 +22,26 @@ IOSchedulingPriority=7
 
 # Wake Astute before backup (your MAC)
 ExecStartPre=/usr/bin/wakeonlan 60:45:cb:9b:ab:3b
+# Fail safe if the encrypted dataset isn't unlocked/mounted on astute
+ExecStartPre=/usr/bin/ssh -i /home/alchemist/.ssh/audacious-backup borg@192.168.1.154 /usr/bin/mountpoint -q /srv/backups
+# Ensure patterns file exists locally
+ExecStartPre=/usr/bin/test -f /home/alchemist/.config/borg/patterns
 
 # Create snapshot (non-hidden top-level in ~; exclusions via patterns file)
-ExecStart=/usr/bin/borg create --verbose --stats --compression lz4 --one-file-system \
-  ::{now:%Y-%m-%dT%H:%M:%S} \
-  --patterns-from /home/alchemist/.config/borg/patterns
-
+ExecStart=/usr/bin/borg create \
+  --verbose --stats --compression lz4 \
+  --lock-wait 60 --one-file-system --checkpoint-interval 300 \
+  --patterns-from /home/alchemist/.config/borg/patterns \
+  ::'{hostname}-{now}'
 # Prune to your policy: hourly (within 3d), daily(14), weekly(52 ~= 1yr)
 ExecStartPost=/usr/bin/borg prune --list \
   --keep-within 3d \
   --keep-daily 14 \
   --keep-weekly 52
 
+# Optional: keep repo tidy
+ExecStartPost=/usr/bin/borg compact
+
 # Fail fast if Astute is asleep; timer will run again next hour
 Restart=no
-TimeoutStartSec=600
+TimeoutStartSec=1200
