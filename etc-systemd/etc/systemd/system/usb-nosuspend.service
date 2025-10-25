@@ -1,0 +1,10 @@
+[Unit]
+Description=Disable USB autosuspend for main keyboard and mouse
+After=powertop.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/usb-nosuspend.sh
+
+[Install]
+WantedBy=multi-user.target
