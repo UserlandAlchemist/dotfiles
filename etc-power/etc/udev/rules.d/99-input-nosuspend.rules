@@ -1,0 +1,13 @@
+# Keychron V6 keyboard (3434:0363)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="0363", \
+  TEST=="power/control", ATTR{power/control}="on"
+
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3434", ATTR{idProduct}=="0363", \
+  TEST=="../power/control", ATTR{"../power/control"}="on"
+
+# Redragon M908 mouse (04d9:fc4d)
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="04d9", ATTR{idProduct}=="fc4d", \
+  TEST=="power/control", ATTR{power/control}="on"
+
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="04d9", ATTR{idProduct}=="fc4d", \
+  TEST=="../power/control", ATTR{"../power/control"}="on"
