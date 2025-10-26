@@ -78,11 +78,11 @@ output * bg ~/Pictures/Wallpapers/wallpaper-workbenchian-dark.png fill
 set $locker swaylock -f
 bindsym $mod+Shift+x exec $locker
 exec_always --no-startup-id swayidle -w \
-  timeout 600  '$locker' \
-  timeout 900  'swaymsg "output * dpms off"' \
+  timeout 480  'swaymsg "output * dpms off"' \
+  timeout 900  '$locker' \
+  timeout 1200 '~/.local/bin/idle-shutdown.sh' \
   resume       'swaymsg "output * dpms on"' \
   before-sleep '$locker'
-
 ### Input configuration
 #
 # Example configuration:

@@ -1,5 +1,5 @@
 [Unit]
-Description=BorgBackup: Audacious → Astute NAS (hourly, deduped)
+Description=BorgBackup: Audacious → Astute NAS (6-hourly, WoL Astute)
 Wants=network-online.target
 After=network-online.target
 

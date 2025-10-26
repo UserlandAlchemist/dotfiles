@@ -2,8 +2,8 @@
 Description=Hourly Borg backup of Audacious → Astute NAS
 
 [Timer]
-OnCalendar=hourly
-Persistent=true
+OnCalendar=*-*-* 00,06,12,18:00:00
+Persistent=false
 AccuracySec=5min
 RandomizedDelaySec=2min
 
