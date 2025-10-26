@@ -21,3 +21,5 @@
 */.local/bin/tmp*
 bin/.local/bin/uv
 bin/.local/bin/uvx
+borg/.config/borg/passphrase
+borg/.config/borg/security/
