@@ -1,0 +1,1 @@
+ACTION=="add", SUBSYSTEM=="usb", ATTR{idVendor}=="3443", ATTR{idProduct}=="940a", TEST=="power/control", ATTR{power/control}="on"
