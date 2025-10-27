@@ -1,7 +1,10 @@
+# Temporary and editor files
 *~
 *.swp
 *.bak
 .DS_Store
+
+# Emacs-generated state and caches
 */.emacs.d/eln-cache/
 */.emacs.d/elpa/
 */.emacs.d/auto-save-list/
@@ -11,16 +14,28 @@
 */.emacs.d/recentf
 */.emacs.d/sessions/
 */.emacs.d/gnupg/
+
+# Waybar, Sway, and mako runtime files
 */.config/waybar/*.bak
 */.config/waybar/*~
 */.config/sway/*~
 */.config/mako/*.pid
+
+# Fonts and icons cache
 */.local/share/icons/hicolor/
 */.local/share/fonts/**/.uuid
+
+# Local testing and temp binaries
 */.local/bin/test*
 */.local/bin/tmp*
 bin/.local/bin/uv
 bin/.local/bin/uvx
-borg-user/.config/borg/passphrase
-borg-user/.config/borg/security/
-inventory.md
+
+# --- Sensitive data (never commit) ---
+
+# Borg encryption key and metadata
+user-audacious/borg-user/.config/borg/passphrase
+user-audacious/borg-user/.config/borg/security/
+
+# Private network layout (contains MACs/IPs)
+docs/hosts-overview.md
