@@ -42,3 +42,9 @@ borg-user-*/.config/borg/security/
 
 # Private network / inventory info
 docs/hosts-overview.md
+
+# Disallow committing secrets if they ever get copied in by accident
+ssh-*/.ssh/id_*
+ssh-*/.ssh/known_hosts
+ssh-*/.ssh/authorized_keys
+ssh-*/.ssh/*.pub~
