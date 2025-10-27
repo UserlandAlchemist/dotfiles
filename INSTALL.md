@@ -1,19 +1,19 @@
 # Debian 13 (Trixie) ZFS Root Install Guide
 
 This guide installs Debian with:
-- Root on **ZFS** (RAID1, encryption, compression, snapshots).
-- **systemd-boot** with **UKI** (unified kernel image).
-- Dual **EFI System Partitions (ESP)** with automatic syncing.
-- Sway desktop + dotfiles.
-- Includes **kernel, headers, initramfs-tools, zfs-initramfs, and tasksel standard** (what the Debian Installer normally provides).
+- Root on **ZFS** (RAID1, encryption, compression, snapshots)
+- **systemd-boot** with **UKI** (unified kernel image)
+- Dual **EFI System Partitions (ESP)** with automatic syncing
+- Sway desktop + dotfiles
+- Includes **kernel, headers, initramfs-tools, zfs-initramfs, and tasksel standard** (equivalent to the Debian Installer's standard system)
 
 ---
 
 ## System assumptions
 
-- Root pool is `rpool` (ZFS mirror with encryption).
-- Two EFI partitions: `/dev/nvme0n1p1` (primary) and `/dev/nvme1n1p1` (backup).
-- Boot managed by **systemd-boot** with **UKI (unified kernel image)**.
+- Root pool is `rpool` (ZFS mirror with encryption)
+- Two EFI partitions: `/dev/nvme0n1p1` (primary) and `/dev/nvme1n1p1` (backup)
+- Boot managed by **systemd-boot** with **UKI (unified kernel image)**
 
 ---
 
@@ -34,7 +34,7 @@ apt install -y debootstrap gdisk zfsutils-linux \
 
 ## 2) Partition disks
 
-Two identical NVMe drives, each with:
+Each NVMe drive:
 - 512M **ESP**
 - Remaining space for **ZFS**
 
@@ -52,7 +52,7 @@ mkfs.vfat -F32 /dev/nvme1n1p1
 
 ---
 
-## 3) Create ZFS pool + datasets
+## 3) Create ZFS pool and datasets
 
 ```sh
 zpool create -o ashift=12 \
@@ -88,7 +88,7 @@ zfs mount rpool/ROOT/debian
 debootstrap --arch=amd64 trixie /mnt http://deb.debian.org/debian
 ```
 
-Bind mounts + mount ESPs + DNS:
+Bind mounts, ESPs, and DNS:
 
 ```sh
 mount --rbind /dev  /mnt/dev
@@ -120,10 +120,6 @@ deb-src http://security.debian.org/debian-security trixie-security main contrib 
 
 deb http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
 deb-src http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
-
-# Optional:
-# deb http://deb.debian.org/debian trixie-backports main contrib non-free-firmware
-# deb-src http://deb.debian.org/debian trixie-backports main contrib non-free-firmware
 ```
 
 ```sh
@@ -132,23 +128,15 @@ apt update
 
 ---
 
-## 6) Base system, kernel, initramfs, ZFS hooks, and “standard” task
-
-Install what the Debian Installer would have pulled in:
+## 6) Base system, kernel, initramfs, and standard task
 
 ```sh
 apt install -y linux-image-amd64 linux-headers-amd64 \
                systemd-sysv initramfs-tools \
                zfs-initramfs tasksel
-```
 
-Install the “standard system utilities” task:
-
-```sh
 tasksel install standard
 ```
-
-*(Brings in man-db, less, cron, logrotate, etc.)*
 
 ---
 
@@ -156,12 +144,10 @@ tasksel install standard
 
 ```sh
 echo audacious > /etc/hostname
-
 cat > /etc/hosts <<'EOF'
 127.0.0.1   localhost
 127.0.1.1   audacious
 EOF
-
 apt install -y locales console-setup keyboard-configuration
 dpkg-reconfigure locales
 dpkg-reconfigure console-setup
@@ -189,7 +175,7 @@ systemctl enable systemd-networkd systemd-resolved
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 ```
 
-DHCP for your wired NIC (edit `Name=` to match, e.g., `enp7s0`):
+DHCP config (replace `Name=` with your NIC, e.g. `enp7s0`):
 
 ```ini
 # /etc/systemd/network/20-wired.network
@@ -202,18 +188,16 @@ DHCP=yes
 
 ---
 
-## 10) Firmware + microcode (only what you need)
+## 10) Firmware + microcode
 
 ```sh
 apt install -y firmware-amd-graphics intel-microcode firmware-realtek
-# If your CPU is AMD, use: apt install -y amd64-microcode
+# For AMD CPUs: apt install -y amd64-microcode
 ```
 
 ---
 
-## 11) Initramfs + UKI (systemd-boot flow)
-
-Config:
+## 11) Initramfs + UKI setup
 
 ```ini
 # /etc/kernel/install.conf
@@ -228,28 +212,21 @@ uki_generator=ukify
 Cmdline=@/etc/kernel/cmdline
 ```
 
-Kernel cmdline:
-
 ```sh
 echo "root=ZFS=rpool/ROOT/debian rw quiet splash" > /etc/kernel/cmdline
-```
-
-Build initramfs + UKI:
-
-```sh
 update-initramfs -u -k all
 kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 ```
 
 ---
 
-## 12) Install and set up systemd-boot
+## 12) Install and configure systemd-boot
 
 ```sh
 bootctl install
 ```
 
-Loader defaults:
+Loader config:
 
 ```ini
 # /boot/efi/loader/loader.conf
@@ -259,52 +236,23 @@ console-mode auto
 editor no
 ```
 
-Make the latest UKI default:
+Make latest UKI default:
 
 ```sh
 bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 ```
 
-Clean any stray live-ISO Type #1 entries in `/boot/efi/loader/entries/` that contain `boot=live` or `findiso=`.
-
 ---
 
-## 13) Dual ESPs in fstab + auto-sync
+## 13) Dual ESPs and auto-sync
 
 ```ini
 # /etc/fstab
-UUID=3F75-5F0D   /boot/efi        vfat  umask=0077,shortname=winnt  0  1
-UUID=3F49-829B   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
+UUID=XXXX-YYYY   /boot/efi        vfat  umask=0077,shortname=winnt  0  1
+UUID=AAAA-BBBB   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
 ```
 
-ESP sync units:
-
-```ini
-# /etc/systemd/system/efi-sync.service
-[Unit]
-Description=Sync primary ESP to backup ESP
-Requires=boot-efi.mount boot-efi-backup.mount
-After=boot-efi.mount boot-efi-backup.mount
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/rsync -a --delete /boot/efi/ /boot/efi-backup/
-```
-
-```ini
-# /etc/systemd/system/efi-sync.path
-[Unit]
-Description=Trigger ESP sync when kernel-install updates UKIs
-
-[Path]
-PathChanged=/boot/efi/EFI/
-Unit=efi-sync.service
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Enable:
+Enable the ESP sync units:
 
 ```sh
 systemctl enable --now efi-sync.path
@@ -322,7 +270,7 @@ apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland 
                curl usb.ids git stow tree profile-sync-daemon hdparm emacs
 ```
 
-Autologin to Sway:
+Autologin:
 
 ```ini
 # /etc/systemd/system/getty@tty1.service.d/override.conf
@@ -331,161 +279,99 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin alchemist --noclear %I $TERM
 ```
 
-```sh
-install -d -m 0755 /home/alchemist
-chown alchemist:alchemist /home/alchemist
-
-# Start sway on TTY1
-su - alchemist -c 'printf "%s\n" '\''if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then exec sway; fi'\'' > ~/.bash_profile'
-```
-
 ---
-## 15) Dotfiles
 
-Clone and apply configuration using GNU Stow.
+## 15) Dotfiles setup
 
-    su - alchemist
-    git clone https://github.com/UserlandAlchemist/dotfiles ~/dotfiles
-    cd ~/dotfiles
+```sh
+su - alchemist
+cd ~/dotfiles
+```
 
 ### 15.1 User configuration
 
-Use Stow to deploy user-level packages:
+Apply user-level configuration:
 
     stow bash bin emacs fonts foot lf mako sway waybar wofi zathura
 
-These symlink dotfiles from `~/dotfiles` into the home directory (`~`). Stow automatically creates or replaces the appropriate symlinks.
-
-Note:
-- Some directories (like `wallpapers/`, `icons/`, and `ssh/`) are NOT stowed — see their individual README.md files for manual setup instructions.
-- The `fonts/` and `icons/` stow packages install under `~/.local/share/`, preserving the standard XDG layout.
-- `wallpapers/` provides wallpaper assets only. You manually link those into `~/Pictures/Wallpapers/`.
-
-### 15.2 System configuration (optional, requires sudo)
-
-System-level tuning packages can be applied selectively as needed:
-
-    sudo stow -t / etc-cachyos etc-power etc-systemd etc-udev
-
-Then reload the relevant subsystems:
-
-    sudo sysctl --system
-    sudo udevadm control --reload
-    sudo udevadm trigger
-
-These stow packages provide:
-- `etc-cachyos`: kernel and sysctl tuning
-- `etc-power`: power management and USB suspend rules
-- `etc-systemd`: custom systemd units and timers (efi-sync, powertop, usb-nosuspend, etc.)
-- `etc-udev`: device-specific tweaks
-
-
-### 15.2.1 Automated backups (borg)
-
-This machine is configured to run automated Borg backups. The configuration is split into two parts:
-
-1. **User backup identity and policy** (`borg-user/`)
-2. **Systemd timers/services that actually run the backups** (`backup-systemd/`)
-
-#### Step 1: Install BorgBackup
-
-First, install the `borgbackup` package:
-
-```bash
-sudo apt install -y borgbackup
-```
-
-This provides the `borg` command and required dependencies.
-
-#### Step 2: Stow borg user config
-
-As the normal user (e.g. `alchemist`):
-
-```bash
-stow borg-user
-```
-
-This creates `~/.config/borg/`, which contains:
-- `patterns` (what to include/exclude)
-- `security/` (repo security metadata, fingerprints, etc.)
-
-The file `~/.config/borg/passphrase` is required for unattended backups, but is **NOT** committed to git for security reasons.  
-You must place the correct passphrase file there manually on each rebuild.
-
-#### Step 3: Stow and enable root-level backup timers
-
-As root:
-
-```bash
-sudo stow -t / backup-systemd
-sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer 
-```
-These units assume:
-- The `borgbackup` package is installed.
-- They can run `borg` against the repository defined in `~alchemist/.config/borg/`.
-- The passphrase file exists at `~alchemist/.config/borg/passphrase`.
-
-After enabling, confirm timers are active:
-
-```bash
-systemctl list-timers | grep borg
-```
-
-If timers are not listed, investigate before assuming you’re protected.
-
-### 15.3 Initial adoption (one-time only)
-
-If you're converting an already-running machine to use this dotfiles repo (i.e. "take ownership" of existing config files), run:
-
-    stow --adopt bash bin ...
-
-Then commit the adopted files:
-
-    git add -A && git commit -m "adopt host configs"
-
-This is not needed on a fresh install. It's only for migrating an existing host into this layout.
-
-### 15.4 Post-stow verification
-
-After applying dotfiles, verify the environment:
-
-User services (Wayland session / desktop pieces):
-
-    systemctl --user list-units | grep -E 'mako|waybar|swayidle'
-
-System services (root-level units shipped in dotfiles):
-
-    systemctl list-units | grep -E 'efi-sync|powertop|usb-nosuspend'
-
-At this point:
-- sway should autostart on TTY1 (see Section 14 for autologin config)
-- notifications should work (`mako-notifier`)
-- EFI sync should keep `/boot/efi` and `/boot/efi-backup` in sync
-- power tuning should be applied
-
-### 15.5 Install `uv` (Python toolchain manager)
-
-Install [**uv**](https://astral.sh/uv) to manage Python projects and virtual environments.  
-This replaces `pipx` and standard `venv` usage.
-
-```bash
-# Install uv for the current user
-curl -Ls https://astral.sh/uv/install.sh | sh
-```
-
-This will place `uv` and `uvx` into `~/.local/bin/`.  
-Ensure `~/.local/bin` is in your `PATH` (this is already handled by the stowed shell config).  
-After installation, verify it’s available:
-
-```bash
-uv --version
-```
+These stow packages link into `$HOME` using XDG-compliant paths. Optional:
+- `wallpapers/`, `icons/`, and `ssh/` include assets and configs to review manually.
 
 ---
 
-## 16) Swap (optional safety net)
+### 15.2 System configuration (requires sudo)
 
-Keep zram primary and add a small fallback ZFS zvol swap with lower priority:
+Apply system-level stow packages selectively.
+
+#### Power management
+
+    sudo stow --target=/ etc-power
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now powertop.service usb-nosuspend.service
+    sudo udevadm control --reload-rules
+    sudo udevadm trigger
+
+#### EFI sync (dual ESPs)
+
+    sudo stow --target=/ etc-systemd
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now efi-sync.path
+
+#### Kernel/sysctl tuning
+
+    sudo stow --target=/ etc-cachyos
+    sudo sysctl --system
+
+#### BorgBackup timers
+
+    sudo stow --target=/ backup-systemd
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now \
+        borg-backup.timer \
+        borg-check.timer \
+        borg-check-deep.timer
+
+Ensure `borg-user/` is stowed for your user and contains `~/.config/borg/passphrase`.
+
+---
+
+### 15.3 Verification
+
+Check services:
+
+    systemctl list-units | grep -E 'efi-sync|powertop|usb-nosuspend|borg'
+
+Confirm:
+- EFI sync mirrors `/boot/efi` and `/boot/efi-backup`
+- powertop and usb-nosuspend apply power tuning
+- borg timers appear under:
+
+      systemctl list-timers | grep borg
+
+---
+
+### 15.4 Post-stow checks
+
+    systemctl --user list-units | grep -E 'mako|waybar|swayidle'
+
+Ensure:
+- Sway autostarts on TTY1
+- mako notifications work
+- EFI sync and power tuning are active
+
+---
+
+### 15.5 Install uv (Python toolchain manager)
+
+```bash
+curl -Ls https://astral.sh/uv/install.sh | sh
+```
+
+This installs `uv` and `uvx` to `~/.local/bin`. Confirm with `uv --version`.
+
+---
+
+## 16) Swap (optional)
 
 ```sh
 zfs create -V 8G -b 4K -o compression=off -o logbias=throughput \
@@ -494,8 +380,6 @@ zfs create -V 8G -b 4K -o compression=off -o logbias=throughput \
 mkswap /dev/zvol/rpool/swap
 echo "/dev/zvol/rpool/swap none swap defaults,pri=10 0 0" >> /etc/fstab
 ```
-
-Ensure zram has higher priority (e.g., 100). Check with `swapon`.
 
 ---
 
@@ -516,24 +400,22 @@ zpool export rpool
 reboot
 ```
 
-You should get Plymouth unlock → systemd-boot → autologin → Sway.
+System should unlock, boot via systemd-boot, and autologin to Sway.
 
 ---
 
-## Appendix: sysctl notes (swappiness)
-
-Debian’s documented default is **60**. If you ever see a different runtime value and want predictability, pin it:
+## Appendix: sysctl notes
 
 ```ini
 # /etc/sysctl.d/99-gaming-desktop-settings.conf
-# vm.swappiness = 100   # CachyOS assumes zram; aggressive swapping
-vm.swappiness = 60       # Balanced for Debian desktop w/ zram; keep hot pages in RAM
+vm.swappiness = 60
 ```
 
-Apply: `sudo sysctl --system`.
+Apply with `sudo sysctl --system`.
 
 ---
 
-**See also:**
-- [`RECOVERY.md`](RECOVERY.md) — system recovery procedure (referencing this install guide for rebuild steps)
-- [`installed-software.md`](installed-software.md) — manually installed packages and rationale
+**References:**
+- [RECOVERY.md](RECOVERY.md)
+- [installed-software.md](installed-software.md)
+

@@ -1,32 +1,141 @@
-# dotfiles
+# Dotfiles — audacious (Debian 13 “Trixie”)
 
-My personal dotfiles for a minimal, Amiga-themed Sway desktop on Debian.
+A reproducible desktop configuration for a Debian Trixie system running on ZFS.  
+Built to stay fast, understandable, and fixable.  
 
-## Includes
-- **Sway** – window manager config (Amiga look & feel)
-- **Waybar** – status bar config + CSS styling
-- **Foot** – terminal config
-- **Mako** – notification daemon config
-- **Emacs** – init + custom theme (`amiga-dark-theme.el`)
-- **Fonts** – Amiga Topaz fonts + NerdFont variant
-- **Cursors** – AmigaCursors theme
-- **Wallpapers** – Workbench-style wallpapers
-- **Scripts** – e.g. `select-audio-sink.sh` (PipeWire)
+---
 
-## Requirements
-Tested on **Debian 13 (Trixie)** with:
-- sway, swaybg, swayidle, swaylock  
-- waybar  
-- foot  
-- mako-notifier  
-- pipewire-audio, wireplumber, pavucontrol, alsa-utils  
-- fonts-jetbrains-mono  
-- network-manager, mate-polkit  
-- xwayland  
+## Overview
+
+These dotfiles define the environment for the host **audacious**, using:
+
+- **Debian 13 (Trixie)** with **ZFS**
+- **sway** on **Wayland**
+- **systemd-boot** with unified kernel images (UKI)
+- **BorgBackup** for encrypted backups
+- **GNU Stow** for configuration management
+- **Amiga-style fonts and cursors**
+
+Everything here is plain text, versioned, and mapped directly to where it belongs in the filesystem.  
+No external configuration managers, wrappers, or packaging systems.
+
+---
+
+## Philosophy
+
+The system follows what I call the *Workbenchian* approach — influenced by the Amiga Workbench look and workflow, but designed for modern hardware and software.
+
+- **Minimal dependencies:** standard Debian packages only. No Snaps, AppImages, or Flatpaks.  
+- **Keyboard-driven:** sway, lf, foot, and mako form the core workflow.  
+- **Low friction:** fast startup, low power draw, minimal background noise.  
+- **Dark and readable:** consistent palette for day-long use.  
+- **Retro, not nostalgic:** classic shapes and typefaces, but without dated cruft.  
+- **Directness over automation:** small scripts, no layers of abstraction.  
+
+The goal isn’t to make Linux look like AmigaOS — it’s to keep the same sense of immediacy and control.
+
+---
+
+## Structure
+
+```
+bash/            → Shell configuration (.bashrc, .bash_profile)
+bin/             → Personal scripts (~/.local/bin)
+borg-user/       → Borg config and patterns
+backup-systemd/  → Borg systemd units and timers
+emacs/           → Editor configuration and custom theme
+etc-cachyos/     → Kernel, sysctl, and audio tuning
+etc-power/       → Power and udev rules, powertop setup
+etc-systemd/     → Core systemd units (EFI sync, boot)
+fonts/           → Amiga + Nerd Fonts
+icons/           → Amiga-style cursor theme
+sway/, waybar/, wofi/ → Wayland desktop configuration
+```
+
+System-level trees (`etc-*`) require `sudo` when stowing.
+
+---
 
 ## Usage
-Clone and deploy with GNU Stow:
+
+Clone and deploy:
+
 ```bash
-git clone https://github.com/<your-username>/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow -v fonts icons wallpapers foot mako sway waybar emacs bin
+stow bash bin emacs sway waybar wofi
+sudo stow --target=/ etc-systemd etc-power
+```
+
+Restow after changes or reinstalls:
+
+```bash
+stow --restow bash bin emacs sway waybar wofi
+sudo stow --restow --target=/ etc-systemd etc-power
+```
+
+Remove a module:
+
+```bash
+stow -D sway waybar wofi
+sudo stow -D --target=/ etc-systemd
+```
+
+---
+
+## System Services
+
+Defined under `etc-systemd` and `etc-power`:
+
+| Service | Description |
+|----------|-------------|
+| `efi-sync.path` / `.service` | Keeps EFI partitions mirrored |
+| `powertop.service` | Applies power settings on boot |
+| `usb-nosuspend.service` | Prevents input device autosuspend |
+| `borg-backup.timer` | Runs nightly Borg backups |
+| `borg-check.timer` | Verifies backup integrity weekly |
+
+To reload or re-enable:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
+```
+
+---
+
+## Backups and Recovery
+
+Backups are handled through Borg with systemd timers.
+
+Trigger a manual run:
+
+```bash
+sudo systemctl start borg-backup.service
+journalctl -u borg-backup.service -n 20
+```
+
+Documentation for setup and recovery:
+
+- [`INSTALL.md`](INSTALL.md) — clean installation  
+- [`RECOVERY.md`](RECOVERY.md) — boot and ZFS repair  
+- [`RESTORE.md`](RESTORE.md) — Borg data restore
+
+---
+
+## Notes
+
+- User: **alchemist**  
+- Host: **audacious**  
+- Filesystem: **ZFS**  
+- Bootloader: **systemd-boot (UKI)**  
+- OS: **Debian 13 (Trixie)**  
+- Kernel: **6.10+**
+
+This system is meant to stay understandable years later — the fewer moving parts, the better.
+
+---
+
+## License
+
+All original configuration and scripts © Userland Alchemist.  
+Shared under the MIT License unless otherwise stated.

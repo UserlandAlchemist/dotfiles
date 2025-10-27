@@ -1,238 +1,211 @@
-# RESTORE.md
+# RESTORE.md — Borg Backup Recovery (audacious ↔ astute)
 
-> Full disaster recovery procedure for Audacious  
-> (restoring `/home/alchemist` from Borg backups on Astute)
-
----
-
-## 1. Reinstall Debian and base environment
-
-Follow `INSTALL.md` **through Section 14** to reach a functioning system with:
-- ZFS root (`rpool`)
-- Network access
-- `alchemist` user with `sudo`
-- SSH client tools (`openssh-client`)
-- Dotfiles repo cloned to `~/dotfiles`
-
-Do **not** stow configs yet.
+> **Purpose:** Fully restore system and user data to `audacious` from backups hosted on `astute`.  
+> Assumes you’ve completed `RECOVERY.md` and now have a clean, bootable system.  
+> Focus: verifying SSH + Borg setup, unlocking keys, mounting archives, and restoring data safely.
 
 ---
 
-## 2. Install BorgBackup
+## 1️⃣ Reinstall Required Packages
 
 ```bash
-sudo apt install -y borgbackup
+sudo apt update
+sudo apt install -y borgbackup openssh-client git stow
 ```
 
-Create Borg config directories:
-
-```bash
-mkdir -p ~/.config/borg/security
-```
-
-Restore or recreate the passphrase file:
-
-```bash
-nano ~/.config/borg/passphrase
-chmod 600 ~/.config/borg/passphrase
-```
-
-> Retrieve the passphrase from **Bitwarden**  
-> (stored as “Borg passphrase – Audacious”).  
-> This file is required to access the repository.
-
-If your dotfiles repo is already restored, you may instead:
-
-```bash
-stow borg-user
-```
+> Installs Borg and supporting tools for restoration.
 
 ---
 
-## 3. Restore SSH keys and access to Astute
+## 2️⃣ Retrieve or Recreate Borg Configuration
 
-Your Borg repository lives at  
-`ssh://alchemist@astute:/srv/borg/audacious`.
-
-### 3.1 Retrieve keys from encrypted USB
-
-1. Plug in the **blue USB key** (`/dev/sdb`, ≈ 29 GB).  
-2. Open and mount it:
-
-   ```bash
-   sudo cryptsetup open /dev/sdb secure-usb
-   sudo mount /dev/mapper/secure-usb /mnt/secure-usb
-   ls /mnt/secure-usb/ssh-backup
-   ```
-
-3. Copy your keys back:
-
-   ```bash
-   mkdir -p ~/.ssh
-   cp -a /mnt/secure-usb/ssh-backup/* ~/.ssh/
-   chmod 700 ~/.ssh
-   chmod 600 ~/.ssh/audacious-backup ~/.ssh/id_alchemist
-   ```
-
-4. Close the USB drive once done:
-
-   ```bash
-   sudo umount /mnt/secure-usb
-   sudo cryptsetup close secure-usb
-   ```
-
-### 3.2 Test connectivity
+1. Ensure your Borg configuration directory exists:
 
 ```bash
-ssh alchemist@astute
+mkdir -p ~/.config/borg
 ```
 
-You should connect without a password.  
-If prompted about authenticity, verify the fingerprint before accepting.
-
----
-
-## 4. Verify the Borg repository
-
-Confirm access:
-
-```bash
-borg list ssh://alchemist@astute:/srv/borg/audacious
-```
-
-Expected output:
-
-```
-audacious-2025-10-26T12:00:05 Sat, 2025-10-26 12:00:05 [hash] ...
-```
-
-If it fails, check:
-- Network connectivity (`ping astute`)
-- SSH setup
-- Correct passphrase permissions
-
----
-
-## 5. Restore your home directory
-
-Create a restore directory:
-
-```bash
-mkdir ~/restore
-cd ~/restore
-```
-
-Extract the most recent archive:
-
-```bash
-borg extract --numeric-owner ssh://alchemist@astute:/srv/borg/audacious::latest
-```
-
-This recreates `/home/alchemist` within `./home/alchemist`.
-
-To restore directly in place:
-
-```bash
-cd /
-sudo borg extract --numeric-owner ssh://alchemist@astute:/srv/borg/audacious::latest home/alchemist
-```
-
-Fix ownerships:
-
-```bash
-sudo chown -R alchemist:alchemist /home/alchemist
-```
-
----
-
-## 6. Re-stow dotfiles and re-enable backup services
+2. Restore from dotfiles if present:
 
 ```bash
 cd ~/dotfiles
-stow bash bin emacs fonts foot lf mako sway waybar wofi zathura borg-user
-sudo stow -t / backup-systemd
-sudo systemctl enable --now borg-backup.timer borg-check.timer
+stow --target=$HOME borg-user
 ```
 
-Confirm timers:
+This restores `~/.config/borg/passphrase` and `~/.config/borg/patterns`.
+
+> These files define the backup decryption key and inclusion/exclusion rules.
+
+3. If your passphrase file is lost, **stop here**. Without it, Borg archives are cryptographically inaccessible.
+
+To verify that your key file exists and has the right permissions:
+
+```bash
+ls -l ~/.config/borg/passphrase
+chmod 600 ~/.config/borg/passphrase
+```
+
+---
+
+## 3️⃣ Confirm Access to Backup Host
+
+1. Check SSH access to the backup host `astute`:
+
+```bash
+ssh backup@astute
+```
+
+If you cannot connect, verify your `.ssh/config` and ensure the proper key is restored or re-added:
+
+```bash
+cat ~/.ssh/config
+chmod 600 ~/.ssh/config
+```
+
+2. Test Borg connectivity:
+
+```bash
+borg list backup@astute:/mnt/backup/borg/audacious
+```
+
+> You should see a list of available archives with timestamps.  
+> If you see `Repository not found`, check your repository path or key file.
+
+---
+
+## 4️⃣ Mount and Inspect an Archive (Optional Pre-Restore)
+
+You can mount a Borg archive to verify contents before performing a full restore:
+
+```bash
+mkdir -p ~/borg-mount
+borg mount backup@astute:/mnt/backup/borg/audacious::<archive-name> ~/borg-mount
+ls ~/borg-mount
+```
+
+> Inspect files, confirm structure, then unmount:
+
+```bash
+borg umount ~/borg-mount
+```
+
+---
+
+## 5️⃣ Perform Full Restore
+
+1. Create restore target:
+
+```bash
+sudo mkdir -p /restore
+sudo chown $USER:$USER /restore
+```
+
+2. Restore from latest archive:
+
+```bash
+borg extract --numeric-owner backup@astute:/mnt/backup/borg/audacious::$(borg list --last 1 --short backup@astute:/mnt/backup/borg/audacious)
+```
+
+> `--numeric-owner` ensures correct UID/GID even if `/etc/passwd` differs from the backup source.
+
+3. Restore specific paths if needed:
+
+```bash
+borg extract backup@astute:/mnt/backup/borg/audacious::2025-10-27T03:00 -- home/alchemist .config
+```
+
+4. Verify restored files:
+
+```bash
+ls -lah /restore/home/alchemist
+```
+
+---
+
+## 6️⃣ Restore System Configuration (if missing)
+
+If `/etc` or system files were part of the Borg archive, restore them carefully:
+
+```bash
+sudo rsync -aHAXv /restore/etc/ /etc/
+```
+
+Then restow configs:
+
+```bash
+cd ~/dotfiles
+sudo stow --target=/ etc-systemd
+sudo stow --target=/ etc-power
+```
+
+Reload services:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl restart efi-sync.path powertop.service usb-nosuspend.service
+```
+
+---
+
+## 7️⃣ Validate Restore Integrity
+
+Run a quick integrity check of the restored data:
+
+```bash
+borg check --verify-data backup@astute:/mnt/backup/borg/audacious
+```
+
+> This ensures the repository and archive data are not corrupted.
+
+Then verify locally restored files:
+
+```bash
+find /restore -type f | wc -l
+zpool status
+```
+
+---
+
+## 8️⃣ Clean Up and Return to Normal Operation
+
+Unmount and remove restore directory if no longer needed:
+
+```bash
+sudo rm -rf /restore
+```
+
+Confirm all services active:
+
+```bash
+systemctl list-units | grep -E 'borg|efi-sync|powertop'
+```
+
+Reboot to confirm clean boot:
+
+```bash
+sudo reboot
+```
+
+---
+
+## ✅ Post-Restore Checklist
+
+After reboot:
+
+- Verify SSH access to `astute` still works.
+- Check Borg timer jobs:
 
 ```bash
 systemctl list-timers | grep borg
 ```
 
----
-
-## 7. Verify operation
-
-- Log out/in to ensure desktop and shell configs load.  
-- Trigger a manual backup:
-
-  ```bash
-  sudo systemctl start borg-backup.service
-  journalctl -u borg-backup.service -n 20
-  ```
-
-
----
-
-## 8. Reference details
-
-| Component | Setting |
-|------------|----------|
-| **Repository** | `ssh://alchemist@astute:/srv/borg/audacious` |
-| **Scope** | `/home/alchemist` only |
-| **Backup schedule** | 00:00 · 06:00 · 12:00 · 18:00 (local) – *no catch-up on boot* |
-| **Integrity check** | Sunday 04:30 – *catches up if missed* |
-| **Passphrase** | Stored in Bitwarden (“Borg passphrase – Audacious”) |
-| **SSH keys** | On encrypted USB (`audacious-backup`, `id_alchemist`) |
-| **Repository key export** | `audacious-borg-repokey-export.txt` on encrypted USB |
-| **Restoration test** | `borg extract --dry-run ssh://alchemist@astute:/srv/borg/audacious::latest` |
-
----
-
-## Appendix A — Encrypted USB key (blue drive)
-
-The blue USB stick (`/dev/sdb`, ≈ 29 GB) stores offline credentials.
-
-### A.1 Initialize (first-time setup)
+- Ensure restored data matches expected layout (`~/dotfiles`, `~/Documents`, etc.).
+- Optionally trigger a manual backup to confirm repository health:
 
 ```bash
-sudo apt install -y cryptsetup
-sudo cryptsetup luksFormat /dev/sdb
-sudo cryptsetup open /dev/sdb secure-usb
-sudo mkfs.ext4 -L SECUREKEYS /dev/mapper/secure-usb
-sudo mkdir -p /mnt/secure-usb
-sudo mount /dev/mapper/secure-usb /mnt/secure-usb
+sudo systemctl start borg-backup.service
+journalctl -u borg-backup.service -n 20
 ```
 
-### A.2 Copy credentials
+If backup completes without errors — system restoration is successful.
 
-```bash
-sudo mkdir -p /mnt/secure-usb/ssh-backup
-sudo cp -a ~/.ssh/audacious-backup ~/.ssh/audacious-backup.pub /mnt/secure-usb/ssh-backup/
-sudo cp -a ~/.ssh/id_alchemist ~/.ssh/id_alchemist.pub /mnt/secure-usb/ssh-backup/
-sudo cp ~/.ssh/config ~/.ssh/known_hosts /mnt/secure-usb/ssh-backup/
-sudo cp ~/.config/borg/passphrase /mnt/secure-usb/
-sudo cp ~/audacious-borg-repokey-export.txt /mnt/secure-usb/
-sudo chmod 600 /mnt/secure-usb/ssh-backup/audacious-backup /mnt/secure-usb/ssh-backup/id_alchemist
-sudo chmod 600 /mnt/secure-usb/audacious-borg-repokey-export.txt
-```
-
-Optional extras:
-```bash
-sudo cp -a ~/.config/borg/security /mnt/secure-usb/borg-security
-sudo cp -a ~/.gnupg /mnt/secure-usb/gnupg 2>/dev/null || true
-sudo cp ~/dotfiles/RESTORE.md ~/dotfiles/RECOVERY.md /mnt/secure-usb/
-sudo zpool status > ~/zfs-status.txt && sudo zpool get all > ~/zfs-properties.txt
-sudo cp ~/zfs-*.txt /mnt/secure-usb/
-```
-
-Then:
-
-```bash
-sudo umount /mnt/secure-usb
-sudo cryptsetup close secure-usb
-```
----
-
-**End of RESTORE.md**

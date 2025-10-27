@@ -1,156 +1,318 @@
-# ZFS Root Recovery and Boot Repair
+# RECOVERY.md — Debian 13 (Trixie) ZFS + systemd-boot Emergency Checklist
 
-This guide assumes the system was originally installed using the procedure in `INSTALL.md`.
-
-Use this when:
-- the system no longer boots,
-- systemd-boot or the UKI entry is broken,
-- `initramfs` / UKI needs to be rebuilt, or
-- you need to chroot into the existing system for repair.
-
-This does **not** recreate datasets, reinstall packages, or perform a full reinstall.
+> **Purpose:** Get `audacious` booting again after something breaks.  
+> Focus: ZFS import, chroot, UKI + bootloader rebuild, and system service sanity.  
+> Not for Borg or user data recovery — see `RESTORE.md` for that.
 
 ---
 
-## System assumptions
+## 🧭 Quick Reference — Symptoms → Actions
 
-- Debian 13 (trixie)
-- Root on **ZFS** with native encryption (you will be prompted for the passphrase at import)
-- ZFS pool name: **`rpool`**
-- Two EFI partitions:
-  - `/dev/nvme0n1p1` → primary ESP
-  - `/dev/nvme1n1p1` → backup ESP
-- The ESPs are normally kept in sync (via `efi-sync.service` or manual rsync)
-- Boot managed by **systemd-boot**
-- The kernel is delivered as a **UKI** (`.efi` file) under `EFI/Linux/`
+| Symptom | Action |
+|----------|--------|
+| System drops to initramfs shell | Go to §2 (Import ZFS pool manually) |
+| ZFS pool not found or degraded | Go to §2 (Import and scrub pool) |
+| Boots to blank screen or kernel panic | Go to §5 (Rebuild initramfs + UKI) |
+| systemd-boot missing or EFI errors | Go to §6 (Reinstall bootloader + re-sync ESPs) |
+| Power/EFI sync services not running | Go to §7 (Restow configs and restart services) |
 
 ---
 
-## 1. Boot into a live environment
+## 1️⃣ Boot Environment Setup
 
-Boot a Debian Live ISO (or other rescue system with ZFS support).
-
-If the live ISO is missing tools like `zfsutils-linux`, `systemd-boot`, `systemd-ukify`, etc., follow `INSTALL.md` sections 1–5 for:
-- enabling contrib/non-free-firmware in APT,
-- installing required packages into the live environment,
-- confirming networking.
-
-Quick sanity check before proceeding:
+1. Boot from the **Debian 13 Live ISO**.
+2. Open a terminal and become root:
 
 ```bash
-ping -c3 deb.debian.org
+sudo -i
+```
+
+3. Install tools:
+
+```bash
+apt update
+apt install -y zfsutils-linux gdisk systemd-boot systemd-ukify dosfstools rsync git stow
+```
+
+4. Verify both disks and EFI partitions:
+
+```bash
+lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE
 ```
 
 ---
 
-## 2. Import the ZFS pool and enter the chroot
+## 2️⃣ Import and Mount ZFS Pool
 
-Import and mount the ZFS pool safely under `/mnt` (critical: the `-R /mnt` remaps mountpoints under /mnt instead of stomping the live ISO’s root):
+1. Check ZFS devices:
 
 ```bash
-zpool import -f -R /mnt rpool
+zpool import
+```
+
+2. Import pool (read-write, encrypted):
+
+```bash
+zpool import -l rpool
+```
+
+> If it says "no pools available", confirm with `ls /dev/disk/by-id` that both drives exist.
+
+3. Mount datasets:
+
+```bash
+zfs mount rpool/ROOT/debian
 zfs mount -a
 ```
 
-Now replicate the mount + chroot prep from `INSTALL.md` sections 3–4:
-- mount `/dev/nvme0n1p1` to `/mnt/boot/efi`
-- mount `/dev/nvme1n1p1` to `/mnt/boot/efi-backup`
-- bind-mount `/dev`, `/proc`, `/sys`
-- copy `resolv.conf`
+4. Verify mount layout:
 
-Then:
+```bash
+mount | grep rpool
+```
+
+---
+
+## 3️⃣ Mount System for chroot
+
+1. Mount standard virtual filesystems:
+
+```bash
+mount --rbind /dev  /mnt/dev
+mount --rbind /proc /mnt/proc
+mount --rbind /sys  /mnt/sys
+```
+
+2. Mount EFI partitions:
+
+```bash
+mount /dev/nvme0n1p1 /mnt/boot/efi
+mkdir -p /mnt/boot/efi-backup
+mount /dev/nvme1n1p1 /mnt/boot/efi-backup
+```
+
+3. Copy DNS resolution:
+
+```bash
+cp /etc/resolv.conf /mnt/etc/resolv.conf
+```
+
+4. Enter the chroot:
 
 ```bash
 chroot /mnt /bin/bash
 ```
 
-At this point you are “inside” your installed system.
+---
+
+## 4️⃣ Basic System Checks (inside chroot)
+
+1. Confirm hostname and network:
+
+```bash
+echo $(hostname)
+systemctl status systemd-networkd systemd-resolved
+```
+
+2. Check ZFS and mount health:
+
+```bash
+zpool status
+zfs list
+```
+
+3. Check root filesystem integrity:
+
+```bash
+mount | grep ' / '
+```
+
+4. Ensure APT sources are valid:
+
+```bash
+grep -v '^#' /etc/apt/sources.list
+apt update
+```
 
 ---
 
-## 3. Repair the bootloader (systemd-boot)
+## 5️⃣ Rebuild initramfs and UKI
 
-Check systemd-boot health:
+> Use this when kernel updates break boot, or you see initramfs errors.
+
+1. Confirm kernel version:
 
 ```bash
-bootctl status
+uname -r
 ```
 
-If it’s missing/damaged on the primary ESP:
+2. Ensure kernel config files exist:
+
+```bash
+cat /etc/kernel/cmdline
+cat /etc/kernel/install.conf
+cat /etc/kernel/uki.conf
+```
+
+3. Rebuild initramfs + UKI:
+
+```bash
+update-initramfs -u -k all
+kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
+```
+
+4. Verify UKI is present:
+
+```bash
+ls -lh /boot/efi/EFI/Linux/*.efi
+```
+
+---
+
+## 6️⃣ Reinstall or Repair systemd-boot
+
+> Use when EFI boot entry or loader files are missing or corrupted.
+
+1. Reinstall systemd-boot:
 
 ```bash
 bootctl install
 ```
 
-## 4. Rebuild initramfs and regenerate the UKI
-
-Rebuild initramfs for all installed kernels:
+2. Check loader config:
 
 ```bash
-update-initramfs -u -k all
+cat /boot/efi/loader/loader.conf
 ```
 
-Reinstall the UKI for the currently running kernel (this uses `kernel-install` + `ukify` to generate a new `.efi` under `EFI/Linux/`):
+Expected minimal contents:
+
+```
+default @saved
+timeout 3
+console-mode auto
+editor no
+```
+
+3. List EFI entries and verify UKI presence:
 
 ```bash
-kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
+bootctl list
 ```
 
-Make the rebuilt UKI the default boot entry:
+4. Set latest UKI as default:
 
 ```bash
 bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 ```
 
----
-
-## 5. Sync the backup EFI partition
-
-If you maintain a second ESP (on `/dev/nvme1n1p1`), resync it from the primary:
+5. Confirm both ESPs are synced:
 
 ```bash
-systemctl start efi-sync.service
+diff -rq /boot/efi /boot/efi-backup || echo "ESP copies differ!"
 ```
 
-If you want to confirm or do it manually:
+If out of sync:
 
 ```bash
-rsync -a --delete /boot/efi/ /boot/efi-backup/
-```
-
-You can also dry-run first with `-n`.
-
----
-
-## 6. Optional maintenance
-
-Reset your user password if needed:
-
-```bash
-passwd alchemist
-```
-
-Sanity-check time and networking before reboot:
-
-```bash
-timedatectl status
-ping -c3 8.8.8.8
+systemctl restart efi-sync.path
+rsync -aHAXv /boot/efi/ /boot/efi-backup/
 ```
 
 ---
 
-## 7. Clean exit and reboot
+## 7️⃣ Verify Power and System Services
+
+> If power management or sync services stopped working after recovery.
+
+1. Restow configs:
+
+```bash
+cd /home/alchemist/dotfiles
+sudo stow --target=/ etc-power
+sudo stow --target=/ etc-systemd
+```
+
+2. Reload systemd and enable services:
+
+```bash
+systemctl daemon-reload
+systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
+```
+
+3. Reload udev rules:
+
+```bash
+udevadm control --reload-rules
+udevadm trigger
+```
+
+4. Confirm services:
+
+```bash
+systemctl list-units | grep -E 'powertop|usb-nosuspend|efi-sync'
+```
+
+---
+
+## 8️⃣ Exit, Unmount, and Reboot
+
+1. Exit chroot:
 
 ```bash
 exit
+```
+
+2. Unmount cleanly:
+
+```bash
 umount -Rl /mnt
 zpool export rpool
+```
+
+3. Reboot:
+
+```bash
 reboot
 ```
 
 ---
 
-## See also
+## 🧰 Optional: Repair ZFS or Boot Issues
 
-- `INSTALL.md` — full installation reference (partitioning, ZFS datasets, kernel/UKI generation, dual ESP setup, sway environment)
-- `installed-software.md` — manually installed packages and rationale
+If ZFS won't import:
+
+```bash
+zpool import -f -l -o altroot=/mnt rpool
+```
+
+If the pool is degraded:
+
+```bash
+zpool status
+zpool scrub rpool
+```
+
+If systemd-boot fails to find entries:
+
+```bash
+bootctl update
+```
+
+---
+
+## ✅ Post-Recovery Checklist
+
+After boot:
+
+```bash
+zpool status
+systemctl list-units | grep -E 'efi-sync|powertop|borg'
+```
+
+If all active and no errors — recovery complete.
+
+---
+
+**Next:** Restore Borg backups and verify user data — see [`RESTORE.md`](RESTORE.md).
+

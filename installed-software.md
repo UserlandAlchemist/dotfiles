@@ -1,27 +1,62 @@
-# Software manually installed on Audacious Post-INSTALL.md
+# Installed Software (Structured List)
 
-steam-installer
-discord
-zoom
+This document provides a machine-readable, script-friendly inventory of manually installed software.  
+Each section contains categorized software entries in a consistent key-value format.
 
-zathura # lightweight document viewer
-zathura-pdf-poppler # poppler backend for pdf files
-lf # terminal file manager
-imv # ightweight Wayland image viewer, integrates with lf
+---
 
-fonts-symbola
-fonts-noto
+## [desktop]
+- steam-installer: Steam client (non-free) — gaming platform
+- discord: Chat and VoIP client for communities
+- zoom: Video conferencing client
 
-cryptsetup # needed to unlock /dev/sda1 (LUKS backup drive)
+---
 
-wakeonlan
-nfs-common # NFS client utilities for network shares
-autofs # automounts NFS shares when accessed
+## [file-management]
+- zathura: Lightweight document viewer
+- zathura-pdf-poppler: Poppler backend for PDF rendering
+- lf: Terminal file manager
+- imv: Lightweight Wayland image viewer (integrates with lf)
 
-golang-go # Go toolchain; used to build/run the Boot.dev learning client
+---
 
-powertop # interactive tool to diagnose and optimize power consumption
-power-profiles-daemon # system service managing power modes 
+## [fonts]
+- fonts-symbola: Unicode fallback font
+- fonts-noto: Comprehensive multilingual typeface family
 
-usbutils # provides lsusb
-jq # command-line JSON processor; used in idle-shutdown.sh
+---
+
+## [storage]
+- cryptsetup: LUKS encryption utility for unlocking encrypted drives
+
+---
+
+## [networking]
+- wakeonlan: Utility to send Wake-on-LAN packets
+- nfs-common: NFS client utilities for network shares
+- autofs: Automount service for network shares
+
+---
+
+## [power]
+- powertop: Power consumption optimizer and diagnostic tool
+- power-profiles-daemon: System service for managing power modes
+
+---
+
+## [utilities]
+- usbutils: Provides the `lsusb` command for USB device inspection
+- jq: Command-line JSON processor (used in `idle-shutdown.sh`)
+
+---
+
+## [development]
+- golang-go: Go toolchain (used for Boot.dev learning client)
+
+---
+
+## [meta]
+- source: post-install
+- managed-by: manual
+- system: audacious (Debian 13 Trixie)
+- notes: Core system and Sway desktop components installed via INSTALL.md and managed under dotfiles.
