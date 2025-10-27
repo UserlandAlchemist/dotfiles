@@ -5,7 +5,7 @@ This guide installs Debian with:
 - **systemd-boot** with **UKI** (unified kernel image)
 - Dual **EFI System Partitions (ESP)** with automatic syncing
 - Sway desktop + dotfiles
-- Includes **kernel, headers, initramfs-tools, zfs-initramfs, and tasksel standard** (equivalent to the Debian Installer's standard system)
+- Includes **kernel, headers, initramfs-tools, zfs-initramfs, and tasksel standard** (equivalent to the Debian Installer’s standard system)
 
 ---
 
@@ -290,12 +290,15 @@ cd ~/dotfiles
 
 ### 15.1 User configuration
 
-Apply user-level configuration:
+Audacious uses the modular per-host layout.  
+Apply user-level configuration for this host:
 
-    stow bash bin emacs fonts foot lf mako sway waybar wofi zathura
+    stow bash-audacious bin-audacious emacs-audacious fonts-audacious \
+         foot-audacious lf-audacious mako-audacious psd-audacious sway-audacious \
+         waybar-audacious wofi-audacious zathura-audacious
 
-These stow packages link into `$HOME` using XDG-compliant paths. Optional:
-- `wallpapers/`, `icons/`, and `ssh/` include assets and configs to review manually.
+Optional extras:
+- `wallpapers-audacious/`, `icons-audacious/`, and `ssh-audacious/` include assets and configs to review manually.
 
 ---
 
@@ -305,7 +308,7 @@ Apply system-level stow packages selectively.
 
 #### Power management
 
-    sudo stow --target=/ etc-power
+    sudo stow --target=/ etc-power-audacious
     sudo systemctl daemon-reload
     sudo systemctl enable --now powertop.service usb-nosuspend.service
     sudo udevadm control --reload-rules
@@ -313,25 +316,25 @@ Apply system-level stow packages selectively.
 
 #### EFI sync (dual ESPs)
 
-    sudo stow --target=/ etc-systemd
+    sudo stow --target=/ etc-systemd-audacious
     sudo systemctl daemon-reload
     sudo systemctl enable --now efi-sync.path
 
 #### Kernel/sysctl tuning
 
-    sudo stow --target=/ etc-cachyos
+    sudo stow --target=/ etc-cachyos-audacious
     sudo sysctl --system
 
 #### BorgBackup timers
 
-    sudo stow --target=/ backup-systemd
+    sudo stow --target=/ backup-systemd-audacious
     sudo systemctl daemon-reload
     sudo systemctl enable --now \
         borg-backup.timer \
         borg-check.timer \
         borg-check-deep.timer
 
-Ensure `borg-user/` is stowed for your user and contains `~/.config/borg/passphrase`.
+Ensure `borg-user-audacious/` is stowed for your user and contains `~/.config/borg/passphrase`.
 
 ---
 
@@ -355,9 +358,9 @@ Confirm:
     systemctl --user list-units | grep -E 'mako|waybar|swayidle'
 
 Ensure:
-- Sway autostarts on TTY1
-- mako notifications work
-- EFI sync and power tuning are active
+- Sway autostarts on TTY1  
+- mako notifications work  
+- EFI sync and power tuning are active  
 
 ---
 
@@ -416,6 +419,5 @@ Apply with `sudo sysctl --system`.
 ---
 
 **References:**
-- [RECOVERY.md](RECOVERY.md)
-- [installed-software.md](installed-software.md)
-
+- [RECOVERY.audacious.md](RECOVERY.audacious.md)
+- [installed-software.audacious.md](installed-software.audacious.md)

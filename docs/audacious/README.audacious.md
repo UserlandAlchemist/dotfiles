@@ -1,7 +1,7 @@
 # Dotfiles — audacious (Debian 13 “Trixie”)
 
 A reproducible desktop configuration for a Debian Trixie system running on ZFS.  
-Built to stay fast, understandable, and fixable.  
+Built to stay fast, understandable, and fixable.
 
 ---
 
@@ -30,7 +30,7 @@ The system follows what I call the *Workbenchian* approach — influenced by the
 - **Low friction:** fast startup, low power draw, minimal background noise.  
 - **Dark and readable:** consistent palette for day-long use.  
 - **Retro, not nostalgic:** classic shapes and typefaces, but without dated cruft.  
-- **Directness over automation:** small scripts, no layers of abstraction.  
+- **Directness over automation:** small scripts, no layers of abstraction.
 
 The goal isn’t to make Linux look like AmigaOS — it’s to keep the same sense of immediacy and control.
 
@@ -39,20 +39,20 @@ The goal isn’t to make Linux look like AmigaOS — it’s to keep the same sen
 ## Structure
 
 ```
-bash/            → Shell configuration (.bashrc, .bash_profile)
-bin/             → Personal scripts (~/.local/bin)
-borg-user/       → Borg config and patterns
-backup-systemd/  → Borg systemd units and timers
-emacs/           → Editor configuration and custom theme
-etc-cachyos/     → Kernel, sysctl, and audio tuning
-etc-power/       → Power and udev rules, powertop setup
-etc-systemd/     → Core systemd units (EFI sync, boot)
-fonts/           → Amiga + Nerd Fonts
-icons/           → Amiga-style cursor theme
-sway/, waybar/, wofi/ → Wayland desktop configuration
+bash-audacious/          → Shell configuration (.bashrc, .bash_profile)
+bin-audacious/           → Personal scripts (~/.local/bin)
+borg-user-audacious/     → Borg config and patterns
+backup-systemd-audacious/→ Borg systemd units and timers
+emacs-audacious/         → Editor configuration and custom theme
+etc-cachyos-audacious/   → Kernel, sysctl, and audio tuning
+etc-power-audacious/     → Power and udev rules, powertop setup
+etc-systemd-audacious/   → Core systemd units (EFI sync, boot)
+fonts-audacious/         → Amiga + Nerd Fonts
+icons-audacious/         → Amiga-style cursor theme
+sway-audacious/, waybar-audacious/, wofi-audacious/ → Wayland desktop configuration
 ```
 
-System-level trees (`etc-*`) require `sudo` when stowing.
+System-level trees (`etc-*-audacious`, `backup-systemd-audacious`) require `sudo` when stowing.
 
 ---
 
@@ -62,39 +62,40 @@ Clone and deploy:
 
 ```bash
 cd ~/dotfiles
-stow bash bin emacs sway waybar wofi
-sudo stow --target=/ etc-systemd etc-power
+stow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
+sudo stow --target=/ etc-systemd-audacious etc-power-audacious
 ```
 
 Restow after changes or reinstalls:
 
 ```bash
-stow --restow bash bin emacs sway waybar wofi
-sudo stow --restow --target=/ etc-systemd etc-power
+stow --restow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
+sudo stow --restow --target=/ etc-systemd-audacious etc-power-audacious
 ```
 
 Remove a module:
 
 ```bash
-stow -D sway waybar wofi
-sudo stow -D --target=/ etc-systemd
+stow -D sway-audacious waybar-audacious wofi-audacious
+sudo stow -D --target=/ etc-systemd-audacious
 ```
 
 ---
 
 ## System Services
 
-Defined under `etc-systemd` and `etc-power`:
+Defined under `etc-systemd-audacious` and `etc-power-audacious`:
 
 | Service | Description |
 |----------|-------------|
 | `efi-sync.path` / `.service` | Keeps EFI partitions mirrored |
 | `powertop.service` | Applies power settings on boot |
 | `usb-nosuspend.service` | Prevents input device autosuspend |
-| `borg-backup.timer` | Runs nightly Borg backups |
+| `borg-backup.timer` | Runs regular Borg backups |
 | `borg-check.timer` | Verifies backup integrity weekly |
+| `borg-check-deep.timer` | Performs monthly deep verification |
 
-To reload or re-enable:
+Reload or enable:
 
 ```bash
 sudo systemctl daemon-reload
@@ -116,9 +117,9 @@ journalctl -u borg-backup.service -n 20
 
 Documentation for setup and recovery:
 
-- [`INSTALL.md`](INSTALL.md) — clean installation  
-- [`RECOVERY.md`](RECOVERY.md) — boot and ZFS repair  
-- [`RESTORE.md`](RESTORE.md) — Borg data restore
+- [`INSTALL.audacious.md`](INSTALL.audacious.md) — clean installation  
+- [`RECOVERY.audacious.md`](RECOVERY.audacious.md) — boot and ZFS repair  
+- [`RESTORE.audacious.md`](RESTORE.audacious.md) — Borg data restore
 
 ---
 

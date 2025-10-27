@@ -229,15 +229,18 @@ rsync -aHAXv /boot/efi/ /boot/efi-backup/
 
 ```bash
 cd /home/alchemist/dotfiles
-sudo stow --target=/ etc-power
-sudo stow --target=/ etc-systemd
+sudo stow --target=/ etc-power-audacious
+sudo stow --target=/ etc-systemd-audacious
+sudo stow --target=/ etc-cachyos-audacious
+sudo stow --target=/ backup-systemd-audacious
 ```
 
 2. Reload systemd and enable services:
 
 ```bash
 systemctl daemon-reload
-systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
+systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path \
+    borg-backup.timer borg-check.timer borg-check-deep.timer
 ```
 
 3. Reload udev rules:
@@ -250,7 +253,7 @@ udevadm trigger
 4. Confirm services:
 
 ```bash
-systemctl list-units | grep -E 'powertop|usb-nosuspend|efi-sync'
+systemctl list-units | grep -E 'powertop|usb-nosuspend|efi-sync|borg'
 ```
 
 ---
