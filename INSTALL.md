@@ -418,15 +418,8 @@ As root:
 
 ```bash
 sudo stow -t / backup-systemd
-sudo systemctl enable --now borg-backup.timer borg-check.timer
+sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer 
 ```
-
-This installs and activates:
-- `borg-backup.timer` / `borg-backup.service`  
-  (runs the actual backup job on a schedule)
-- `borg-check.timer` / `borg-check.service`  
-  (periodic `borg check` for repo integrity)
-
 These units assume:
 - The `borgbackup` package is installed.
 - They can run `borg` against the repository defined in `~alchemist/.config/borg/`.

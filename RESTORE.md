@@ -172,6 +172,7 @@ systemctl list-timers | grep borg
   journalctl -u borg-backup.service -n 20
   ```
 
+
 ---
 
 ## 8. Reference details

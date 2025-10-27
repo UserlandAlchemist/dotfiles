@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer: Monthly deep Borg integrity check (audacious -> astute)
+
+[Timer]
+# First Sunday of each month at 11:00 local time
+OnCalendar=Sun *-*-01..07 11:00
+Persistent=true
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target
