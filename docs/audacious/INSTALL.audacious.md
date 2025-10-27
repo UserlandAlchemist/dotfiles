@@ -294,7 +294,7 @@ Audacious uses the modular per-host layout.
 Apply user-level configuration for this host:
 
     stow bash-audacious bin-audacious emacs-audacious fonts-audacious \
-         foot-audacious lf-audacious mako-audacious psd-audacious sway-audacious \
+         foot-audacious lf-audacious mako-audacious mimeapps-audacious psd-audacious sway-audacious \
          waybar-audacious wofi-audacious zathura-audacious
 
 Optional extras:
