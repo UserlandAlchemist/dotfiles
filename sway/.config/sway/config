@@ -86,10 +86,9 @@ set $locker swaylock -f \
   --ver-color 5078FF
 bindsym $mod+Shift+x exec $locker
 exec --no-startup-id swayidle -w \
-  timeout 480  'swaymsg "output * dpms off"' \
+  timeout 480  'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
   timeout 900  '$locker' \
   timeout 1200 '~/.local/bin/idle-shutdown.sh' \
-  resume       'swaymsg "output * dpms on"' \
   before-sleep '$locker'
 ### Input configuration
 #

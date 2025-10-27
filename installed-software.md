@@ -25,3 +25,4 @@ rocm-smi
 power-profiles-daemon
 usbutils
 linux-cpupower
+jq
