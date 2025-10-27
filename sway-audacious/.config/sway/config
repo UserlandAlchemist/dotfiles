@@ -60,7 +60,7 @@ include /etc/sway/config-vars.d/*
 
 output DP-1 pos 0 0
 output HDMI-A-1 pos 3840 1130
-output * bg ~/Pictures/Wallpapers/wallpaper-workbenchian-dark.png fill
+output * bg $XDG_DATA_HOME/backgrounds/wallpaper-workbenchian-dark.png fill
 
 ### Idle configuration
 #

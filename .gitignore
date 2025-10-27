@@ -28,14 +28,17 @@
 # Local testing and temp binaries
 */.local/bin/test*
 */.local/bin/tmp*
-bin/.local/bin/uv
-bin/.local/bin/uvx
+*/.local/bin/uv
+*/.local/bin/uvx
 
-# --- Sensitive data (never commit) ---
+# --- Sensitive / host-local data (never commit) ---
 
-# Borg encryption key and metadata
-user-audacious/borg-user/.config/borg/passphrase
-user-audacious/borg-user/.config/borg/security/
+# Borg encryption key and metadata (host-specific)
+borg-user-*/.config/borg/passphrase
+borg-user-*/.config/borg/security/
 
-# Private network layout (contains MACs/IPs)
+# PSD runtime state file (can include absolute paths)
+*/.config/psd/.psd.conf
+
+# Private network / inventory info
 docs/hosts-overview.md
