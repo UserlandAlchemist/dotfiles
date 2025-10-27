@@ -379,6 +379,67 @@ These stow packages provide:
 - `etc-systemd`: custom systemd units and timers (efi-sync, powertop, usb-nosuspend, etc.)
 - `etc-udev`: device-specific tweaks
 
+
+### 15.2.1 Automated backups (borg)
+
+This machine is configured to run automated Borg backups. The configuration is split into two parts:
+
+1. **User backup identity and policy** (`borg-user/`)
+2. **Systemd timers/services that actually run the backups** (`backup-systemd/`)
+
+#### Step 1: Install BorgBackup
+
+First, install the `borgbackup` package:
+
+```bash
+sudo apt install -y borgbackup
+```
+
+This provides the `borg` command and required dependencies.
+
+#### Step 2: Stow borg user config
+
+As the normal user (e.g. `alchemist`):
+
+```bash
+stow borg-user
+```
+
+This creates `~/.config/borg/`, which contains:
+- `patterns` (what to include/exclude)
+- `security/` (repo security metadata, fingerprints, etc.)
+
+The file `~/.config/borg/passphrase` is required for unattended backups, but is **NOT** committed to git for security reasons.  
+You must place the correct passphrase file there manually on each rebuild.
+
+#### Step 3: Stow and enable root-level backup timers
+
+As root:
+
+```bash
+sudo stow -t / backup-systemd
+sudo systemctl enable --now borg-backup.timer borg-check.timer
+```
+
+This installs and activates:
+- `borg-backup.timer` / `borg-backup.service`  
+  (runs the actual backup job on a schedule)
+- `borg-check.timer` / `borg-check.service`  
+  (periodic `borg check` for repo integrity)
+
+These units assume:
+- The `borgbackup` package is installed.
+- They can run `borg` against the repository defined in `~alchemist/.config/borg/`.
+- The passphrase file exists at `~alchemist/.config/borg/passphrase`.
+
+After enabling, confirm timers are active:
+
+```bash
+systemctl list-timers | grep borg
+```
+
+If timers are not listed, investigate before assuming you’re protected.
+
 ### 15.3 Initial adoption (one-time only)
 
 If you're converting an already-running machine to use this dotfiles repo (i.e. "take ownership" of existing config files), run:

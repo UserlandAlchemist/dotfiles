@@ -20,8 +20,6 @@ autofs # automounts NFS shares when accessed
 
 golang-go # Go toolchain; used to build/run the Boot.dev learning client
 
-borgbackup
-
 powertop # interactive tool to diagnose and optimize power consumption
 power-profiles-daemon # system service managing power modes 
 
