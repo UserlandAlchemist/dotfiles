@@ -2,27 +2,28 @@
 
 steam-installer
 discord
-wakeonlan
-nfs-common
-cryptsetup
 zoom
+
+zathura # lightweight document viewer
+zathura-pdf-poppler # poppler backend for pdf files
+lf # terminal file manager
+imv # ightweight Wayland image viewer, integrates with lf
+
 fonts-symbola
 fonts-noto
-autofs
-golang-go
-qemu-system-x86
-qemu-utils
-genisoimage
-zathura
-zathura-pdf-poppler
-lf
-imv
+
+cryptsetup # needed to unlock /dev/sda1 (LUKS backup drive)
+
+wakeonlan
+nfs-common # NFS client utilities for network shares
+autofs # automounts NFS shares when accessed
+
+golang-go # Go toolchain; used to build/run the Boot.dev learning client
+
 borgbackup
-powertop
-powerstat
-lm-sensors
-rocm-smi
-power-profiles-daemon
-usbutils
-linux-cpupower
-jq
+
+powertop # interactive tool to diagnose and optimize power consumption
+power-profiles-daemon # system service managing power modes 
+
+usbutils # provides lsusb
+jq # command-line JSON processor; used in idle-shutdown.sh

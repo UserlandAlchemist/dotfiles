@@ -1,183 +1,147 @@
-# Debian ZFS Root Recovery Guide
+# ZFS Root Recovery and Boot Repair
 
-This guide assumes:
-- You booted from a **Debian 13 (Trixie) Live ISO**.
-- Root pool is called `rpool`.
-- Two EFI partitions: `/dev/nvme0n1p1` (primary) and `/dev/nvme1n1p1` (backup).
+This guide assumes the system was originally installed using the procedure in `INSTALL.md`.
+
+Use this when:
+- the system no longer boots,
+- systemd-boot or the UKI entry is broken,
+- `initramfs` / UKI needs to be rebuilt, or
+- you need to chroot into the existing system for repair.
+
+This does **not** recreate datasets, reinstall packages, or perform a full reinstall.
 
 ---
 
-## 1) Install required packages in the live ISO
+## System assumptions
 
-```sh
-sudo -i
-sed -i 's/main/main contrib non-free-firmware/' /etc/apt/sources.list
-apt update
-apt install -y debootstrap gdisk zfs-dkms zfsutils-linux \
-               build-essential dkms linux-headers-$(uname -r) \
-               systemd-boot systemd-ukify \
-               dosfstools rsync
+- Debian 13 (trixie)
+- Root on **ZFS** with native encryption (you will be prompted for the passphrase at import)
+- ZFS pool name: **`rpool`**
+- Two EFI partitions:
+  - `/dev/nvme0n1p1` → primary ESP
+  - `/dev/nvme1n1p1` → backup ESP
+- The ESPs are normally kept in sync (via `efi-sync.service` or manual rsync)
+- Boot managed by **systemd-boot**
+- The kernel is delivered as a **UKI** (`.efi` file) under `EFI/Linux/`
+
+---
+
+## 1. Boot into a live environment
+
+Boot a Debian Live ISO (or other rescue system with ZFS support).
+
+If the live ISO is missing tools like `zfsutils-linux`, `systemd-boot`, `systemd-ukify`, etc., follow `INSTALL.md` sections 1–5 for:
+- enabling contrib/non-free-firmware in APT,
+- installing required packages into the live environment,
+- confirming networking.
+
+Quick sanity check before proceeding:
+
+```bash
+ping -c3 deb.debian.org
 ```
 
 ---
 
-## 2) Import ZFS pool
+## 2. Import the ZFS pool and enter the chroot
 
-```sh
-modprobe zfs
+Import and mount the ZFS pool safely under `/mnt` (critical: the `-R /mnt` remaps mountpoints under /mnt instead of stomping the live ISO’s root):
+
+```bash
 zpool import -f -R /mnt rpool
-zfs mount rpool/ROOT/debian
 zfs mount -a
 ```
 
-Check:
+Now replicate the mount + chroot prep from `INSTALL.md` sections 3–4:
+- mount `/dev/nvme0n1p1` to `/mnt/boot/efi`
+- mount `/dev/nvme1n1p1` to `/mnt/boot/efi-backup`
+- bind-mount `/dev`, `/proc`, `/sys`
+- copy `resolv.conf`
 
-```sh
-zfs list -o name,mountpoint,mounted
-```
+Then:
 
-Root should be at `/mnt`.
-
----
-
-## 3) Mount system dirs + ESPs
-
-```sh
-mount --rbind /dev  /mnt/dev
-mount --rbind /proc /mnt/proc
-mount --rbind /sys  /mnt/sys
-mount /dev/nvme0n1p1 /mnt/boot/efi
-mkdir -p /mnt/boot/efi-backup
-mount /dev/nvme1n1p1 /mnt/boot/efi-backup
-cp /etc/resolv.conf /mnt/etc/resolv.conf
-```
-
----
-
-## 4) Chroot into system
-
-```sh
+```bash
 chroot /mnt /bin/bash
 ```
 
----
-
-## 5) Fix APT inside chroot
-
-Ensure proper sources:
-
-```ini
-# /etc/apt/sources.list
-deb http://deb.debian.org/debian trixie main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie main contrib non-free-firmware
-
-deb http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
-deb-src http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
-
-deb http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
-```
-
-Update + fix broken packages if needed:
-
-```sh
-apt update
-apt --fix-broken install
-```
+At this point you are “inside” your installed system.
 
 ---
 
-## 6) Kernel + ZFS tooling
+## 3. Repair the bootloader (systemd-boot)
 
-Reinstall the kernel, headers, initramfs, and ZFS support:
+Check systemd-boot health:
 
-```sh
-apt install --reinstall -y linux-image-amd64 linux-headers-amd64 \
-                          initramfs-tools zfs-initramfs
+```bash
+bootctl status
 ```
 
-Regenerate initramfs + UKI:
+If it’s missing/damaged on the primary ESP:
 
-```sh
+```bash
+bootctl install
+```
+
+## 4. Rebuild initramfs and regenerate the UKI
+
+Rebuild initramfs for all installed kernels:
+
+```bash
 update-initramfs -u -k all
+```
+
+Reinstall the UKI for the currently running kernel (this uses `kernel-install` + `ukify` to generate a new `.efi` under `EFI/Linux/`):
+
+```bash
 kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 ```
 
----
+Make the rebuilt UKI the default boot entry:
 
-## 7) Reinstall systemd-boot if needed
-
-```sh
-bootctl install
-bootctl list
-```
-
-- Ensure only your UKI entry remains (Type #2 `.efi`).  
-- If old “live” entries are still present in `/boot/efi/loader/entries/`, delete them.
-
----
-
-## 8) Verify ESP sync service
-
-Ensure `efi-sync.service` and `efi-sync.path` exist in `/etc/systemd/system`.
-
-```sh
-systemctl enable --now efi-sync.path
+```bash
+bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 ```
 
 ---
 
-## 9) Fix networking (if broken)
+## 5. Sync the backup EFI partition
 
-```sh
-systemctl enable systemd-networkd systemd-resolved
-ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+If you maintain a second ESP (on `/dev/nvme1n1p1`), resync it from the primary:
+
+```bash
+systemctl start efi-sync.service
 ```
 
-Check your `/etc/systemd/network/20-wired.network` for correct NIC name.
+If you want to confirm or do it manually:
+
+```bash
+rsync -a --delete /boot/efi/ /boot/efi-backup/
+```
+
+You can also dry-run first with `-n`.
 
 ---
 
-## 10) Firmware + microcode
+## 6. Optional maintenance
 
-Reinstall if missing:
+Reset your user password if needed:
 
-```sh
-apt install -y firmware-amd-graphics intel-microcode firmware-realtek
-# Or amd64-microcode if AMD CPU
+```bash
+passwd alchemist
 ```
 
----
+Sanity-check time and networking before reboot:
 
-## 11) Hostid
-
-Avoid ZFS import warnings:
-
-```sh
-zgenhostid -f $(hostid)
-```
-
----
-
-## 12) Swap check
-
-Ensure zram is primary, zvol swap secondary:
-
-```sh
-swapon
-```
-
-You should see:
-```
-/dev/zram0   ... PRIO=100
-/dev/zd0     ... PRIO=10
+```bash
+timedatectl status
+ping -c3 8.8.8.8
 ```
 
 ---
 
-## 13) Exit + reboot
+## 7. Clean exit and reboot
 
-```sh
+```bash
 exit
 umount -Rl /mnt
 zpool export rpool
@@ -185,3 +149,8 @@ reboot
 ```
 
 ---
+
+## See also
+
+- `INSTALL.md` — full installation reference (partitioning, ZFS datasets, kernel/UKI generation, dual ESP setup, sway environment)
+- `installed-software.md` — manually installed packages and rationale

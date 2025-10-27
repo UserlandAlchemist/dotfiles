@@ -9,6 +9,14 @@ This guide installs Debian with:
 
 ---
 
+## System assumptions
+
+- Root pool is `rpool` (ZFS mirror with encryption).
+- Two EFI partitions: `/dev/nvme0n1p1` (primary) and `/dev/nvme1n1p1` (backup).
+- Boot managed by **systemd-boot** with **UKI (unified kernel image)**.
+
+---
+
 ## 1) Boot into Debian Live ISO
 
 Open a terminal, become root, enable contrib/non-free-firmware, and install tools:
@@ -17,7 +25,7 @@ Open a terminal, become root, enable contrib/non-free-firmware, and install tool
 sudo -i
 sed -i 's/main/main contrib non-free-firmware/' /etc/apt/sources.list
 apt update
-apt install -y debootstrap gdisk zfs-dkms zfsutils-linux \
+apt install -y debootstrap gdisk zfsutils-linux \
                systemd-boot systemd-ukify \
                dosfstools rsync git stow
 ```
@@ -307,11 +315,11 @@ systemctl enable --now efi-sync.path
 ## 14) Sway desktop + tools
 
 ```sh
-apt install -y sway swaybg swayidle swaylock waybar wofi mako xwayland \
+apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland \
                grim slurp wl-clipboard xdg-desktop-portal-wlr \
                mate-polkit firefox-esr fonts-jetbrains-mono fonts-dejavu \
                pipewire-audio wireplumber pavucontrol \
-               curl usb.ids git stow tree profile-sync-daemon hdparm ethtool sysfsutils
+               curl usb.ids git stow tree profile-sync-daemon hdparm
 ```
 
 Autologin to Sway:
@@ -332,18 +340,74 @@ su - alchemist -c 'printf "%s\n" '\''if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/
 ```
 
 ---
-
 ## 15) Dotfiles
 
-```sh
-su - alchemist
-git clone https://github.com/UserlandAlchemist/dotfiles ~/dotfiles
-cd ~/dotfiles
-stow --adopt bash bin emacs fonts foot icons mako sway wallpapers waybar wofi
-git add -A && git commit -m "adopt host configs"
-```
+Clone and apply configuration using GNU Stow.
 
-(If you prepared an `etc-cachyos` package: `sudo stow -t / etc-cachyos` and then `sudo sysctl --system`, `sudo udevadm control --reload && sudo udevadm trigger`.)
+    su - alchemist
+    git clone https://github.com/UserlandAlchemist/dotfiles ~/dotfiles
+    cd ~/dotfiles
+
+### 15.1 User configuration
+
+Use Stow to deploy user-level packages:
+
+    stow bash bin emacs fonts foot lf mako sway waybar wofi zathura
+
+These symlink dotfiles from `~/dotfiles` into the home directory (`~`). Stow automatically creates or replaces the appropriate symlinks.
+
+Note:
+- Some directories (like `wallpapers/`, `icons/`, and `ssh/`) are NOT stowed — see their individual README.md files for manual setup instructions.
+- The `fonts/` and `icons/` stow packages install under `~/.local/share/`, preserving the standard XDG layout.
+- `wallpapers/` provides wallpaper assets only. You manually link those into `~/Pictures/Wallpapers/`.
+
+### 15.2 System configuration (optional, requires sudo)
+
+System-level tuning packages can be applied selectively as needed:
+
+    sudo stow -t / etc-cachyos etc-power etc-systemd etc-udev
+
+Then reload the relevant subsystems:
+
+    sudo sysctl --system
+    sudo udevadm control --reload
+    sudo udevadm trigger
+
+These stow packages provide:
+- `etc-cachyos`: kernel and sysctl tuning
+- `etc-power`: power management and USB suspend rules
+- `etc-systemd`: custom systemd units and timers (efi-sync, powertop, usb-nosuspend, etc.)
+- `etc-udev`: device-specific tweaks
+
+### 15.3 Initial adoption (one-time only)
+
+If you're converting an already-running machine to use this dotfiles repo (i.e. "take ownership" of existing config files), run:
+
+    stow --adopt bash bin ...
+
+Then commit the adopted files:
+
+    git add -A && git commit -m "adopt host configs"
+
+This is not needed on a fresh install. It's only for migrating an existing host into this layout.
+
+### 15.4 Post-stow verification
+
+After applying dotfiles, verify the environment:
+
+User services (Wayland session / desktop pieces):
+
+    systemctl --user list-units | grep -E 'mako|waybar|swayidle'
+
+System services (root-level units shipped in dotfiles):
+
+    systemctl list-units | grep -E 'efi-sync|powertop|usb-nosuspend'
+
+At this point:
+- sway should autostart on TTY1 (see Section 14 for autologin config)
+- notifications should work (`mako-notifier`)
+- EFI sync should keep `/boot/efi` and `/boot/efi-backup` in sync
+- power tuning should be applied
 
 ---
 
@@ -395,3 +459,9 @@ vm.swappiness = 60       # Balanced for Debian desktop w/ zram; keep hot pages i
 ```
 
 Apply: `sudo sysctl --system`.
+
+---
+
+**See also:**
+- [`RECOVERY.md`](RECOVERY.md) — system recovery procedure (referencing this install guide for rebuild steps)
+- [`installed-software.md`](installed-software.md) — manually installed packages and rationale
