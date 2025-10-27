@@ -319,7 +319,7 @@ apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland 
                grim slurp wl-clipboard xdg-desktop-portal-wlr \
                mate-polkit firefox-esr fonts-jetbrains-mono fonts-dejavu \
                pipewire-audio wireplumber pavucontrol \
-               curl usb.ids git stow tree profile-sync-daemon hdparm
+               curl usb.ids git stow tree profile-sync-daemon hdparm emacs
 ```
 
 Autologin to Sway:
@@ -408,6 +408,24 @@ At this point:
 - notifications should work (`mako-notifier`)
 - EFI sync should keep `/boot/efi` and `/boot/efi-backup` in sync
 - power tuning should be applied
+
+### 15.5 Install `uv` (Python toolchain manager)
+
+Install [**uv**](https://astral.sh/uv) to manage Python projects and virtual environments.  
+This replaces `pipx` and standard `venv` usage.
+
+```bash
+# Install uv for the current user
+curl -Ls https://astral.sh/uv/install.sh | sh
+```
+
+This will place `uv` and `uvx` into `~/.local/bin/`.  
+Ensure `~/.local/bin` is in your `PATH` (this is already handled by the stowed shell config).  
+After installation, verify it’s available:
+
+```bash
+uv --version
+```
 
 ---
 
