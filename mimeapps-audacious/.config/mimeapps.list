@@ -22,5 +22,4 @@ application/x-extension-shtml=firefox-esr.desktop;
 application/xhtml+xml=firefox-esr.desktop;
 application/x-extension-xhtml=firefox-esr.desktop;
 application/x-extension-xht=firefox-esr.desktop;
-[Default Applications]
-application/pdf=org.pwmt.zathura.desktop
+application/pdf=org.pwmt.zathura.desktop;

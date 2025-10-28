@@ -294,11 +294,32 @@ Audacious uses the modular per-host layout.
 Apply user-level configuration for this host:
 
     stow bash-audacious bin-audacious emacs-audacious fonts-audacious \
-         foot-audacious lf-audacious mako-audacious mimeapps-audacious psd-audacious sway-audacious \
-         waybar-audacious wofi-audacious zathura-audacious
+         foot-audacious icons-audacious lf-audacious mako-audacious psd-audacious sway-audacious \
+         wallpapers-audacuiys waybar-audacious wofi-audacious zathura-audacious
 
-Optional extras:
-- `wallpapers-audacious/`, `icons-audacious/`, and `ssh-audacious/` include assets and configs to review manually.
+The following packages are required for a complete desktop session:
+- `sway-audacious/`, `waybar-audacious/`, `wofi-audacious/`, `mako-audacious/`
+  Wayland session (compositor, bar, launcher, notifications)
+- `wallpapers-audacious/`
+  Provides wallpapers referenced in the sway config
+- `icons-audacious/`
+  Provides the cursor theme referenced by the environment
+
+`fonts-audacious/` installs fonts used in sway, waybar, and Emacs themeing.
+
+#### Emacs configuration
+
+Stow as normal:
+
+    stow emacs-audacious
+
+This installs:
+- `~/.emacs` — a small shim that redirects Emacs to use XDG paths
+- `~/.config/emacs/` — the actual configuration (init.el, themes, etc.)
+
+Emacs will automatically create `~/.emacs.d/` for runtime data such as native
+compiled `.eln` files and autosaves. This directory is intentionally *not*
+tracked in git and remains local to each host.
 
 #### SSH configuration
 
@@ -331,6 +352,23 @@ This results in:
 
 The directory ~/.config/psd/ itself remains a real directory so psd can
 write its own state (PID, etc.) without touching the repo.
+
+#### Default applications (MIME handlers)
+
+The file `mimeapps-audacious/.config/mimeapps.list` defines preferred default
+applications (browser, terminal opener, etc.).
+
+Do NOT stow this package directly. Desktop tools will modify
+`~/.config/mimeapps.list` over time, and we want those changes to stay local
+and not affect the git repo.
+
+Instead, seed it once:
+
+    cp ~/dotfiles/mimeapps-audacious/.config/mimeapps.list ~/.config/mimeapps.list
+
+After that, `~/.config/mimeapps.list` is a normal file owned by the user and
+can drift independently on this host.
+
 
 ### 15.2 System configuration (requires sudo)
 
