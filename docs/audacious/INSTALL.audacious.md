@@ -369,6 +369,31 @@ Instead, seed it once:
 After that, `~/.config/mimeapps.list` is a normal file owned by the user and
 can drift independently on this host.
 
+#### BorgBackup (per-user secrets)
+
+Borg is configured per-user and used by the systemd backup timers. We want
+`~/.config/borg` to be a real directory on this host (so we can keep secrets
+local), but we still want to stow the non-secret parts.
+
+    mkdir -p ~/.config/borg
+    chmod 700 ~/.config/borg
+    stow borg-user-audacious
+
+After stowing, `~/.config/borg/patterns` will be a symlink into the repo.
+
+Now create the secret passphrase file locally (do NOT commit this):
+
+    editor ~/.config/borg/passphrase
+    chmod 600 ~/.config/borg/passphrase
+
+The backup units from `backup-systemd-audacious` expect both of these files to
+exist:
+
+    ~/.config/borg/patterns     (symlink from repo)
+    ~/.config/borg/passphrase   (local secret, not in git)
+
+This package is host-specific and should not be used on other machines unless
+they are intentionally allowed to access the same backup repository.
 
 ### 15.2 System configuration (requires sudo)
 
