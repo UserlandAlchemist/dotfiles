@@ -316,7 +316,21 @@ Then deploy:
 
 Only the SSH `config` file is tracked.  
 Keys, known_hosts, and other sensitive files are *never* committed to git.
----
+
+#### PSD configuration
+
+Profile-sync-daemon (psd) expects to write runtime state into
+~/.config/psd/. To avoid committing that state, we only symlink the
+config file.
+
+    mkdir -p ~/.config/psd
+    stow psd-audacious
+
+This results in:
+    ~/.config/psd/psd.conf -> dotfiles/psd-audacious/.config/psd/psd.conf
+
+The directory ~/.config/psd/ itself remains a real directory so psd can
+write its own state (PID, etc.) without touching the repo.
 
 ### 15.2 System configuration (requires sudo)
 
