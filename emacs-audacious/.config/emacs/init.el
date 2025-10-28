@@ -57,7 +57,8 @@
                     :height 140)
 
 ;; --- Load our custom theme ---
-(add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
+(add-to-list 'custom-theme-load-path
+             (expand-file-name "themes" "~/.config/emacs/"))
 (load-theme 'amiga-dark t)
 
 ;; --- Wayland/Sway clipboard ---
@@ -65,6 +66,8 @@
       select-enable-primary t)
 
 (require 'ansi-color)
+(require 'cl-lib)
+
 ;; --- ANSI colors & vterm mapped to your palette ---
 ;; From foot.ini regular & bright tables  :contentReference[oaicite:2]{index=2}
 (let* ((amiga-colors

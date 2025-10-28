@@ -9,3 +9,10 @@ fi
 if ! pgrep -u "$USER" ssh-agent > /dev/null; then
     eval "$(ssh-agent -s)" >/dev/null
 fi
+
+# Auto-start sway on the first virtual terminal (tty1) if we're not already
+# in a Wayland or X session. This is what makes autologin drop us straight
+# into the compositor.
+if [ "$(hostname)" = "audacious" ] && [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+    exec sway
+fi

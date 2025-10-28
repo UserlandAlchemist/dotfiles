@@ -300,6 +300,22 @@ Apply user-level configuration for this host:
 Optional extras:
 - `wallpapers-audacious/`, `icons-audacious/`, and `ssh-audacious/` include assets and configs to review manually.
 
+#### SSH configuration
+
+Before stowing the SSH package, ensure the `~/.ssh` directory exists as a **real directory** (not a symlink).  
+This prevents `stow` from turning it into a symlink, which would break SSH key handling and permissions.
+
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+
+Then deploy:
+
+    cd ~/dotfiles
+    stow ssh-audacious
+    chmod 600 ~/.ssh/config
+
+Only the SSH `config` file is tracked.  
+Keys, known_hosts, and other sensitive files are *never* committed to git.
 ---
 
 ### 15.2 System configuration (requires sudo)
