@@ -1,0 +1,4 @@
+BORG_REPO=ssh://borg@astute/srv/backups/audacious-borg
+BORG_PASSCOMMAND=cat /home/alchemist/.config/borg/passphrase
+BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -T
+BORG_NONINTERACTIVE=1

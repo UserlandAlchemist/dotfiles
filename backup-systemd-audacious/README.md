@@ -1,13 +1,17 @@
 # backup-systemd-audacious
 
-Systemd timers and services for unattended BorgBackup on host Audacious
+Systemd timers and services for unattended BorgBackup on host audacious.
 
 Installs:
-- borg-backup.service / .timer
-- borg-check.service / .timer
-- borg-check-deep.service / .timer
+- `borg-backup.service` / `.timer`
+- `borg-check.service` / `.timer`
+- `borg-check-deep.service` / `.timer`
 
-These run regular backups and repository integrity checks.
+These units perform automated backups and regular integrity checks
+using BorgBackup. All Borg commands are executed in non-interactive
+mode using environment variables defined in the user configuration.
+
+---
 
 ## Deploy
 
@@ -20,38 +24,75 @@ Run as root:
         borg-check.timer \
         borg-check-deep.timer
 
-After enabling, you can confirm timers with:
+After enabling, verify that timers are active:
 
-     systemctl list-timers | grep borg
+    systemctl list-timers | grep borg
+
+---
 
 ## Prerequisites
 
-Before enabling the timers, make sure all of the following are true:
+Before enabling the timers, ensure all of the following are in place.
 
 1. Borg and configuration
-    - Package borgbackup is installed on this host
-    - The per-user Borg config from borg-user-audacious/ has been stowed for the backup user (alchemist)
-    - ~/.config/borg/passphrase exists and contains the repository passphrase (used via BORG_PASSCOMMAND)
-    - ~/.config/borg/patterns exists and matches what you want backed up
 
-2. SSH access to the backup target works non-interactively
-    - The Borg repository is remote, e.g.
-      borg@192.168.x.x:/srv/backups/audacious-borg
-    - The service sets BORG_RSH to use a specific SSH key (for example, something like ~/.ssh/audacious-backup-key)
-    - That private key:
-        - exists on this machine at the expected path
-        - is readable by the backup user (alchemist)
-        - does not require manual passphrase entry at runtime (either the key is unencrypted, or you’re handling unlocking some other way before the timer runs)
-    - The remote host (NAS) has the matching public key in ~borg/.ssh/authorized_keys
-    - The remote repo path exists and is writable
+    - The `borgbackup` package is installed on this host.
+    - The per-user Borg configuration from `borg-user-audacious/` has
+      been stowed for the backup user (`alchemist`).
+    - `~/.config/borg/env` exists and defines `BORG_REPO`, `BORG_PASSCOMMAND`,
+      and `BORG_RSH`.
+    - `~/.config/borg/passphrase` exists and contains the repository passphrase.
+    - `~/.config/borg/patterns` exists and defines include/exclude rules.
+
+2. SSH access to the backup target
+
+    - The Borg repository is remote, for example:
+          ssh://borg@astute/srv/backups/audacious-borg
+    - The environment variable `BORG_RSH` points to a specific key, such as:
+          ssh -i /home/alchemist/.ssh/audacious-backup -T
+    - The corresponding public key is present in:
+          ~borg/.ssh/authorized_keys
+    - The remote path exists and is writable by the Borg user on `astute`.
 
 3. Network reachability
-    - The NAS (“Astute”) is on the network or can be woken via WoL before the timer fires
-    - The systemd unit expects to run unattended; if the NAS is offline, the job will fail fast and the timer will try again on the next run
 
-### Sanity check before enabling
+    - The target host (`astute`) must be online or reachable via Wake-on-LAN.
+    - Each unit uses the helper script:
+          /usr/local/lib/borg/wait-for-astute.sh
+      to send a magic packet and wait briefly before invoking Borg.
+    - If the host is unreachable, Borg will exit with an error and
+      the timer will retry at the next scheduled interval.
 
-Run as the backup user to confirm non-interactive access:
+---
 
-    borg list "$BORG_REPO"
+## Sanity checks
 
+Run as the backup user (`alchemist`) to confirm non-interactive access:
+
+    ~/.config/borg/env.sh borg list
+
+If repository access succeeds, systemd timers will run without prompting
+for passwords or manual input.
+
+---
+
+## Details
+
+- `borg-backup.service` performs the main backup operation and runs
+  `borg prune` as `ExecStartPost=` to apply retention rules.
+- `borg-check.service` performs a quick weekly repository check.
+- `borg-check-deep.service` performs a full integrity check monthly.
+
+All units use the shared environment file:
+
+    EnvironmentFile=%h/.config/borg/env
+
+and assume the repository and SSH configuration are defined there.
+
+---
+
+## Related packages
+
+- `borg-user-audacious/` — per-user Borg environment and patterns
+- `ssh-audacious/` — SSH configuration containing the backup key
+- `docs/audacious/INSTALL.audacious.md` — installation reference

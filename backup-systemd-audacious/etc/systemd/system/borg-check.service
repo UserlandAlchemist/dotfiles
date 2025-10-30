@@ -11,18 +11,16 @@ Group=alchemist
 WorkingDirectory=/home/alchemist
 SuccessExitStatus=0 1
 
-# Repository connection + credentials
-Environment="BORG_REPO=borg@192.168.1.154:/srv/backups/audacious-borg"
-Environment="BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=120"
-Environment="BORG_PASSCOMMAND=cat /home/alchemist/.config/borg/passphrase"
+EnvironmentFile=/home/alchemist/.config/borg/env
 
-# Optional wake and mount sanity checks
-ExecStartPre=/usr/bin/wakeonlan 60:45:cb:9b:ab:3b
-ExecStartPre=/usr/bin/ssh -i /home/alchemist/.ssh/audacious-backup borg@192.168.1.154 /usr/bin/mountpoint -q /srv/backups
+# wake and wait
+ExecStartPre=/usr/local/lib/borg/wait-for-astute.sh
+
+# local passphrase check
 ExecStartPre=/usr/bin/test -f /home/alchemist/.config/borg/passphrase
 
 # The actual integrity check
-ExecStart=/usr/bin/borg check --verbose --verify-data
+ExecStart=/usr/bin/borg check --verbose "$BORG_REPO"
 
 # Conservative timeout — large repos can take a while
 TimeoutStartSec=3600
