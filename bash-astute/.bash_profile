@@ -4,3 +4,8 @@
 if [ -f ~/.bashrc ]; then
     . ~/.bashrc
 fi
+
+# Check ZFS pool state at login
+if command -v ~/.local/bin/check-zfs.sh >/dev/null 2>&1; then
+    check-zfs.sh
+fi
