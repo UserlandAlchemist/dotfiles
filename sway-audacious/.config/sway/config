@@ -327,8 +327,11 @@ bar {
   swaybar_command waybar
 }
 
-# DBus
+# make user systemd aware of our wayland env
 exec --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+
+# now that sway is *definitely* up, restart portals in this env
+exec --no-startup-id systemctl --user restart xdg-desktop-portal-wlr xdg-desktop-portal
 
 # Notifcation Demon
 exec mako
