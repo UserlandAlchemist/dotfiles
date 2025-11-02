@@ -327,9 +327,8 @@ bar {
   swaybar_command waybar
 }
 
+# DBus
 exec --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-exec --no-startup-id /usr/libexec/xdg-desktop-portal-wlr
-exec --no-startup-id /usr/libexec/xdg-desktop-portal
 
 # Notifcation Demon
 exec mako
