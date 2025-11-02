@@ -1,5 +1,10 @@
 # ~/.bash_profile — ensures ssh-agent is running but adds no keys
 
+# Always inherit the (possibly updated) Debian profile
+if [ -f ~/.profile ]; then
+    . ~/.profile
+fi
+
 # Source .bashrc if interactive
 if [ -f ~/.bashrc ]; then
     . ~/.bashrc
