@@ -293,7 +293,7 @@ cd ~/dotfiles
 Audacious uses the modular per-host layout.  
 Apply user-level configuration for this host:
 
-    stow bash-audacious bin-audacious emacs-audacious fonts-audacious \
+    stow profile-common bash-audacious bin-audacious emacs-audacious fonts-audacious \
          foot-audacious icons-audacious lf-audacious mako-audacious psd-audacious sway-audacious \
          wallpapers-audacuiys waybar-audacious wofi-audacious zathura-audacious
 
@@ -306,6 +306,12 @@ The following packages are required for a complete desktop session:
   Provides the cursor theme referenced by the environment
 
 `fonts-audacious/` installs fonts used in sway, waybar, and Emacs themeing.
+
+#### Profile-common
+
+If ~/.profile already exists (from the Debian user being created), move it out of the way first:
+    
+    mv ~/.profile ~/.profile.bak
 
 #### Emacs configuration
 
