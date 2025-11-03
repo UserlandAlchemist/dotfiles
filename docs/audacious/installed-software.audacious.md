@@ -9,6 +9,7 @@ Each section contains categorized software entries in a consistent key-value for
 - steam-installer: Steam client (non-free) — gaming platform
 - discord: Chat and VoIP client for communities
 - zoom: Video conferencing client
+- lutris: Client for gog and epic games
 
 ---
 
@@ -35,7 +36,7 @@ Each section contains categorized software entries in a consistent key-value for
 - wakeonlan: Utility to send Wake-on-LAN packets
 - nfs-common: NFS client utilities for network shares
 - autofs: Automount service for network shares
-
+- systemd-resolved:  for DNS resolution
 ---
 
 ## [power]
@@ -52,7 +53,7 @@ Each section contains categorized software entries in a consistent key-value for
 
 ## [development]
 - golang-go: Go toolchain (used for Boot.dev learning client)
-
+- python3-pip: python package manager
 ---
 
 ## [meta]
