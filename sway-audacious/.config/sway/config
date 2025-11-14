@@ -322,9 +322,9 @@ exec_always --no-startup-id swaymsg workspace number 6
 #    }
 #}
 
-### Waybar instead of swaybar
+# Waybar instead of swaybar
 bar {
-  swaybar_command waybar
+    swaybar_command waybar
 }
 
 # make user systemd aware of our wayland env
