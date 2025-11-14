@@ -10,6 +10,7 @@ Each section contains categorized software entries in a consistent key-value for
 - discord: Chat and VoIP client for communities
 - zoom: Video conferencing client
 - lutris: Client for gog and epic games
+- heroic (local .deb): Game launcher for Epic/GOG/Prime Gaming. Installed manually via .deb into /opt/Heroic (no system binary). Package recommends Fluidsynth - this has been removed post install.
 
 ---
 
