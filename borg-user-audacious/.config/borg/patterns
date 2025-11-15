@@ -2,6 +2,7 @@ R /home/alchemist
 # 1) Exclude hidden anywhere (first match wins)
 - sh:**/.*
 # 2) Explicit excludes
+- sh:nas
 - sh:nas/**
 - sh:Downloads/**
 - sh:.cache/**

@@ -213,7 +213,7 @@ shell access.
 
     sudo adduser --system \
         --home /srv/backups \
-        --shell /usr/sbin/nologin \
+        --shell /bin/sh \
         --group borg
 
 Prepare the SSH directory for the borg user:
@@ -242,3 +242,4 @@ Expected: connection is accepted, no interactive shell is provided.
 Test repository access:
 
     borg list borg@astute:/srv/backups/audacious-borg
+
