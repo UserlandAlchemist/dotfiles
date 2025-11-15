@@ -327,9 +327,6 @@ bar {
     swaybar_command waybar
 }
 
-# make user systemd aware of our wayland env
-exec --no-startup-id dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-
 # now that sway is *definitely* up, restart portals in this env
 exec --no-startup-id systemctl --user restart xdg-desktop-portal-wlr xdg-desktop-portal
 
@@ -349,8 +346,17 @@ output HDMI-A-1 adaptive_sync on
 
 # Keep games from blanking the screen
 for_window [class="^steam_app_.*$"] floating enable, move to output $game_output, inhibit_idle focus
-for_window [app_id="^(lutris|heroic)$"] floating enable, move to output $game_output, inhibit_idle focus
 for_window [class="^UnityWndClass$|^UnrealWindow$|^SDL.*$"] floating enable, move to output $game_output, inhibit_idle focus
+
+# Lutris (Wayland) — match by app_id
+for_window [app_id="^lutris$"] \
+    floating enable, move to output $game_output, inhibit_idle focus
+
+# Heroic (Xwayland) — match by X11 class
+for_window [class="^heroic$" shell="xwayland"] \
+    floating enable, move to output $game_output, inhibit_idle focus
+
+
 # Jackbox Party Packs (Vulkan builds via Proton/Xwayland)
 for_window [shell="xwayland" class="^TJ(PP[0-9]+|SS)(_Vulkan)?$"] floating enable, inhibit_idle focus
 
