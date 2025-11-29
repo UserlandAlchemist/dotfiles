@@ -132,8 +132,7 @@ apt update
 
 ```sh
 apt install -y linux-image-amd64 linux-headers-amd64 \
-               systemd-sysv initramfs-tools \
-               zfs-initramfs tasksel
+               initramfs-tools zfs-initramfs tasksel
 
 tasksel install standard
 ```
@@ -198,6 +197,8 @@ apt install -y firmware-amd-graphics intel-microcode firmware-realtek
 ---
 
 ## 11) Initramfs + UKI setup
+
+We explicitly use initramfs-tools (not dracut) because it provides reliable ZFS-on-root booting and correctly handles unlocking multiple encrypted vdevs in the mirror before pool import.
 
 ```ini
 # /etc/kernel/install.conf

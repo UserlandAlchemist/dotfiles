@@ -48,4 +48,6 @@ docs/hosts-overview.md
 ssh-*/.ssh/id_*
 ssh-*/.ssh/known_hosts
 ssh-*/.ssh/authorized_keys
-ssh-*/.ssh/*.pub~
+ssh-*/.ssh/*.pub~bin-audacious/.local/bin/prismlauncher
+icons-audacious/.local/share/icons/minecraft.png
+bin-audacious/.local/bin/prismlauncher

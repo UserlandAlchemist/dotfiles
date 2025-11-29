@@ -106,10 +106,6 @@ From another system:
 
     ssh -i ~/.ssh/id_alchemist alchemist@<astute-ip>
 
-Example output:
-
-Linux astute 6.12.48+deb13-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.48-1 (2025-09-20) x86_64
-
 ---
 
 ## 7) Base packages
