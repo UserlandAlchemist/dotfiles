@@ -75,12 +75,20 @@ Each section reflects installation *origin*, not function — making system stat
 - steam-installer — Steam client (non-free)
 - lutris — GOG/Epic game launcher
 - openjdk-21-jdk — Java runtime for Minecraft
+- transmission - torrenting client
 
 ### Document & media
 - zathura — lightweight PDF/document viewer
 - zathura-pdf-poppler — rendering backend
 - poppler-utils — PDF extraction toolkit
 - tesseract-ocr — OCR engine
+
+### Music
+- strawberry - music player
+- mpd - music player daemon
+- ncmpcpp - TUI client for mpd
+- picard - tagging software
+
 
 ### Utilities
 - lf — terminal file manager
@@ -94,6 +102,7 @@ Each section reflects installation *origin*, not function — making system stat
 - wakeonlan — WOL magic packet sender
 - nano — minimal fallback editor
 - sqv — OpenPGP signature verification utility
+- kid3-cli - Music tagging cli utility
 
 ### Storage & backup
 - borgbackup — encrypted backups
