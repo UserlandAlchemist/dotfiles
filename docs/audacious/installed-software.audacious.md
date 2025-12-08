@@ -46,6 +46,9 @@ Each section reflects installation *origin*, not function — making system stat
 - pipewire-audio — audio engine
 - wireplumber — policy/session manager
 - pavucontrol — graphical mixer
+- pulseaudio-utils - for pactl
+- pipewire-jack - for JACK support
+
 
 ### Toolchain and environment applied at build time
 - git — version control
@@ -88,6 +91,10 @@ Each section reflects installation *origin*, not function — making system stat
 - mpd - music player daemon
 - ncmpcpp - TUI client for mpd
 - picard - tagging software
+
+### DAW
+
+- ardour - DAW/recording software
 
 
 ### Utilities

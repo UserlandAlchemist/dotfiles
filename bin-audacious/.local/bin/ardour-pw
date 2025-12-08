@@ -1,0 +1,2 @@
+#!/bin/sh
+ARDOUR_DISABLE_AVX=1 exec pw-jack /usr/bin/ardour "$@"
