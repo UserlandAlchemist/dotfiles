@@ -41,6 +41,7 @@ Each section reflects installation *origin*, not function — making system stat
 - xdg-desktop-portal — desktop portal services
 - xdg-desktop-portal-wlr — Wayland portal implementation
 - profile-sync-daemon — reduces browser write amplification
+- flatpak - packaging system for software requiring later versions that provided by trixie (currently: gamescope)
 
 ### Audio subsystem
 - pipewire-audio — audio engine
@@ -123,6 +124,11 @@ Each section reflects installation *origin*, not function — making system stat
 - fonts-symbola — Unicode symbol/font fallback
 
 ---
+
+## Flatpak installed applications
+
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
+
 
 ## [meta]
 - system: audacious (Debian 13 Trixie)
