@@ -1,10 +1,16 @@
 R /home/alchemist
+
 # 1) Exclude hidden anywhere (first match wins)
 - sh:**/.*
-# 2) Explicit excludes
+
+# 2) Explicit excludes (top-level relative to $HOME)
 - sh:nas
 - sh:nas/**
+- sh:Music/**
 - sh:Downloads/**
+- sh:go/**
+
+# 3) Application / cache exclusions
 - sh:.cache/**
 - sh:.local/share/Trash/**
 - sh:.thumbnails/**
@@ -12,8 +18,14 @@ R /home/alchemist
 - sh:.npm/**
 - sh:.cargo/**
 - sh:.mozilla/**
-- sh:go/**
-# 3) Include everything else under ~
+
+# 4) Steam (all known locations)
+- sh:.steam/**
+- sh:.local/share/Steam/**
+- sh:Steam/**
+
+# 5) Include everything else under ~
 + sh:**
-# 4) Catch-all (anything not matched above is out)
+
+# 6) Catch-all (anything not matched above is out)
 - sh:**

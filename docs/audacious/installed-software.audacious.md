@@ -110,6 +110,8 @@ Each section reflects installation *origin*, not function — making system stat
 - nano — minimal fallback editor
 - sqv — OpenPGP signature verification utility
 - kid3-cli - Music tagging cli utility
+- imagemagick - command line tools for image manipulation
+- ncdu — interactive TUI disk-usage inspector
 
 ### Storage & backup
 - borgbackup — encrypted backups
