@@ -1,0 +1,7 @@
+[Unit]
+Description=Astute idle suspend check
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/astute-idle-check.sh
+
