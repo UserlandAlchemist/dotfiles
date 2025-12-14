@@ -110,6 +110,7 @@ Each section reflects installation *origin*, not function — making system stat
 - kid3-cli - Music tagging cli utility
 - imagemagick - command line tools for image manipulation
 - ncdu — interactive TUI disk-usage inspector
+- plocate - file indexer
 
 ### Storage & backup
 - borgbackup — encrypted backups

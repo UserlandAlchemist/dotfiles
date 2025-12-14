@@ -121,3 +121,10 @@ export SSH_ASKPASS_REQUIRE=never
 export GIT_TERMINAL_PROMPT=1
 unset SSH_ASKPASS
 unset GIT_ASKPASS
+
+# Load additional bash configuration snippets
+if [ -d "$HOME/.bashrc.d" ]; then
+    for f in "$HOME/.bashrc.d"/*.sh; do
+        [ -r "$f" ] && . "$f"
+    done
+fi
