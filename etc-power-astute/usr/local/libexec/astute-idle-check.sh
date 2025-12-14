@@ -17,12 +17,6 @@ fi
 
 # --- NAS activity checks ---
 
-# Check for active NFS server connections (port 2049)
-if ss -tn state established '( sport = :2049 )' | grep -q .; then
-    logger -t "$TAG" "Active NFS client connection(s) detected; skipping suspend"
-    exit 0
-fi
-
 # Check for recent disk I/O on /srv/nas
 NAS_PATH="/srv/nas"
 IO_MARKER="/run/astute-nas-io"
