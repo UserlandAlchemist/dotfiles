@@ -41,7 +41,6 @@ Each section reflects installation *origin*, not function — making system stat
 - xdg-desktop-portal — desktop portal services
 - xdg-desktop-portal-wlr — Wayland portal implementation
 - profile-sync-daemon — reduces browser write amplification
-- flatpak - packaging system for software requiring later versions that provided by trixie (currently: gamescope)
 
 ### Audio subsystem
 - pipewire-audio — audio engine
@@ -49,7 +48,6 @@ Each section reflects installation *origin*, not function — making system stat
 - pavucontrol — graphical mixer
 - pulseaudio-utils - for pactl
 - pipewire-jack - for JACK support
-
 
 ### Toolchain and environment applied at build time
 - git — version control
@@ -97,7 +95,6 @@ Each section reflects installation *origin*, not function — making system stat
 
 - ardour - DAW/recording software
 
-
 ### Utilities
 - lf — terminal file manager
 - imv — Wayland-native image viewer
@@ -125,11 +122,6 @@ Each section reflects installation *origin*, not function — making system stat
 
 ---
 
-## Flatpak installed applications
-
-runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
-
-
 ## [meta]
 - system: audacious (Debian 13 Trixie)
 - origin-model: layered
@@ -139,5 +131,5 @@ runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
     - user-applications: post-build additions
 - management: manual curation (origin-aware, not auto-generated)
 - notes: Base + desktop layers are reproducible install-state; user layer reflects later additions.
-- last-updated: 2025-11-30
+- last-updated: 2025-12-13
 - last-checked-for-drift: 2025-11-30
