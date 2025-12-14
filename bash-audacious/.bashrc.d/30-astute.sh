@@ -30,9 +30,9 @@ astute-nas() {
     logger -t astute-nas "Sending WOL to ${host}"
     wakeonlan "${mac}"
 
-    echo "Waiting for ${host} to advertise NAS exports..."
+    echo "Waiting for ${host} to respond on the network..."
     for _ in {1..30}; do
-        if /usr/sbin/showmount -e "${host}" >/dev/null 2>&1; then
+        if ping -c1 -W1 "${host}" >/dev/null 2>&1; then
             ready=1
             break
         fi
@@ -40,14 +40,13 @@ astute-nas() {
     done
 
     if [ "$ready" -ne 1 ]; then
-        echo "Error: ${host} did not advertise NAS exports within timeout"
-        echo "Astute may still be waking; try again shortly."
+        echo "Error: ${host} did not respond within timeout"
         return 1
     fi
 
     # Trigger systemd automount explicitly
     if ! ls "${mount}" >/dev/null 2>&1; then
-        echo "Error: NAS export is advertised but mount is not yet reachable"
+        echo "Error: ${host} is awake but NAS mount is not yet available"
         return 1
     fi
 
