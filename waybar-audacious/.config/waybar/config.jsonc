@@ -46,6 +46,7 @@
       "memory",
       "custom/vram",
       "disk",
+      "custom/astute",
       "pulseaudio",
       "clock",
       "tray"
@@ -89,10 +90,18 @@
       "exec": "bash -c 'used=$(cat /sys/class/drm/card0/device/mem_info_vram_used 2>/dev/null || echo 0); total=$(cat /sys/class/drm/card0/device/mem_info_vram_total 2>/dev/null || echo 1); free=$(( (total - used)/1024/1024 )); if [ $free -gt 1024 ]; then free_disp=$((free/1024))GiB; else free_disp=${free}MiB; fi; printf \"<span underline=\\\"single\\\" underline_color=\\\"#5078FF\\\">VRAM %s</span>\\n\" \"$free_disp\"'"
     },
 
+    "custom/astute": {
+      "markup": true,
+      "exec": "~/.local/bin/astute-status.sh",
+      "on-click": "~/.local/bin/astute-status.sh click",
+      "interval": 5,
+      "return-type": "plain"
+    },
+
     "pulseaudio": {
       "markup": true,
-      "format": "<span underline='single' underline_color='#5078FF'>VOL {volume}%</span>",
-      "format-muted": "<span underline='single' underline_color='#5078FF'>MUTED</span>",
+      "format": "<span underline='single' underline_color='#FFA040'>VOL {volume}%</span>",
+      "format-muted": "<span underline='single' underline_color='#FFA040'>MUTED</span>",
       "scroll-step": 2,
       "tooltip": true,
       "on-click": "~/.local/bin/select-audio-sink.sh",

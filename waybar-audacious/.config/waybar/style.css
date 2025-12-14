@@ -49,7 +49,7 @@ margin: 6px 2px 4px 0; /* was 6px 4px 4px 0 */
 #workspaces button.urgent { color: @orange; }
 
 /* Base modules (spacing tightened) */
-#load, #custom-temp, #cpu, #custom-gpu, #memory, #custom-vram, #disk, #clock, #pulseaudio {
+#load, #custom-temp, #cpu, #custom-gpu, #memory, #custom-vram, #disk, #custom-astute, #clock, #pulseaudio {
 color: @fg;
 padding: 0 6px;   /* was 0 10px */
 margin: 0 2px;    /* was 0 4px */

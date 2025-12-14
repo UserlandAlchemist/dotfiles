@@ -7,7 +7,11 @@ STATE_FILE="/tmp/astute-waking"
 
 # TCP probe: succeeds only if Astute is fully awake
 probe() {
-  timeout 1 sh -c "</dev/tcp/$ASTUTE_IP/$ASTUTE_PORT" >/dev/null 2>&1
+  ping -c1 -W1 -q "$ASTUTE_IP" 2>/dev/null | grep -q "1 received"
+}
+
+underline() {
+  printf "<span underline=\"single\" underline_color=\"%s\">%s</span>\n" "$1" "$2"
 }
 
 case "$1" in
@@ -22,12 +26,11 @@ esac
 if probe; then
   # Awake
   rm -f "$STATE_FILE"
-  echo " astute"
+  underline "#FFDC40" "SRV UP"
 elif [ -f "$STATE_FILE" ]; then
   # Waking
-  echo " astute"
+  underline "#FFFFFF" "SRV WAKING"
 else
   # Asleep
-  echo " astute"
+  underline "#5078FF" "SRV ZZZ"
 fi
-
