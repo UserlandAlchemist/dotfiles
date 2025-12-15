@@ -1,6 +1,14 @@
 #!/bin/sh
 set -eu
 
+TAG="astute-idle-check"
+NAS_PATH="/srv/nas"
+ACTIVITY_WINDOW=600   # 10 minutes
+NOW=$(date +%s)
+
+# Defaults for optional config
+: "${ASTUTE_IGNORE_LOGIN_SESSIONS:=0}"
+
 check_jellyfin_activity() {
     JELLYFIN_ACTIVE_WINDOW=1200
     JELLYFIN_API_KEY="$(cat /etc/jellyfin/api.key 2>/dev/null)" || return 0
@@ -19,12 +27,6 @@ check_jellyfin_activity() {
         | select($now - . <= $window)
     ' >/dev/null
 }
-
-TAG="astute-idle-check"
-NAS_PATH="/srv/nas"
-ACTIVITY_WINDOW=600   # 10 minutes
-NOW=$(date +%s)
-
 
 # Check for active login sessions
 if [ -z "$ASTUTE_IGNORE_LOGIN_SESSIONS" ]; then
