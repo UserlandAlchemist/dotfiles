@@ -69,3 +69,8 @@ tooltip {
     border: 1px solid @border;
     border-radius: 0;
 }
+
+#custom-astute { color: @fg; }
+#custom-astute.sleeping { color: @shadow; }
+#custom-astute.waking { color: @yellow; }
+#custom-astute.awake { color: @teal; }
