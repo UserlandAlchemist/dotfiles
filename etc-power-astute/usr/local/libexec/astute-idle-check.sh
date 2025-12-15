@@ -29,7 +29,7 @@ check_jellyfin_activity() {
 }
 
 # Check for active login sessions
-if [ -z "$ASTUTE_IGNORE_LOGIN_SESSIONS" ]; then
+if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0]; then
 	if loginctl list-sessions --no-legend | grep -q .; then
     		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
     		exit 0
