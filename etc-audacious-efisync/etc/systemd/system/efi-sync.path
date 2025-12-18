@@ -2,7 +2,8 @@
 Description=Trigger ESP sync when kernel-install updates UKIs
 
 [Path]
-PathChanged=/boot/efi/EFI/Linux/
+PathChanged=/boot/efi/EFI/Linux/*.efi
+PathChanged=/boot/efi/EFI/Linux/*.uki
 Unit=efi-sync.service
 
 [Install]

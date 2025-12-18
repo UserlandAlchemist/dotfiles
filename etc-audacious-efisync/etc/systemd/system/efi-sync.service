@@ -1,8 +1,14 @@
+# /etc/systemd/system/efi-sync.service
 [Unit]
 Description=Sync primary ESP to backup ESP
-Requires=boot-efi.mount boot-efi-backup.mount
-After=boot-efi.mount boot-efi-backup.mount
+RequiresMountsFor=/boot/efi /boot/efi-backup
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/rsync -a --delete /boot/efi/ /boot/efi-backup/
+StandardOutput=journal
+StandardError=journal
+ExecStart=/bin/sh -c 'echo "efi-sync: syncing ESPs"; exec /usr/bin/rsync -a --delete --numeric-ids --no-owner --no-group /boot/efi/ /boot/efi-backup/'
+ExecStartPost=/usr/bin/touch /run/efi-sync.last-run
+
+[Install]
+WantedBy=multi-user.target
