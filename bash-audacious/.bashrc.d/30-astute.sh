@@ -12,7 +12,7 @@ _is_astute_nas_mounted() {
     echo "$got" | grep -Eq '^(nfs4?|nfs)\s+'"${want_src//\//\\/}"'$'
 }
 
-astute-ssh() {
+ssh-astute() {
     local host="astute"
     local mac="60:45:cb:9b:ab:3b"
 
