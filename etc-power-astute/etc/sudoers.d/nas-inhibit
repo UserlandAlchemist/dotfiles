@@ -1,0 +1,7 @@
+# This file must be owned by root:root and mode 0440
+# Managed via Stow from etc-power-astute
+
+alchemist ALL=NOPASSWD: \
+  /bin/systemctl start nas-inhibit.service, \
+  /bin/systemctl stop nas-inhibit.service
+
