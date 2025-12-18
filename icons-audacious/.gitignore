@@ -1,2 +1,4 @@
 .local/share/icons/hicolor/
 **/.uuid
+.local/share/icons/**/icon-theme.cache
+
