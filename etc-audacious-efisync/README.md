@@ -1,4 +1,4 @@
-# etc-systemd-audacious
+# etc-audacious-efisync
 
 Systemd units that are not strictly power-related, for **audacious**.
 
@@ -12,7 +12,7 @@ These units keep the primary EFI System Partition (/boot/efi) mirrored to a seco
 
 Run as root:
 
-    sudo stow --target=/ etc-systemd-audacious
+    sudo stow --target=/ etc-audacious-efisync
     sudo systemctl daemon-reload
     sudo systemctl enable --now efi-sync.path
 
