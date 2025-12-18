@@ -1,3 +1,3 @@
 # Allow alchemist to mount/unmount Astute NAS via systemd
-alchemist ALL=(root) NOPASSWD: /bin/systemctl start srv-astute.mount
-alchemist ALL=(root) NOPASSWD: /bin/systemctl stop srv-astute.mount
+alchemist ALL=(root) NOPASSWD: /usr/bin/systemctl start srv-astute.mount
+alchemist ALL=(root) NOPASSWD: /usr/bin/systemctl stop srv-astute.mount

@@ -1,0 +1,33 @@
+[Unit]
+Description=Astute NAS session (wake, inhibit, mount)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+EnvironmentFile=%h/.config/systemd/user/astute-nas.env
+
+# Wake NAS provider
+ExecStart=/usr/bin/wakeonlan ${NAS_PROVIDER_MAC}
+
+# Wait for reachability (bounded)
+ExecStart=/usr/bin/bash -c '\
+  for i in {1..30}; do \
+    ping -c1 -W1 ${NAS_PROVIDER_HOST} >/dev/null 2>&1 && exit 0; \
+    sleep 1; \
+  done; \
+  exit 1'
+
+# Enable sleep inhibit on NAS provider
+ExecStart=/usr/bin/ssh -i %h/.ssh/id_ed25519_astute_nas -o BatchMode=yes -o IdentitiesOnly=yes ${NAS_PROVIDER_HOST} sudo systemctl start nas-inhibit.service
+
+# Mount NAS locally
+ExecStart=/usr/bin/sudo /usr/bin/systemctl start srv-astute.mount
+
+# Guaranteed teardown
+ExecStop=/usr/bin/sudo /usr/bin/systemctl stop srv-astute.mount
+ExecStop=/usr/bin/ssh -i %h/.ssh/id_ed25519_astute_nas -o BatchMode=yes -o IdentitiesOnly=yes ${NAS_PROVIDER_HOST} sudo systemctl stop nas-inhibit.service
+
+[Install]
+WantedBy=default.target
