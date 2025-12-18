@@ -52,3 +52,46 @@ astute-nas() {
 
     cd "${mount}" || return 1
 }
+nas-open() {
+    local host="astute"
+    local mac="60:45:cb:9b:ab:3b"
+    local mount="/srv/astute"
+
+    logger -t nas-open "Sending WOL to ${host}"
+    wakeonlan "${mac}"
+
+    echo "Waiting for ${host}..."
+    for _ in $(seq 1 30); do
+        ping -c1 -W1 "${host}" >/dev/null 2>&1 && break
+        sleep 1
+    done
+
+    echo "Activating NAS sleep inhibit on Astute"
+    ssh "${host}" sudo systemctl start nas-inhibit.service
+
+    echo "Waiting for NAS mount..."
+    for _ in $(seq 1 30); do
+        if mountpoint -q "${mount}"; then
+            cd "${mount}" || return 1
+            return 0
+        fi
+        ls "${mount}" >/dev/null 2>&1 || true
+        sleep 1
+    done
+
+    echo "Error: NAS did not mount"
+    return 1
+}
+
+nas-close() {
+    local host="astute"
+    local mount="/srv/astute"
+
+    if mountpoint -q "${mount}"; then
+        echo "Unmounting NAS..."
+        sudo umount "${mount}" || return 1
+    fi
+
+    echo "Releasing NAS sleep inhibit on Astute"
+    ssh "${host}" sudo systemctl stop nas-inhibit.service
+}
