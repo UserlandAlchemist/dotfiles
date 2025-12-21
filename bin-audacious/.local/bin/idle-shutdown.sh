@@ -1,167 +1,178 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
-CPU_THRESHOLD=80          # % busy across all cores
-NET_WINDOW_SEC=5          # how long we sample RX
-NET_RATE_LIMIT_Bps=5120   # ~5 KB/s
-RECHECK_INTERVAL_SEC=300  # 5 minutes between retries
+# -------------------------------------------------------------------
+# idle-shutdown (final, run-tagged)
+#
+# Triggered ONLY by swayidle after 20 minutes of no user input.
+#
+# Policy:
+# - Media playback (MPRIS or confirmed Jellyfin playback) => abort immediately
+# - systemd shutdown inhibitor => abort immediately
+# - True idle => shutdown after ~20–30 minutes total
+# - CPU/network activity (unattended work) => allow up to 90 minutes, then force shutdown
+#
+# Design assumptions:
+# - Audacious is a Jellyfin CLIENT
+# - Jellyfin server is on Astute
+# - Remote Jellyfin check is FAIL-OPEN
+# - Long critical jobs must use systemd-inhibit
+# -------------------------------------------------------------------
+
+CHECK_INTERVAL_SEC=180        # 3 minutes
+MEDIA_WINDOW_SEC=1200         # 20 minutes
+BUSY_WINDOW_SEC=5400          # 90 minutes
+NET_RATE_LIMIT_BPS=100000     # 100 KB/s RX threshold
+
+# Remote Jellyfin (optional, fail-open)
+: "${JELLYFIN_CHECK_REMOTE:=1}"
+: "${JELLYFIN_SERVER_URL:=http://astute:8096}"
+: "${JELLYFIN_TOKEN_FILE:=$HOME/.config/jellyfin/api.token}"
+
+# -------------------------------------------------------------------
+# Run identification & logging
+# -------------------------------------------------------------------
+
+RUN_ID="$(date +%Y%m%dT%H%M%S)-$$"
 
 log() {
-    logger -t idle-shutdown "$1"
+  logger -t idle-shutdown "run=${RUN_ID} $1"
 }
 
-audio_active_alsa() {
-    # return 0 if any PCM device is currently RUNNING (i.e. actually playing)
-    # return 1 otherwise
-    if grep -q "state: RUNNING" /proc/asound/card*/pcm*/sub*/status 2>/dev/null; then
-        return 0
-    fi
-    return 1
+decision() {
+  # decision "<action>" "<reason>"
+  # action: abort | shutdown
+  log "DECISION: ${1} (${2})"
 }
 
+# -------------------------------------------------------------------
+# Inhibitors and activity signals
+# -------------------------------------------------------------------
 
-network_rx_rate_busy() {
-    # returns 0 if network is "busy enough that we shouldn't power off"
-    # returns 1 if network is quiet
+shutdown_inhibited() {
+  loginctl list-inhibitors 2>/dev/null | grep -qi shutdown
+}
 
-    read_rx_bytes_all() {
-        # Sum RX bytes for all non-lo interfaces
-        awk -F'[: ]+' '
-            NR>2 && $1 != "lo" {
-                sum += $(NF-7)
-            }
-            END { print sum+0 }
-        ' /proc/net/dev
-    }
+mpris_playing() {
+  command -v playerctl >/dev/null || return 1
+  playerctl -a status 2>/dev/null | grep -qx Playing
+}
 
-    local start end delta rate
-    start=$(read_rx_bytes_all)
-    sleep "$NET_WINDOW_SEC"
-    end=$(read_rx_bytes_all)
+jellyfin_remote_playing() {
+  [[ "${JELLYFIN_CHECK_REMOTE}" = "1" ]] || return 1
+  [[ -r "${JELLYFIN_TOKEN_FILE}" ]] || return 1
 
-    delta=$(( end - start ))
-    rate=$(( delta / NET_WINDOW_SEC ))
-
-    if (( rate >= NET_RATE_LIMIT_Bps )); then
-        return 0  # busy
-    else
-        return 1  # quiet
-    fi
+  curl -fsS --max-time 2 \
+    -H "X-Emby-Token: $(cat "${JELLYFIN_TOKEN_FILE}")" \
+    "${JELLYFIN_SERVER_URL}/Sessions" \
+  | jq -e '.[]? | select(.NowPlayingItem != null)' >/dev/null
 }
 
 cpu_busy() {
-    # returns 0 if CPU is busy (>= threshold), 1 otherwise
-
-    # read two snapshots of /proc/stat 1s apart
-    local cpu1 cpu2
-    cpu1=$(grep '^cpu ' /proc/stat)
-    sleep 1
-    cpu2=$(grep '^cpu ' /proc/stat)
-
-    # fields: cpu user nice system idle iowait irq softirq steal ...
-    # shellcheck disable=SC2206
-    local a1=($cpu1)
-    # shellcheck disable=SC2206
-    local a2=($cpu2)
-
-    # strip leading "cpu"
-    local u1 n1 s1 i1 w1 q1 sq1 st1
-    local u2 n2 s2 i2 w2 q2 sq2 st2
-    read u1 n1 s1 i1 w1 q1 sq1 st1 <<<"${a1[@]:1:8}"
-    read u2 n2 s2 i2 w2 q2 sq2 st2 <<<"${a2[@]:1:8}"
-
-    local total1=$((u1+n1+s1+i1+w1+q1+sq1+st1))
-    local total2=$((u2+n2+s2+i2+w2+q2+sq2+st2))
-    local idle1=$((i1+w1))
-    local idle2=$((i2+w2))
-
-    local dtotal=$((total2-total1))
-    local didle=$((idle2-idle1))
-    local dbusy=$((dtotal-didle))
-
-    # avoid divide-by-zero
-    if (( dtotal == 0 )); then
-        return 1
-    fi
-
-    local busy_pct=$(( 100 * dbusy / dtotal ))
-
-    if (( busy_pct >= CPU_THRESHOLD )); then
-        return 0  # busy
-    else
-        return 1  # not busy
-    fi
+  local a b
+  read -r _ a < <(grep '^cpu ' /proc/stat)
+  sleep 1
+  read -r _ b < <(grep '^cpu ' /proc/stat)
+  (( ${b%% *} - ${a%% *} > 20 ))
 }
 
-user_is_back() {
-    # Heuristic: if any active output has DPMS on again, assume the user woke the machine.
-    # Requires jq.
-    if swaymsg -t get_outputs \
-        | jq -e 'map(select(.active == true and .dpms == true)) | length > 0' >/dev/null 2>&1
-    then
-        return 0  # user is back / screens on
-    else
-        return 1  # still idle / screens dark
-    fi
+network_busy() {
+  local start end rate
+  start=$(awk -F'[: ]+' 'NR>2 && $1!="lo"{s+=$(NF-7)} END{print s}' /proc/net/dev)
+  sleep 1
+  end=$(awk -F'[: ]+' 'NR>2 && $1!="lo"{s+=$(NF-7)} END{print s}' /proc/net/dev)
+  rate=$(( end - start ))
+  log "METRIC: net_rx_bps=${rate}"
+  (( rate >= NET_RATE_LIMIT_BPS ))
 }
 
-safe_to_poweroff_now() {
-    # 1. user returned?
-    if user_is_back; then
-        log "ABORT: user is back (outputs are on)"
-        return 1
-    fi
-
-    # 2. backups (borg) etc.
-    if pgrep -fa borg >/dev/null; then
-        log "ABORT: borg running"
-        return 1
-    fi
-
-    # 3. audio playing?
-    if audio_active_alsa; then
-        log "ABORT: audio active"
-        return 1
-    fi
-
-    # 4. long-running jobs?
-    if pgrep -faE 'rsync|wget|curl|aria2c|dd|apt|dpkg|make|gcc|clang|qemu|virt|zfs' >/dev/null; then
-        log "ABORT: long-running job found"
-        return 1
-    fi
-
-    # 5. remote/pts sessions?
-    if who | grep -q 'pts/'; then
-        log "ABORT: remote session detected"
-        return 1
-    fi
-
-    # 6. network busy?
-    if network_rx_rate_busy; then
-        log "ABORT: network busy"
-        return 1
-    fi
-
-    # 7. cpu busy?
-    if cpu_busy; then
-        log "ABORT: CPU busy"
-        return 1
-    fi
-
-    return 0
+cpu_or_network_busy() {
+  cpu_busy || network_busy
 }
+
+# -------------------------------------------------------------------
+# Phase A — Media / inhibitor window (20 min)
+# -------------------------------------------------------------------
+
+phase_media_window() {
+  local elapsed=0
+  log "PHASE A: media/inhibitor window started"
+
+  while (( elapsed < MEDIA_WINDOW_SEC )); do
+    if shutdown_inhibited; then
+      decision "abort" "inhibitor"
+      exit 0
+    fi
+
+    if mpris_playing; then
+      decision "abort" "media:mpris"
+      exit 0
+    fi
+
+    if jellyfin_remote_playing; then
+      decision "abort" "media:jellyfin-remote"
+      exit 0
+    fi
+
+    sleep "${CHECK_INTERVAL_SEC}"
+    elapsed=$((elapsed + CHECK_INTERVAL_SEC))
+  done
+}
+
+# -------------------------------------------------------------------
+# Phase B — Unattended work window (90 min)
+# -------------------------------------------------------------------
+
+phase_busy_window() {
+  local elapsed=0
+  log "PHASE B: unattended work window started"
+
+  while (( elapsed < BUSY_WINDOW_SEC )); do
+    if shutdown_inhibited; then
+      decision "abort" "inhibitor"
+      exit 0
+    fi
+
+    if mpris_playing; then
+      decision "abort" "media:mpris"
+      exit 0
+    fi
+
+    if jellyfin_remote_playing; then
+      decision "abort" "media:jellyfin-remote"
+      exit 0
+    fi
+
+    if ! cpu_or_network_busy; then
+      decision "shutdown" "busy-cleared"
+      systemctl poweroff
+      exit 0
+    fi
+
+    sleep "${CHECK_INTERVAL_SEC}"
+    elapsed=$((elapsed + CHECK_INTERVAL_SEC))
+  done
+
+  decision "shutdown" "busy-timeout"
+  systemctl poweroff
+  exit 0
+}
+
+# -------------------------------------------------------------------
+# Entry point (called by swayidle)
+# -------------------------------------------------------------------
 
 main() {
-    while true; do
-        if safe_to_poweroff_now; then
-            log "OK: powering off due to sustained idle"
-            systemctl poweroff
-            exit 0
-        fi
+  log "START: idle-shutdown fired by swayidle"
 
-        # Not safe yet, sleep and try again.
-        sleep "$RECHECK_INTERVAL_SEC"
-    done
+  phase_media_window
+
+  if cpu_or_network_busy; then
+    phase_busy_window
+  fi
+
+  decision "shutdown" "idle"
+  systemctl poweroff
 }
 
 main
