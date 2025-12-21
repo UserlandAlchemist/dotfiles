@@ -4,7 +4,8 @@ Documentation=man:systemd-inhibit(1)
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/systemd-inhibit \
+ExecStart=/usr/bin/systemd-run --user --scope --quiet \
+  /usr/bin/systemd-inhibit \
     --what=sleep \
     --mode=block \
     --why="NAS active from Audacious" \
@@ -15,4 +16,3 @@ KillMode=control-group
 
 [Install]
 WantedBy=default.target
-
