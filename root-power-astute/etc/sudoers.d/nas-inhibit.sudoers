@@ -1,6 +1,7 @@
 # Allow Audacious user to control NAS sleep inhibitor on Astute
 # Installed via etc-power-astute/install.sh
 # Must be owned by root:root and mode 0440 in /etc/sudoers.d
+Defaults:alchemist !requiretty
 
 alchemist ALL=NOPASSWD: \
   /bin/systemctl start nas-inhibit.service, \
