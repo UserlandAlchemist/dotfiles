@@ -12,13 +12,14 @@ ssh-astute() {
     echo "Waiting for ${host} to accept SSH..."
     for _ in $(seq 1 30); do
         if ssh -o BatchMode=yes -o ConnectTimeout=1 "${host}" true 2>/dev/null; then
-            exec ssh -A "${host}"
+            ssh -A "${host}"
+            return
         fi
         sleep 1
     done
 
     echo "Warning: ${host} did not respond within timeout; attempting SSH anyway"
-    exec ssh -A "${host}"
+    ssh -A "${host}"
 }
 
 nas-open() {
