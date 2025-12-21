@@ -1,8 +1,9 @@
 #!/bin/sh
 MAC="60:45:cb:9b:ab:3b"
 REPO="ssh://borg@astute/srv/backups/audacious-borg"
-KEY="/home/alchemist/.ssh/audacious-backup"
-PASSCMD="cat /home/alchemist/.config/borg/passphrase"
+
+KEY="$HOME/alchemist/.ssh/audacious-backup"
+PASSCMD="cat $HOME/alchemist/.config/borg/passphrase"
 
 # 1) Wake
 /usr/bin/wakeonlan "$MAC"

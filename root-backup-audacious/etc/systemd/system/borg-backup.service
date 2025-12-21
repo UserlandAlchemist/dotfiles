@@ -5,11 +5,9 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-User=alchemist
-Group=alchemist
 WorkingDirectory=/home/alchemist
 
-# Load user-level borg env
+Environment="HOME=/home/alchemist"
 EnvironmentFile=/home/alchemist/.config/borg/env
 
 SuccessExitStatus=0 1
@@ -19,28 +17,11 @@ Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7
 
-# wake + wait for astute to be reachable
-ExecStartPre=/usr/local/lib/borg/wait-for-astute.sh
-
-# Ensure patterns file exists locally
-ExecStartPre=/usr/bin/test -f /home/alchemist/.config/borg/patterns
-
-# Create snapshot (non-hidden top-level in ~; exclusions via patterns file)
-ExecStart=/usr/bin/borg create \
-  --verbose --stats --compression lz4 \
-  --lock-wait 60 --one-file-system --checkpoint-interval 300 \
-  --patterns-from /home/alchemist/.config/borg/patterns \
-  ::'{hostname}-{now}'
-
-# Prune to your policy: hourly (within 3d), daily(7), weekly(52 ~= 1yr)
-ExecStartPost=/usr/bin/borg prune --list \
-  --keep-within 3d \
-  --keep-daily 7 \
-  --keep-weekly 52
-
-# Optional: keep repo tidy
-ExecStartPost=/usr/bin/borg compact
-
 # Fail fast if Astute is asleep; timer will run again next hour
 Restart=no
-TimeoutStartSec=1200
+TimeoutStartSec=0
+
+ExecStart=/usr/bin/systemd-inhibit \
+  --what=shutdown:sleep \
+  --why="Borg backup in progress (Audacious → Astute)" \
+  /usr/local/lib/borg/run-backup.sh

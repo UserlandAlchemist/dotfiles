@@ -7,5 +7,8 @@ OnCalendar=Sun *-*-01..07 11:00
 Persistent=true
 RandomizedDelaySec=600
 
+# Retry every 6 hours if the service is inactive (e.g. Astute asleep)
+OnUnitInactiveSec=6h
+
 [Install]
 WantedBy=timers.target

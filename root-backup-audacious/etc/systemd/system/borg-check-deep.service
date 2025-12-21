@@ -5,23 +5,20 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-User=alchemist
-Group=alchemist
 WorkingDirectory=/home/alchemist
-SuccessExitStatus=0 1
 
+Environment="HOME=/home/alchemist"
 EnvironmentFile=/home/alchemist/.config/borg/env
 
-# wake NAS + wait
-ExecStartPre=/usr/local/lib/borg/wait-for-astute.sh
+# Deep checks must not be killed mid-run
+TimeoutStartSec=0
+Restart=no
 
-ExecStartPre=/usr/bin/test -f /home/alchemist/.config/borg/passphrase
+ExecStart=/usr/bin/systemd-inhibit \
+  --what=shutdown:sleep \
+  --why="Borg deep integrity check in progress" \
+  /usr/local/lib/borg/run-deep-check.sh
 
-# Full verification of repository data blocks (can be slow on large repos)
-ExecStart=/usr/bin/borg check --verbose --verify-data "$BORG_REPO"
-
-# Give it plenty of time, since this is allowed to be heavyweight
-TimeoutStartSec=14400
 Nice=10
 IOSchedulingClass=best-effort
 IOSchedulingPriority=7

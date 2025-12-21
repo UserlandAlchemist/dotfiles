@@ -50,7 +50,7 @@ decision() {
 # -------------------------------------------------------------------
 
 shutdown_inhibited() {
-  loginctl list-inhibitors 2>/dev/null | grep -qi shutdown
+  systemd-inhibit --list 2>/dev/null | grep -qi shutdown
 }
 
 mpris_playing() {
