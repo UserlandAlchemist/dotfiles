@@ -1,16 +1,11 @@
-# ~/.bash_profile — ensures ssh-agent is running but adds no keys
+# ~/.bash_profile — login wrapper around Debian defaults + drop-ins.
 
-# Always inherit the (possibly updated) Debian profile
 if [ -f ~/.profile ]; then
     . ~/.profile
 fi
 
-# Source .bashrc if interactive
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi
-
-# ZFS login check (absolute path so SSH logins always see it)
-if [ -x "$HOME/.local/bin/check-zfs.sh" ]; then
-    "$HOME/.local/bin/check-zfs.sh"
+if [ -d "$HOME/.bash_profile.d" ]; then
+    for f in "$HOME/.bash_profile.d"/*.sh; do
+        [ -r "$f" ] && . "$f"
+    done
 fi
