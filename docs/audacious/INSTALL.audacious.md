@@ -53,7 +53,7 @@ mkfs.vfat -F32 /dev/nvme1n1p1
 
 ```sh
 zpool create -o ashift=12 \
-  -O compression=zstd \
+  -O compression=lz4 \
   -O atime=off -O relatime=on \
   -O acltype=posixacl -O xattr=sa \
   -O encryption=aes-256-gcm -O keyformat=passphrase \
@@ -61,7 +61,7 @@ zpool create -o ashift=12 \
   rpool mirror /dev/nvme0n1p2 /dev/nvme1n1p2
 ```
 
-**Why:** `ashift=12` matches 4K sectors, encryption uses AES-256-GCM for AEAD, compression saves space transparently.
+**Why:** `ashift=12` matches 4K sectors. `compression=lz4` chosen over default (off) for reduced write amplification and free space savings with negligible CPU overhead on NVMe. `encryption=aes-256-gcm` provides AEAD.
 
 Create datasets:
 
@@ -205,6 +205,8 @@ update-initramfs -u -k all
 kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 ```
 
+**Note:** systemd may auto-append `systemd.machine_id=<uuid>` to the kernel cmdline at runtime.
+
 ---
 
 ## 12) systemd-boot
@@ -231,13 +233,15 @@ bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 
 ## 13) Dual ESP setup
 
-Add both ESPs to fstab (replace UUIDs with actual values from `blkid`):
+Add both ESPs to fstab. Get UUIDs from `blkid /dev/nvme0n1p1 /dev/nvme1n1p1`:
 
 ```ini
 # /etc/fstab
-UUID=XXXX-YYYY   /boot/efi        vfat  umask=0077,shortname=winnt  0  1
-UUID=AAAA-BBBB   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
+UUID=<nvme0-or-nvme1-p1>   /boot/efi        vfat  umask=0077,shortname=winnt  0  1
+UUID=<nvme0-or-nvme1-p1>   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
 ```
+
+**Note:** Either NVMe can be primary; efi-sync keeps them identical. Order doesn't matter.
 
 **Note:** `efi-sync.path` will be enabled during dotfiles deployment.
 
