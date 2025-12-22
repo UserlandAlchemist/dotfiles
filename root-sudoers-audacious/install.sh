@@ -2,8 +2,9 @@
 set -eu
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+DOTFILES_DIR="$(dirname "$PKG_DIR")"
 
-echo "Installing etc-sudoers-audacious (NAS mount policy)"
+echo "Installing root-sudoers-audacious (NAS mount policy)"
 
 echo "→ Installing sudoers rule (nas-mount)"
 install -o root -g root -m 0440 \
