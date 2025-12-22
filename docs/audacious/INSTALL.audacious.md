@@ -247,7 +247,33 @@ UUID=<nvme0-or-nvme1-p1>   /boot/efi-backup vfat  umask=0077,shortname=winnt  0 
 
 ---
 
-## 14) Desktop packages
+## 14) Third-party APT repositories (optional)
+
+Add extra repositories needed for Jellyfin and Prism Launcher packages.
+
+Jellyfin repo:
+
+```sh
+mkdir -p /usr/share/keyrings
+curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/debian trixie main" > /etc/apt/sources.list.d/jellyfin.list
+```
+
+Prism Launcher repo (keyring is manually installed at `/usr/share/keyrings/prismlauncher-archive-keyring.gpg`):
+
+```sh
+echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" > /etc/apt/sources.list.d/prismlauncher.list
+```
+
+Update package metadata:
+
+```sh
+apt update
+```
+
+---
+
+## 15) Desktop packages
 
 ```sh
 apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland \
@@ -269,7 +295,7 @@ ExecStart=-/sbin/agetty --autologin alchemist --noclear %I $TERM
 
 ---
 
-## 15) Dotfiles deployment
+## 16) Dotfiles deployment
 
 **Goal:** Deploy modular per-host configuration. User packages to `$HOME`, system packages to `/`. Some directories must be real (not symlinks) to hold local secrets or runtime state.
 
@@ -386,7 +412,7 @@ ip link show enp7s0   # should be managed by networkd
 
 ---
 
-## 16) NAS setup (Astute integration)
+## 17) NAS setup (Astute integration)
 
 **Goal:** Audacious can wake Astute on-demand for NFS storage, with automatic sleep inhibitor to prevent Astute suspending while NAS is active.
 
@@ -440,7 +466,7 @@ Should show active while NAS is open, inactive after close.
 
 ---
 
-## 17) Python toolchain (optional)
+## 18) Python toolchain (optional)
 
 ```sh
 curl -Ls https://astral.sh/uv/install.sh | sh
@@ -450,7 +476,7 @@ Installs `uv` and `uvx` to `~/.local/bin`. Verify: `uv --version`
 
 ---
 
-## 18) Swap (optional)
+## 19) Swap (optional)
 
 For hibernation or low-memory scenarios:
 
@@ -466,7 +492,7 @@ echo "/dev/zvol/rpool/swap none swap defaults,pri=10 0 0" >> /etc/fstab
 
 ---
 
-## 19) ZFS hostid
+## 20) ZFS hostid
 
 Prevent import warnings:
 
@@ -476,7 +502,7 @@ zgenhostid -f $(hostid)
 
 ---
 
-## 20) Finalize and reboot
+## 21) Finalize and reboot
 
 ```sh
 exit  # leave chroot
