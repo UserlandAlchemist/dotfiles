@@ -65,18 +65,70 @@ When Claude hits usage limits, Codex can work on these independently:
 
 ---
 
-## Tasks Requiring Claude (DO NOT ATTEMPT)
+## SSH Agent Access for Git Push
 
-These require system access, testing, or judgment calls:
+When pushing to GitHub, both Claude and Codex need access to the user's ssh-agent. The user starts the agent in their shell, but LLM bash sessions don't inherit it automatically.
 
-- Any changes to systemd services/timers (need testing with daemon-reload)
-- Any changes to scripts in bin-audacious/.local/bin/ (need execution testing)
-- SSH configuration changes (need connectivity testing)
-- Stow package reorganization (need actual stow operations)
-- Git commits (Claude does final review and commits)
-- Any `sudo` commands or system state changes
-- Testing NAS wake/sleep functionality
-- Testing backup functionality
+**Solution - Find and connect to active agent:**
+
+```bash
+# Find the most recent agent socket with keys loaded
+for sock in /tmp/ssh-*/agent.*; do
+  if SSH_AUTH_SOCK="$sock" ssh-add -l &>/dev/null; then
+    export SSH_AUTH_SOCK="$sock"
+    echo "Using agent: $SSH_AUTH_SOCK"
+    ssh-add -l
+    break
+  fi
+done
+
+# Now git push will work
+git push
+```
+
+**When to use this:**
+- Before `git push` operations
+- Before SSH operations requiring authentication (ssh to astute, GitHub)
+
+**If no agent found:**
+Ask user to run:
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_alchemist
+```
+
+---
+
+## Sudo Command Policy (Both Claude & Codex)
+
+**NEVER run sudo commands directly.** Instead:
+1. Present the command to the user
+2. Explain what it does and why
+3. Request they run it and provide the output
+4. Continue based on the output
+
+Example:
+```
+I need to reload the systemd daemon. Please run:
+
+  sudo systemctl daemon-reload
+
+And provide any output or errors.
+```
+
+---
+
+## Tasks Requiring Claude Expertise (Codex: Ask First)
+
+These benefit from Claude's more robust handling:
+
+- Complex SSH debugging (agent issues, connection problems)
+- Testing systemd services that require multiple verification steps
+- NAS wake/sleep cycle testing (multi-system orchestration)
+- Backup functionality testing (high-stakes operations)
+- Architectural decisions (when multiple valid approaches exist)
+
+Codex can attempt these but should note any uncertainty in handoff.
 
 ---
 
