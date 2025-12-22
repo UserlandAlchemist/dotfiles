@@ -20,14 +20,14 @@ ExecStart=/usr/bin/bash -c '\
   exit 1'
 
 # Enable sleep inhibit on NAS provider
-ExecStart=/usr/bin/ssh -i %h/.ssh/id_ed25519_astute_nas -o BatchMode=yes -o IdentitiesOnly=yes ${NAS_PROVIDER_HOST} sudo systemctl start nas-inhibit.service
+ExecStart=/usr/bin/ssh astute-nas start
 
 # Mount NAS locally
 ExecStart=/usr/bin/sudo /usr/bin/systemctl start srv-astute.mount
 
 # Guaranteed teardown
 ExecStop=/usr/bin/sudo /usr/bin/systemctl stop srv-astute.mount
-ExecStop=/usr/bin/ssh -i %h/.ssh/id_ed25519_astute_nas -o BatchMode=yes -o IdentitiesOnly=yes ${NAS_PROVIDER_HOST} sudo systemctl stop nas-inhibit.service
+ExecStop=/usr/bin/ssh astute-nas stop
 
 [Install]
 WantedBy=default.target

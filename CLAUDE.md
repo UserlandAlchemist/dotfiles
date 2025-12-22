@@ -329,4 +329,10 @@ Commit message style (from git log):
 - Use imperative mood
 - Focus on "why" rather than "what"
 - Reference affected host in prefix when relevant
-- Co-authored-by footer for AI assistance is acceptable
+- **NEVER** reference AI tools (Claude Code, LLMs, etc.) in commit messages
+- Opportunistically remove previous AI references when editing commits
+- Exception: LLM-specific documentation (AGENTS.md, HANDOFF.md, etc.) may reference AI tools
+
+SSH requirements for remote operations:
+- Pushing to astute or GitHub from astute requires ssh-agent with id_alchemist identity unlocked
+- Before SSH operations to astute, verify agent is running and key is loaded
