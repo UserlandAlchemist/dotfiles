@@ -47,10 +47,17 @@
 When Claude hits usage limits, Codex can work on these independently:
 
 ### Documentation Tasks
-- Rewrite INSTALL.astute.md in BSD handbook style (similar to INSTALL.audacious.md)
-- Rewrite RECOVERY.audacious.md, RESTORE.audacious.md in handbook style
-- Document vanilla Trixie divergences in a structured way
-- Create drift check documentation for other hosts (astute, artful)
+- **Major rewrites** (handbook style, structure changes): Claude has authority
+  - Rewrite INSTALL.astute.md in BSD handbook style
+  - Rewrite RECOVERY/RESTORE docs in handbook style
+  - Claude should review Codex's documentation work for correctness and style
+- **Minor updates** (keeping docs current): Both Claude and Codex
+  - Update package lists, version numbers, command outputs
+  - Fix typos, clarify existing instructions
+  - Add missing steps to existing procedures
+- **New documentation**: Codex can draft, Claude reviews before commit
+  - Document vanilla Trixie divergences
+  - Create drift check documentation for other hosts
 
 ### Analysis Tasks
 - Search codebase for undocumented features/scripts

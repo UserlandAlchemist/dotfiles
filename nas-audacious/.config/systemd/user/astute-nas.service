@@ -8,11 +8,14 @@ Type=oneshot
 RemainAfterExit=yes
 EnvironmentFile=%h/.config/systemd/user/astute-nas.env
 
-# Wake NAS provider
-ExecStart=/usr/bin/wakeonlan ${NAS_PROVIDER_MAC}
-
-# Wait for reachability (bounded)
+# Wake NAS provider (only if not already reachable)
 ExecStart=/usr/bin/bash -c '\
+  if ping -c1 -W1 ${NAS_PROVIDER_HOST} >/dev/null 2>&1; then \
+    logger -t astute-nas "${NAS_PROVIDER_HOST} already reachable, skipping WOL"; \
+    exit 0; \
+  fi; \
+  logger -t astute-nas "Sending WOL to ${NAS_PROVIDER_HOST}"; \
+  /usr/bin/wakeonlan ${NAS_PROVIDER_MAC}; \
   for i in {1..30}; do \
     ping -c1 -W1 ${NAS_PROVIDER_HOST} >/dev/null 2>&1 && exit 0; \
     sleep 1; \
