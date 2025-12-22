@@ -36,6 +36,19 @@ The goal isn’t to make Linux look like AmigaOS — it’s to keep the same sen
 
 ---
 
+## Integral Audio Stack (Manual Installs)
+
+Some audio components are intentionally installed outside Debian packages and live under `/usr/local` or `/opt`. These are **not cruft** and are documented in `~/personal/audio-workstation-notes.md`.
+
+- `/usr/local/lib/lv2/sfizz.lv2` and `libsfizz*` — sfizz (SFZ sampler)
+- `/opt/zyn-fusion` — ZynAddSubFX Fusion
+- `/opt/vcv-rack/rack-2.6.6` — VCV Rack (standalone learning tool)
+- `/opt/integral` — sample library root and Integral metadata
+
+Any change here must be recorded in the audio notes (version, source, install steps).
+
+---
+
 ## Structure
 
 ```
