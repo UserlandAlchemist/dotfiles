@@ -239,3 +239,25 @@ Test repository access:
 
     borg list borg@astute:/srv/backups/audacious-borg
 
+## 12) ZFS maintenance and disk health
+
+Enable weekly scrubs on the NAS pool:
+
+    sudo systemctl enable --now zfs-scrub-weekly@ironwolf.timer
+    systemctl list-timers --all | grep zfs-scrub
+
+Ensure ZED is running (ZFS event daemon):
+
+    sudo systemctl start zfs-zed.service
+    systemctl status zfs-zed.service
+
+Trim is for SSD/NVMe only. Astute uses `fstrim.timer` for `/` and the SSD
+mounts:
+
+    systemctl status fstrim.timer
+
+Install SMART tools and check disk health using stable by-id paths:
+
+    sudo apt install smartmontools
+    sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62ETJT
+    sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62F68T
