@@ -335,6 +335,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
 sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer
 sudo systemctl enable --now zfs-trim-monthly@rpool.timer
+sudo systemctl enable --now zfs-scrub-monthly@rpool.timer
 sudo udevadm control --reload-rules && sudo udevadm trigger
 sudo sysctl --system
 ```
@@ -345,6 +346,7 @@ Verify:
 systemctl status powertop.service efi-sync.path
 systemctl list-timers | grep borg
 systemctl list-timers | grep zfs-trim
+systemctl list-timers | grep zfs-scrub
 sysctl vm.swappiness  # should return 60
 ip link show enp7s0   # should be managed by networkd
 ```
