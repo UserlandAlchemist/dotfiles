@@ -72,8 +72,8 @@ When pushing to GitHub, both Claude and Codex need access to the user's ssh-agen
 **Solution - Find and connect to active agent:**
 
 ```bash
-# Find the most recent agent socket with keys loaded
-for sock in /tmp/ssh-*/agent.*; do
+# Find the most recent agent socket with keys loaded (newest first)
+for sock in $(ls -t /tmp/ssh-*/agent.* 2>/dev/null); do
   if SSH_AUTH_SOCK="$sock" ssh-add -l &>/dev/null; then
     export SSH_AUTH_SOCK="$sock"
     echo "Using agent: $SSH_AUTH_SOCK"
@@ -81,6 +81,13 @@ for sock in /tmp/ssh-*/agent.*; do
     break
   fi
 done
+
+# Verify it works
+if [ -z "$SSH_AUTH_SOCK" ]; then
+  echo "No SSH agent found with keys loaded"
+  echo "Please start agent (see below)"
+  exit 1
+fi
 
 # Now git push will work
 git push
