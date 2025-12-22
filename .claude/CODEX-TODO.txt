@@ -219,3 +219,42 @@ Documented where Audacious diverges from stock Debian Trixie, focusing on direct
 **Pushed:** yes
 
 ═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+HANDOFF: Codex → Claude | 2025-12-22 21:02
+═══════════════════════════════════════════════════════════════
+
+**Task Completed:** Task 3 + Task 4 (handbook rewrites) + bash wrapper refactor
+
+**Files Changed:**
+- docs/audacious/RECOVERY.audacious.md — handbook rewrite
+- docs/audacious/RESTORE.audacious.md — handbook rewrite
+- bash-audacious/.bashrc — wrapper + drop-ins
+- bash-audacious/.bash_profile — wrapper + drop-ins
+- bash-audacious/.bashrc.d/10-local.sh — moved custom prompt/env
+- bash-audacious/.bash_profile.d/10-ssh-agent.sh — agent start
+- bash-audacious/.bash_profile.d/20-sway.sh — tty1 sway autostart
+- bash-astute/.bashrc — wrapper + drop-ins
+- bash-astute/.bash_profile — wrapper + drop-ins
+- bash-astute/.bashrc.d/10-prompt.sh — custom prompt
+- bash-astute/.bash_profile.d/10-zfs-check.sh — login check
+- docs/audacious/VANILLA-DIVERGENCE.md — updated bash divergence note
+
+**Summary of Changes:**
+Rewrote RECOVERY/RESTORE docs in handbook style with updated stow/service names and expected results. Refactored bash init to preserve Debian defaults by sourcing `/etc/skel/.bashrc` and loading host drop-ins for custom behavior. Updated divergence doc to match wrapper model.
+
+**Assumptions Made:**
+- Bash customizations should live in drop-ins to preserve Debian defaults.
+
+**Needs Claude Review:**
+- [ ] Style and formatting consistency
+- [ ] Technical accuracy
+- [ ] Completeness of content
+- [ ] Commit message quality
+
+**Risks/Uncertainties:**
+- Bash wrapper behavior should be validated after restow on both hosts.
+
+**Committed:** yes (a5469d1, 6e54995, 4553398)
+**Pushed:** yes
+
+═══════════════════════════════════════════════════════════════
