@@ -4,12 +4,12 @@ Factual record of where Audacious diverges from stock Debian Trixie defaults. Fo
 
 ---
 
-## Bash profile overrides
-**Location:** `~/.bashrc`, `~/.bash_profile` (via `bash-audacious/`)
-**Divergence:** Replaces stock Debian bash init files with host-specific versions.
-**Reason:** Consistent prompt, aliases, and host tooling (NAS helpers).
-**Vanilla path:** Debian uses default `/etc/skel/.bashrc` + `/etc/bash.bashrc` with optional `/etc/bash.bashrc.d` drop-ins.
-**Recovery impact:** Restores require stow deployment; replacing stock files without drop-ins can mask distro updates.
+## Bash profile wrappers + drop-ins
+**Location:** `~/.bashrc`, `~/.bash_profile`, `~/.bashrc.d/*`, `~/.bash_profile.d/*` (via `bash-audacious/`)
+**Divergence:** Uses thin wrappers that source Debian defaults and then host-specific drop-ins.
+**Reason:** Preserve Debian defaults while layering host-specific prompt, env, and helpers.
+**Vanilla path:** Debian uses `/etc/skel/.bashrc`, `/etc/profile`, and `/etc/bash.bashrc` without user drop-ins.
+**Recovery impact:** Requires stow deployment to keep drop-ins; defaults remain intact if wrappers are missing.
 
 ---
 
