@@ -1,263 +1,390 @@
-# Debian 13 (Trixie) — Astute Install Guide
+# Debian 13 (Trixie) on ZFS - Installation Guide
 
-This guide prepares Astute, a headless Debian server providing encrypted ZFS storage,
-network backups, and low-power operation.
-
-Astute uses:
-- Unencrypted NVMe root (ext4) for unattended boots
-- SATA SSD for swap and ZFS cache/log
-- Encrypted ZFS mirror (IronWolf drives) mounted at /srv/nas
-- Headless operation via SSH, Wake-on-LAN, and suspend/resume
-
-Host configuration:
-- Hostname: astute
-- Admin user: alchemist
-- NVMe system disk: /dev/nvme0n1
-- SATA SSD: /dev/sda
-- IronWolf disks: /dev/sdb and /dev/sdc
+**Target system:** Astute (headless NAS)
+**Configuration:** ext4 root on NVMe, ZFS mirror at /srv/nas, SATA SSD for swap/cache/log, SSH-only access
 
 ---
 
-## 1) Boot the installer
+## System layout
 
+- **Hostname:** astute
+- **User:** alchemist
+- **System disk:** /dev/nvme0n1 (ext4 root, EFI)
+- **SATA SSD:** /dev/sda (swap + ZFS cache/log)
+- **Data disks:** /dev/sdb and /dev/sdc (IronWolf mirror)
+- **Access:** SSH, Wake-on-LAN, suspend/resume
+
+---
+
+## §1 Boot the installer
+
+Prepare a minimal headless install for a NAS role.
+
+Steps:
 1. Boot the Debian 13.1 (Trixie) netinst USB stick.
 2. Choose "Install" (standard mode).
-3. Configure locale, keyboard, and network as normal.
-4. When asked, choose "Manual" partitioning.
+3. Configure locale, keyboard, and network.
+4. Choose "Manual" partitioning.
+
+Expected result: Installer is ready for manual disk layout.
 
 ---
 
-## 2) Partitioning
+## §2 Partition disks
 
-### /dev/nvme0n1 (system)
-- 512 MB EFI System Partition, FAT32, mountpoint /boot/efi
-- remaining space, ext4, mountpoint /
+Keep the system drive unencrypted for unattended boots and reserve the IronWolf disks for ZFS.
 
-### /dev/sda (SATA SSD)
-- 32 GB swap (or to preference)
-- remainder unformatted (for ZFS cache/log)
+Steps:
+1. On /dev/nvme0n1 (system):
+   - 512 MB EFI System Partition, FAT32, mountpoint /boot/efi
+   - Remaining space, ext4, mountpoint /
+2. On /dev/sda (SATA SSD):
+   - 32 GB swap (or to preference)
+   - Remaining space unformatted (ZFS cache/log)
+3. On /dev/sdb and /dev/sdc (IronWolf HDDs):
+   - Leave unused during install (no partitions, no filesystems)
+4. Finish partitioning and install GRUB to /dev/nvme0n1.
 
-### /dev/sdb and /dev/sdc (IronWolf HDDs)
-Leave unused during install. Do not create partitions or filesystems.
-
-Finish partitioning, write changes, and install GRUB to /dev/nvme0n1.
-
----
-
-## 3) Software selection
-
-At the "Software selection" screen:
-- Select: standard system utilities
-- Select: SSH server
-- Do NOT select a desktop environment
-
-Continue installation and reboot into Debian 13.1.
+Expected result: Debian installs to NVMe, IronWolf disks remain untouched.
 
 ---
 
-## 4) First boot
+## §3 Software selection
 
-Log in locally and become root:
+Keep the base system minimal and headless.
 
-    su -
+Steps:
+1. At "Software selection":
+   - Select: standard system utilities
+   - Select: SSH server
+   - Do NOT select a desktop environment
+2. Continue installation and reboot.
 
-Install base packages:
-
-    apt update
-    apt install -y sudo cryptsetup sudo
-
-Add the admin user to the sudo group:
-
-    usermod -aG sudo alchemist
+Expected result: Debian 13.1 boots to a console with SSH available.
 
 ---
 
-## 5) SSH key setup
+## §4 First boot bootstrap
 
-Unlock your encrypted USB (if used for SSH keys):
+Install sudo and ensure the admin user can perform privileged tasks.
 
-     lsblk
-     cryptsetup luksOpen /dev/sdX1 keyusb
-     mkdir -p /mnt/keyusb
-     mount /dev/mapper/keyusb /mnt/keyusb
+Steps:
+1. Log in locally and become root:
 
-Install your admin key:
+```sh
+su -
+```
 
-     mkdir -p /home/alchemist/.ssh
-     cat /mnt/keyusb/id-alchemist.pub >> /home/alchemist/.ssh/authorized_keys
-     chmod 700 /home/alchemist/.ssh
-     chmod 600 /home/alchemist/.ssh/authorized_keys
-     chown -R alchemist:alchemist /home/alchemist/.ssh
+2. Install base packages:
 
-Unmount and close USB:
+```sh
+apt update
+apt install -y sudo cryptsetup
+```
 
-    umount /mnt/keyusb
-    cryptsetup luksClose keyusb
+3. Add the admin user to the sudo group:
 
-Enable SSH:
+```sh
+usermod -aG sudo alchemist
+```
 
-    systemctl enable --now ssh
-
----
-
-## 6) Verify SSH access
-
-From another system:
-
-    ssh -i ~/.ssh/id_alchemist alchemist@<astute-ip>
+Expected result: `alchemist` can use sudo.
 
 ---
 
-## 7) Base packages
+## §5 SSH key setup
 
-Enable the "contrib" component required for ZFS packages:
+Set up key-based admin access (optionally from an encrypted USB).
 
-    sudo sed -i 's/main non-free-firmware/main contrib non-free-firmware/' /etc/apt/sources.list
-    sudo apt update
+Steps:
+1. Unlock the encrypted USB if used for SSH keys:
 
-Install the core packages needed for Astute’s configuration:
+```sh
+lsblk
+cryptsetup luksOpen /dev/sdX1 keyusb
+mkdir -p /mnt/keyusb
+mount /dev/mapper/keyusb /mnt/keyusb
+```
 
-    sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server powertop git stow ethtool vim htop lm-sensors cpufrequtils
+2. Install the admin key:
 
-Install kernel headers and build ZFS for the running kernel:
+```sh
+mkdir -p /home/alchemist/.ssh
+cat /mnt/keyusb/id-alchemist.pub >> /home/alchemist/.ssh/authorized_keys
+chmod 700 /home/alchemist/.ssh
+chmod 600 /home/alchemist/.ssh/authorized_keys
+chown -R alchemist:alchemist /home/alchemist/.ssh
+```
 
-    sudo apt install linux-headers-$(uname -r)
-    sudo dkms autoinstall
+3. Unmount and close the USB:
 
-Confirm ZFS tools are available:
+```sh
+umount /mnt/keyusb
+cryptsetup luksClose keyusb
+```
 
-    sudo modprobe zfs
-    zfs version
-    zpool version
+4. Enable SSH:
 
-## 8) Import existing ZFS pool
+```sh
+systemctl enable --now ssh
+```
 
-List available pools to confirm detection:
+Expected result: SSH accepts the admin key.
 
-    sudo zpool import
+---
 
-If the expected pool appears (for example `ironwolf`), import it, overriding the
-"last accessed by another system" warning:
+## §6 Verify SSH access
 
-    sudo zpool import -f -N ironwolf
+Confirm remote access before proceeding.
 
-Check pool status:
+Steps:
+1. From another system:
 
-    sudo zpool status ironwolf
+```sh
+ssh -i ~/.ssh/id_alchemist alchemist@<astute-ip>
+```
 
-If the pool is encrypted, load the key and mount datasets:
+Expected result: SSH login succeeds without password prompts.
 
-    sudo zfs load-key -a
-    sudo zfs mount -a
+---
 
-Confirm datasets and mountpoints:
+## §7 Base packages
 
-    zfs list
-    mount | grep /srv/nas || true
+Install ZFS, NAS, and monitoring dependencies.
 
-If the pool does not appear automatically, search specific devices:
+Steps:
+1. Enable the contrib component required for ZFS:
 
-    sudo zpool import -d /dev ironwolf
-    sudo zpool import -d /dev/disk/by-id ironwolf
+```sh
+sudo sed -i 's/main non-free-firmware/main contrib non-free-firmware/' /etc/apt/sources.list
+sudo apt update
+```
 
-## 9) Swap and cache configuration
+2. Install core packages:
 
-Verify swap is active:
+```sh
+sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
+  powertop git stow ethtool vim htop lm-sensors cpufrequtils
+```
 
-    swapon --show
+3. Install kernel headers and build ZFS for the running kernel:
 
-If /dev/sda1 appears as a 32 G partition with TYPE=partition, swap is configured automatically.
+```sh
+sudo apt install linux-headers-$(uname -r)
+sudo dkms autoinstall
+```
 
-Confirm the ZFS cache device is active:
+4. Confirm ZFS tools are available:
 
-    sudo zpool status ironwolf
+```sh
+sudo modprobe zfs
+zfs version
+zpool version
+```
 
-If needed, reattach manually:
+Expected result: `zfs` and `zpool` commands report versions.
 
-    sudo zpool add ironwolf cache /dev/sda2
+---
 
-## 10) NAS setup (NFS exports)
+## §8 Import existing ZFS pool
 
-Enable and start the NFS server:
+Import the IronWolf mirror and mount datasets at /srv/nas.
 
-    sudo systemctl enable --now nfs-server
+Steps:
+1. List available pools:
 
-Create the export directory if not already present:
+```sh
+sudo zpool import
+```
 
-    sudo mkdir -p /srv/nas
-    sudo chown -R alchemist:alchemist /srv/nas
+2. If the expected pool appears (for example `ironwolf`), import it and override the last-host warning:
 
-Add an export rule for the local network:
+```sh
+sudo zpool import -f -N ironwolf
+```
 
-    echo "/srv/nas  192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+3. Check pool status:
 
-Apply and verify exports:
+```sh
+sudo zpool status ironwolf
+```
 
-    sudo exportfs -ra
-    sudo exportfs -v
+4. If the pool is encrypted, load keys and mount datasets:
 
-Check that the export is visible locally:
+```sh
+sudo zfs load-key -a
+sudo zfs mount -a
+```
 
-    sudo apt install nfs-common
-    sudo showmount -e localhost
+5. Confirm datasets and mountpoints:
 
-## 11) Borg server setup
+```sh
+zfs list
+mount | grep /srv/nas || true
+```
 
-Astute exposes /srv/backups over SSH for BorgBackup. This allows other hosts
-(for example audacious) to push encrypted backups to Astute without giving them
-shell access.
+6. If the pool does not appear, scan specific devices:
 
-    sudo adduser --system \
-        --home /srv/backups \
-        --shell /bin/sh \
-        --group borg
+```sh
+sudo zpool import -d /dev ironwolf
+sudo zpool import -d /dev/disk/by-id ironwolf
+```
 
-Prepare the SSH directory for the borg user:
+Expected result: `ironwolf` is online and datasets mount at /srv/nas.
 
-    sudo mkdir -p /srv/backups/.ssh
-    sudo chmod 700 /srv/backups/.ssh
-    sudo chown borg:borg /srv/backups/.ssh
+---
 
-Copy the public key from the client host (for example
-~/.ssh/audacious-backup.pub on audacious). Add it to authorized_keys with a
-restricted command:
+## §9 Swap and cache configuration
 
-    sudo tee /srv/backups/.ssh/authorized_keys >/dev/null <<'EOF'
-    command="borg serve --restrict-to-path /srv/backups",restrict ssh-ed25519 AAAA...REPLACE_WITH_PUBLIC_KEY... audacious-backup
-    EOF
+Verify swap on the SATA SSD and confirm the ZFS cache device is active.
 
-    sudo chown borg:borg /srv/backups/.ssh/authorized_keys
-    sudo chmod 600 /srv/backups/.ssh/authorized_keys
+Steps:
+1. Verify swap is active:
 
-Test the SSH restriction from the client:
+```sh
+swapon --show
+```
 
-    ssh -i ~/.ssh/audacious-backup borg@astute
+2. Confirm the ZFS cache device is active:
 
-Expected: connection is accepted, no interactive shell is provided.
+```sh
+sudo zpool status ironwolf
+```
 
-Test repository access:
+3. If needed, reattach the cache device:
 
-    borg list borg@astute:/srv/backups/audacious-borg
+```sh
+sudo zpool add ironwolf cache /dev/sda2
+```
 
-## 12) ZFS maintenance and disk health
+Expected result: Swap shows /dev/sda1 and the pool lists the cache device.
 
-Enable weekly scrubs on the NAS pool:
+---
 
-    sudo systemctl enable --now zfs-scrub-weekly@ironwolf.timer
-    systemctl list-timers --all | grep zfs-scrub
+## §10 NAS setup (NFS exports)
 
-Ensure ZED is running (ZFS event daemon):
+Expose /srv/nas to the LAN via NFS.
 
-    sudo systemctl start zfs-zed.service
-    systemctl status zfs-zed.service
+Steps:
+1. Enable and start the NFS server:
 
-Trim is for SSD/NVMe only. Astute uses `fstrim.timer` for `/` and the SSD
-mounts:
+```sh
+sudo systemctl enable --now nfs-server
+```
 
-    systemctl status fstrim.timer
+2. Create the export directory and set ownership:
 
-Install SMART tools and check disk health using stable by-id paths:
+```sh
+sudo mkdir -p /srv/nas
+sudo chown -R alchemist:alchemist /srv/nas
+```
 
-    sudo apt install smartmontools
-    sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62ETJT
-    sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62F68T
+3. Add the export rule for the local network:
+
+```sh
+echo "/srv/nas  192.168.1.0/24(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports
+```
+
+4. Apply and verify exports:
+
+```sh
+sudo exportfs -ra
+sudo exportfs -v
+```
+
+5. Check that the export is visible locally:
+
+```sh
+sudo apt install nfs-common
+sudo showmount -e localhost
+```
+
+Expected result: /srv/nas is exported to 192.168.1.0/24.
+
+---
+
+## §11 Borg server setup
+
+Expose /srv/backups over SSH for Borg clients with restricted access.
+
+Steps:
+1. Create the borg system user:
+
+```sh
+sudo adduser --system \
+  --home /srv/backups \
+  --shell /bin/sh \
+  --group borg
+```
+
+2. Prepare the SSH directory:
+
+```sh
+sudo mkdir -p /srv/backups/.ssh
+sudo chmod 700 /srv/backups/.ssh
+sudo chown borg:borg /srv/backups/.ssh
+```
+
+3. Add the client public key with a restricted command:
+
+```sh
+sudo tee /srv/backups/.ssh/authorized_keys >/dev/null <<'EOF'
+command="borg serve --restrict-to-path /srv/backups",restrict ssh-ed25519 AAAA...REPLACE_WITH_PUBLIC_KEY... audacious-backup
+EOF
+```
+
+```sh
+sudo chown borg:borg /srv/backups/.ssh/authorized_keys
+sudo chmod 600 /srv/backups/.ssh/authorized_keys
+```
+
+4. Test the restriction from the client:
+
+```sh
+ssh -i ~/.ssh/audacious-backup borg@astute
+```
+
+5. Test repository access:
+
+```sh
+borg list borg@astute:/srv/backups/audacious-borg
+```
+
+Expected result: SSH accepts the key without a shell, and Borg can list repos.
+
+---
+
+## §12 ZFS maintenance and disk health
+
+Enable scrubs, ZED events, and monitor drive health.
+
+Steps:
+1. Enable weekly scrubs on the NAS pool:
+
+```sh
+sudo systemctl enable --now zfs-scrub-weekly@ironwolf.timer
+systemctl list-timers --all | grep zfs-scrub
+```
+
+2. Ensure ZED is running:
+
+```sh
+sudo systemctl start zfs-zed.service
+systemctl status zfs-zed.service
+```
+
+3. Confirm SSD/NVMe trim timers:
+
+```sh
+systemctl status fstrim.timer
+```
+
+4. Install SMART tools and check disk health using stable by-id paths:
+
+```sh
+sudo apt install smartmontools
+sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62ETJT
+sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62F68T
+```
+
+Expected result: Scrub timers are active, ZED reports healthy, SMART outputs are clean.
