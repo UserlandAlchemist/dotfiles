@@ -3,8 +3,8 @@
 # Must be owned by root:root and mode 0440 in /etc/sudoers.d
 Defaults:alchemist !requiretty
 
-alchemist ALL=NOPASSWD: \
-  /bin/systemctl start nas-inhibit.service, \
-  /bin/systemctl stop nas-inhibit.service
+alchemist ALL=(ALL) NOPASSWD: \
+  /usr/bin/systemctl start nas-inhibit.service, \
+  /usr/bin/systemctl stop nas-inhibit.service
 
 
