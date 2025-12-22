@@ -50,6 +50,16 @@ READY TO START (highest priority)
 READY WHEN ABOVE COMPLETE (medium priority)
 ────────────────────────────────────────────
 
+[ ] INVESTIGATE ssh-astute STALL WHEN HOST IS ALREADY UP
+    Symptom: ssh-astute sends WOL, waits for SSH, times out, then SSH fails
+    Example:
+      Sending magic packet to 255.255.255.255:9 with 60:45:cb:9b:ab:3b
+      Waiting for astute to accept SSH...
+      Warning: astute did not respond within timeout; attempting SSH anyway
+      kex_exchange_identification: read: Connection reset by peer
+      Connection reset by 192.168.1.154 port 22
+    Goal: Check reachability before WOL and avoid blocking when astute is already up.
+
 [ ] REWRITE RECOVERY.audacious.md IN HANDBOOK STYLE
     Same approach as INSTALL.astute.md task above
     Template: INSTALL.audacious.md style
@@ -147,5 +157,65 @@ No known technical changes; only formatting and structure were modified.
 
 **Committed:** no
 **Pushed:** no
+
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+HANDOFF: Codex → Claude | 2025-12-22 20:45
+═══════════════════════════════════════════════════════════════
+
+**Task Completed:** Document divergence from vanilla Trixie
+
+**Files Changed:**
+- docs/audacious/VANILLA-DIVERGENCE.md — new divergence reference
+
+**Summary of Changes:**
+Created a concise divergence record focused on direct overrides to Debian defaults (bash init files, systemd units, /usr/local/libexec, boot stack, ZFS root, kernel cmdline, power policy, /opt installs, and third-party repos/keyrings).
+
+**Assumptions Made:**
+- Divergence list should prioritize direct overrides and recovery impact over full package differences.
+
+**Needs Claude Review:**
+- [ ] Style and formatting consistency
+- [ ] Technical accuracy
+- [ ] Completeness of content
+- [ ] Commit message quality
+
+**Risks/Uncertainties:**
+May be missing smaller overrides or site-specific tweaks not captured in repo.
+
+**Committed:** yes (d00cbcd)
+**Pushed:** yes
+
+═══════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════════════════════
+HANDOFF: Codex → Claude | 2025-12-22 20:46
+═══════════════════════════════════════════════════════════════
+
+**Task Completed:** Task 2 (vanilla divergence) + supporting doc alignment
+
+**Files Changed:**
+- docs/audacious/VANILLA-DIVERGENCE.md — new divergence reference
+- docs/audacious/INSTALL.audacious.md — document third-party repos + manual Prism keyring
+- docs/astute/installed-software.astute.md — curated manual package list
+- docs/astute/INSTALL.astute.md — align with current services + Jellyfin repo setup
+
+**Summary of Changes:**
+Documented where Audacious diverges from stock Debian Trixie, focusing on direct overrides and recovery impact. Updated Audacious install instructions to include Jellyfin/Prism repos and manual keyring note. Added Astute installed software list and aligned Astute install docs with actual services and Jellyfin deb822 repo format.
+
+**Assumptions Made:**
+- Prism Launcher keyring was manually installed (no owning package).
+- Divergence doc should prioritize direct overrides and recovery impact over package deltas.
+
+**Needs Claude Review:**
+- [ ] Style and formatting consistency
+- [ ] Technical accuracy
+- [ ] Completeness of content
+- [ ] Commit message quality
+
+**Risks/Uncertainties:**
+- Additional local overrides may exist outside repo or captured audit.
+
+**Committed:** yes (87af6ee, 7bd41d1, aa82cc7, d00cbcd)
+**Pushed:** yes
 
 ═══════════════════════════════════════════════════════════════
