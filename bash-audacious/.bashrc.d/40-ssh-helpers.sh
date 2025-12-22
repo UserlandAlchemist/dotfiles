@@ -1,11 +1,18 @@
-# astute helpers
-# - ssh-astute: wake astute and connect via SSH
-# - nas-open: wake astute and enter NAS mount
-# - nas-close: unmount the NAS and release the sleep-inhibit lock
+# SSH connectivity helpers
+# Provides smart wake-on-demand SSH functions for remote hosts
+
 ssh-astute() {
     local host="astute"
     local mac="60:45:cb:9b:ab:3b"
 
+    # Check if already reachable before sending WOL
+    if ssh -o BatchMode=yes -o ConnectTimeout=1 "${host}" true 2>/dev/null; then
+        logger -t astute-ssh "${host} already reachable, connecting"
+        ssh -A "${host}"
+        return
+    fi
+
+    # Host is down, send WOL
     logger -t astute-ssh "Sending WOL to ${host}"
     wakeonlan "${mac}"
 
@@ -20,18 +27,4 @@ ssh-astute() {
 
     echo "Warning: ${host} did not respond within timeout; attempting SSH anyway"
     ssh -A "${host}"
-}
-
-nas-open() {
-    systemctl --user start astute-nas.service || return 1
-    cd /srv/astute || return 1
-}
-
-nas-close() {
-    # Ensure we are not inside the mount
-    if pwd -P | grep -q '^/srv/astute'; then
-        cd ~ || return 1
-    fi
-
-    systemctl --user stop astute-nas.service
 }
