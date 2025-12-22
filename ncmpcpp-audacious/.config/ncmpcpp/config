@@ -1,0 +1,28 @@
+mpd_host = "astute"
+mpd_port = "6600"
+
+visualizer_type = "spectrum"
+visualizer_in_stereo = "yes"
+visualizer_look = "◆◆"
+
+# UI settings
+ncmpcpp_directory = "~/.config/ncmpcpp"
+lyrics_directory = "~/.config/ncmpcpp/lyrics"
+
+song_list_format = "{$5%a - %t$9}$R{%l}"
+song_columns_list_format = "(7)[]{} (50)[white]{t} (20)[cyan]{a} (5)[green]{l}"
+
+browser_sort_mode = "name"
+browser_sort_format = "{%f}"
+playlist_display_mode = "columns"
+autocenter_mode = "yes"
+centered_cursor = "yes"
+enable_window_title = "yes"
+
+# Seek, timing, etc.
+display_bitrate = "yes"
+display_remaining_time = "yes"
+
+# Keybinds (optional later)
+mouse_support = "yes"
+use_console_editor = "yes"
