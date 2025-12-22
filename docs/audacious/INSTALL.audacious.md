@@ -1,25 +1,26 @@
-# Debian 13 (Trixie) ZFS Root Install Guide
+# Debian 13 (Trixie) on ZFS - Installation Guide
 
-This guide installs Debian with:
-- Root on **ZFS** (RAID1, encryption, compression, snapshots)
-- **systemd-boot** with **UKI** (unified kernel image)
-- Dual **EFI System Partitions (ESP)** with automatic syncing
-- Sway desktop + dotfiles
-- Includes **kernel, headers, initramfs-tools, zfs-initramfs, and tasksel standard** (equivalent to the Debian Installer’s standard system)
+**Target system:** Audacious (primary workstation)
+**Configuration:** ZFS RAID1 encrypted root, systemd-boot UKI, Sway desktop, dual ESP with auto-sync
 
 ---
 
-## System assumptions
+## System layout
 
-- Root pool is `rpool` (ZFS mirror with encryption)
-- Two EFI partitions: `/dev/nvme0n1p1` (primary) and `/dev/nvme1n1p1` (backup)
-- Boot managed by **systemd-boot** with **UKI (unified kernel image)**
+- **Hostname:** audacious
+- **Pool:** `rpool` (ZFS mirror, aes-256-gcm encryption, zstd compression)
+- **Boot:** systemd-boot with Unified Kernel Images (UKI)
+- **Disks:** 2× NVMe (nvme0n1, nvme1n1)
+  - 512MB ESP on each drive (mirrored via efi-sync)
+  - Remaining space for ZFS mirror
+- **Desktop:** Sway (Wayland)
+- **User:** alchemist
 
 ---
 
-## 1) Boot into Debian Live ISO
+## 1) Boot Debian Live ISO
 
-Open a terminal, become root, enable contrib/non-free-firmware, and install tools:
+Become root and install bootstrap tools:
 
 ```sh
 sudo -i
@@ -33,10 +34,6 @@ apt install -y debootstrap gdisk zfsutils-linux \
 ---
 
 ## 2) Partition disks
-
-Each NVMe drive:
-- 512M **ESP**
-- Remaining space for **ZFS**
 
 ```sh
 sgdisk --zap-all /dev/nvme0n1
@@ -52,7 +49,7 @@ mkfs.vfat -F32 /dev/nvme1n1p1
 
 ---
 
-## 3) Create ZFS pool and datasets
+## 3) Create ZFS pool
 
 ```sh
 zpool create -o ashift=12 \
@@ -64,7 +61,9 @@ zpool create -o ashift=12 \
   rpool mirror /dev/nvme0n1p2 /dev/nvme1n1p2
 ```
 
-Datasets:
+**Why:** `ashift=12` matches 4K sectors, encryption uses AES-256-GCM for AEAD, compression saves space transparently.
+
+Create datasets:
 
 ```sh
 zfs create -o mountpoint=none                 rpool/ROOT
@@ -72,23 +71,18 @@ zfs create -o mountpoint=/ -o canmount=noauto rpool/ROOT/debian
 zfs create -o mountpoint=/home                rpool/HOME
 zfs create -o mountpoint=/var                 rpool/VAR
 zfs create -o mountpoint=/srv                 rpool/SRV
-```
-
-Mount root:
-
-```sh
 zfs mount rpool/ROOT/debian
 ```
 
 ---
 
-## 4) Bootstrap Debian into /mnt
+## 4) Bootstrap Debian
 
 ```sh
 debootstrap --arch=amd64 trixie /mnt http://deb.debian.org/debian
 ```
 
-Bind mounts, ESPs, and DNS:
+Bind mounts and chroot prep:
 
 ```sh
 mount --rbind /dev  /mnt/dev
@@ -98,28 +92,18 @@ mount /dev/nvme0n1p1 /mnt/boot/efi
 mkdir -p /mnt/boot/efi-backup
 mount /dev/nvme1n1p1 /mnt/boot/efi-backup
 cp /etc/resolv.conf /mnt/etc/resolv.conf
-```
-
-Chroot:
-
-```sh
 chroot /mnt /bin/bash
 ```
 
 ---
 
-## 5) APT sources (inside chroot)
+## 5) APT sources
 
 ```ini
 # /etc/apt/sources.list
 deb http://deb.debian.org/debian trixie main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie main contrib non-free-firmware
-
 deb http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
-deb-src http://security.debian.org/debian-security trixie-security main contrib non-free-firmware
-
 deb http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
-deb-src http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
 ```
 
 ```sh
@@ -128,18 +112,17 @@ apt update
 
 ---
 
-## 6) Base system, kernel, initramfs, and standard task
+## 6) Base system
 
 ```sh
 apt install -y linux-image-amd64 linux-headers-amd64 \
                initramfs-tools zfs-initramfs tasksel
-
 tasksel install standard
 ```
 
 ---
 
-## 7) Hostname, hosts, locales, keyboard
+## 7) System identity
 
 ```sh
 echo audacious > /etc/hostname
@@ -148,14 +131,12 @@ cat > /etc/hosts <<'EOF'
 127.0.1.1   audacious
 EOF
 apt install -y locales console-setup keyboard-configuration
-dpkg-reconfigure locales
-dpkg-reconfigure console-setup
-dpkg-reconfigure keyboard-configuration
+dpkg-reconfigure locales console-setup keyboard-configuration
 ```
 
 ---
 
-## 8) User + sudo
+## 8) User and sudo
 
 ```sh
 apt install -y sudo
@@ -166,7 +147,9 @@ usermod -aG sudo,audio,video,input,systemd-journal alchemist
 
 ---
 
-## 9) Networking (systemd-networkd + resolved)
+## 9) Network
+
+**Why systemd-networkd:** Consistent with systemd-boot, no NetworkManager complexity.
 
 ```sh
 apt install -y systemd-networkd systemd-resolved
@@ -174,7 +157,7 @@ systemctl enable systemd-networkd systemd-resolved
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 ```
 
-DHCP config (replace `Name=` with your NIC, e.g. `enp7s0`):
+DHCP wired config (replace `Name=` with actual NIC from `ip link`):
 
 ```ini
 # /etc/systemd/network/20-wired.network
@@ -185,20 +168,23 @@ Name=enp7s0
 DHCP=yes
 ```
 
+**Note:** This will be overridden by `root-network-audacious` during dotfiles deployment.
+
 ---
 
-## 10) Firmware + microcode
+## 10) Firmware
 
 ```sh
 apt install -y firmware-amd-graphics intel-microcode firmware-realtek
-# For AMD CPUs: apt install -y amd64-microcode
 ```
+
+For AMD CPUs: `apt install -y amd64-microcode`
 
 ---
 
-## 11) Initramfs + UKI setup
+## 11) Initramfs + UKI
 
-We explicitly use initramfs-tools (not dracut) because it provides reliable ZFS-on-root booting and correctly handles unlocking multiple encrypted vdevs in the mirror before pool import.
+**Why initramfs-tools:** Reliable ZFS encrypted pool unlocking (multiple vdevs) before import.
 
 ```ini
 # /etc/kernel/install.conf
@@ -221,13 +207,11 @@ kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 
 ---
 
-## 12) Install and configure systemd-boot
+## 12) systemd-boot
 
 ```sh
 bootctl install
 ```
-
-Loader config:
 
 ```ini
 # /boot/efi/loader/loader.conf
@@ -237,7 +221,7 @@ console-mode auto
 editor no
 ```
 
-Make latest UKI default:
+Set default entry:
 
 ```sh
 bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
@@ -245,7 +229,9 @@ bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 
 ---
 
-## 13) Dual ESPs and auto-sync
+## 13) Dual ESP setup
+
+Add both ESPs to fstab (replace UUIDs with actual values from `blkid`):
 
 ```ini
 # /etc/fstab
@@ -253,25 +239,22 @@ UUID=XXXX-YYYY   /boot/efi        vfat  umask=0077,shortname=winnt  0  1
 UUID=AAAA-BBBB   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
 ```
 
-Enable the ESP sync units:
-
-```sh
-systemctl enable --now efi-sync.path
-```
+**Note:** `efi-sync.path` will be enabled during dotfiles deployment.
 
 ---
 
-## 14) Sway desktop + tools
+## 14) Desktop packages
 
 ```sh
 apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland \
                grim slurp wl-clipboard xdg-desktop-portal-wlr \
                mate-polkit firefox-esr fonts-jetbrains-mono fonts-dejavu \
-               pipewire-audio wireplumber pavucontrol \
-               curl usb.ids git stow tree profile-sync-daemon hdparm emacs
+               pipewire-audio wireplumber pavucontrol playerctl \
+               curl git stow tree profile-sync-daemon hdparm emacs lf \
+               borgbackup nfs-common wakeonlan zathura
 ```
 
-Autologin:
+Autologin to TTY1:
 
 ```ini
 # /etc/systemd/system/getty@tty1.service.d/override.conf
@@ -282,211 +265,202 @@ ExecStart=-/sbin/agetty --autologin alchemist --noclear %I $TERM
 
 ---
 
-## 15) Dotfiles setup
+## 15) Dotfiles deployment
+
+**Goal:** Deploy modular per-host configuration. User packages to `$HOME`, system packages to `/`. Some directories must be real (not symlinks) to hold local secrets or runtime state.
 
 ```sh
 su - alchemist
 cd ~/dotfiles
 ```
 
-### 15.1 User configuration
+### Create real directories for secrets
 
-Audacious uses the modular per-host layout.  
-Apply user-level configuration for this host:
+```sh
+mkdir -p ~/.ssh ~/.config/psd ~/.config/borg
+chmod 700 ~/.ssh ~/.config/borg
+```
 
-    stow profile-common bash-audacious bin-audacious emacs-audacious fonts-audacious \
-         foot-audacious icons-audacious lf-audacious mako-audacious psd-audacious sway-audacious \
-         wallpapers-audacuiys waybar-audacious wofi-audacious zathura-audacious
+**Why:** SSH keys and Borg passphrase are local secrets, never committed. PSD writes runtime state that shouldn't touch the repo.
 
-The following packages are required for a complete desktop session:
-- `sway-audacious/`, `waybar-audacious/`, `wofi-audacious/`, `mako-audacious/`
-  Wayland session (compositor, bar, launcher, notifications)
-- `wallpapers-audacious/`
-  Provides wallpapers referenced in the sway config
-- `icons-audacious/`
-  Provides the cursor theme referenced by the environment
+Remove default profile if present:
 
-`fonts-audacious/` installs fonts used in sway, waybar, and Emacs themeing.
+```sh
+test -f ~/.profile && mv ~/.profile ~/.profile.bak
+```
 
-#### Profile-common
+### Deploy user packages
 
-If ~/.profile already exists (from the Debian user being created), move it out of the way first:
-    
-    mv ~/.profile ~/.profile.bak
+```sh
+stow profile-common bash-audacious bin-audacious emacs-audacious \
+     fonts-audacious foot-audacious icons-audacious lf-audacious \
+     mako-audacious psd-audacious sway-audacious wallpapers-audacious \
+     waybar-audacious wofi-audacious zathura-audacious ssh-audacious \
+     borg-user-audacious nas-audacious pipewire-audacious mimeapps-audacious
+```
 
-#### Emacs configuration
+Create Borg passphrase:
 
-Stow as normal:
+```sh
+editor ~/.config/borg/passphrase
+chmod 600 ~/.config/borg/passphrase
+```
 
-    stow emacs-audacious
+Verify:
 
-This installs:
-- `~/.emacs` — a small shim that redirects Emacs to use XDG paths
-- `~/.config/emacs/` — the actual configuration (init.el, themes, etc.)
+```sh
+ls -l ~/.bashrc ~/.local/bin/idle-shutdown.sh ~/.config/sway/config  # should be symlinks
+test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
+```
 
-Emacs will automatically create `~/.emacs.d/` for runtime data such as native
-compiled `.eln` files and autosaves. This directory is intentionally *not*
-tracked in git and remains local to each host.
+### Deploy system packages
 
-#### SSH configuration
+```sh
+sudo stow -t / root-power-audacious root-audacious-efisync \
+             root-cachyos-audacious root-network-audacious \
+             root-backup-audacious root-proaudio-audacious
+sudo root-sudoers-audacious/install.sh
+```
 
-Before stowing the SSH package, ensure the `~/.ssh` directory exists as a **real directory** (not a symlink).  
-This prevents `stow` from turning it into a symlink, which would break SSH key handling and permissions.
+**Why install.sh:** Sudoers files require `root:root 0440` ownership, which stow can't set.
 
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
+Enable services:
 
-Then deploy:
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
+sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer
+sudo udevadm control --reload-rules && sudo udevadm trigger
+sudo sysctl --system
+```
 
-    cd ~/dotfiles
-    stow ssh-audacious
-    chmod 600 ~/.ssh/config
+Verify:
 
-Only the SSH `config` file is tracked.  
-Keys, known_hosts, and other sensitive files are *never* committed to git.
+```sh
+systemctl status powertop.service efi-sync.path
+systemctl list-timers | grep borg
+sysctl vm.swappiness  # should return 60
+ip link show enp7s0   # should be managed by networkd
+```
 
-#### PSD configuration
+### Package reference
 
-Profile-sync-daemon (psd) expects to write runtime state into
-~/.config/psd/. To avoid committing that state, we only symlink the
-config file.
-
-    mkdir -p ~/.config/psd
-    stow psd-audacious
-
-This results in:
-    ~/.config/psd/psd.conf -> dotfiles/psd-audacious/.config/psd/psd.conf
-
-The directory ~/.config/psd/ itself remains a real directory so psd can
-write its own state (PID, etc.) without touching the repo.
-
-#### Default applications (MIME handlers)
-
-The file `mimeapps-audacious/.config/mimeapps.list` defines preferred default
-applications (browser, terminal opener, etc.).
-
-Do NOT stow this package directly. Desktop tools will modify
-`~/.config/mimeapps.list` over time, and we want those changes to stay local
-and not affect the git repo.
-
-Instead, seed it once:
-
-    cp ~/dotfiles/mimeapps-audacious/.config/mimeapps.list ~/.config/mimeapps.list
-
-After that, `~/.config/mimeapps.list` is a normal file owned by the user and
-can drift independently on this host.
-
-#### BorgBackup (per-user secrets)
-
-Borg is configured per-user and used by the systemd backup timers. We want
-`~/.config/borg` to be a real directory on this host (so we can keep secrets
-local), but we still want to stow the non-secret parts.
-
-    mkdir -p ~/.config/borg
-    chmod 700 ~/.config/borg
-    stow borg-user-audacious
-
-After stowing, `~/.config/borg/patterns` will be a symlink into the repo.
-
-Now create the secret passphrase file locally (do NOT commit this):
-
-    editor ~/.config/borg/passphrase
-    chmod 600 ~/.config/borg/passphrase
-
-The backup units from `backup-systemd-audacious` expect both of these files to
-exist:
-
-    ~/.config/borg/patterns     (symlink from repo)
-    ~/.config/borg/passphrase   (local secret, not in git)
-
-This package is host-specific and should not be used on other machines unless
-they are intentionally allowed to access the same backup repository.
-
-### 15.2 System configuration (requires sudo)
-
-Apply system-level stow packages selectively.
-
-#### Power management
-
-    sudo stow --target=/ etc-power-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now powertop.service usb-nosuspend.service
-    sudo udevadm control --reload-rules
-    sudo udevadm trigger
-
-#### EFI sync (dual ESPs)
-
-    sudo stow --target=/ etc-systemd-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now efi-sync.path
-
-#### Kernel/sysctl tuning
-
-    sudo stow --target=/ etc-cachyos-audacious
-    sudo sysctl --system
-
-#### BorgBackup timers
-
-    sudo stow --target=/ backup-systemd-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now \
-        borg-backup.timer \
-        borg-check.timer \
-        borg-check-deep.timer
-
-Ensure `borg-user-audacious/` is stowed for your user and contains `~/.config/borg/passphrase`.
+| Package | Scope | Purpose |
+|---------|-------|---------|
+| `profile-common` | user | Shell profile baseline (shared across hosts) |
+| `bash-audacious` | user | Bash config, prompt, aliases, astute helpers (nas-open/close, ssh-astute) |
+| `bin-audacious` | user | Scripts: idle-shutdown, audio switching, game-performance, astute-status |
+| `emacs-audacious` | user | Editor config and custom theme |
+| `sway-audacious` | user | Wayland compositor: keybinds, swayidle (20min → idle-shutdown) |
+| `waybar-audacious` | user | Status bar (CPU, network, audio, time) |
+| `wofi-audacious` | user | Application launcher |
+| `mako-audacious` | user | Notification daemon |
+| `foot-audacious` | user | Terminal emulator |
+| `fonts-audacious` | user | Amiga Topaz + JetBrains Mono Nerd Font |
+| `icons-audacious` | user | Amiga-inspired cursor theme |
+| `wallpapers-audacious` | user | Desktop backgrounds |
+| `lf-audacious` | user | File manager config |
+| `zathura-audacious` | user | PDF viewer config |
+| `psd-audacious` | user | Profile-sync-daemon (browser profile → tmpfs) |
+| `ssh-audacious` | user | SSH client config (keys excluded, see §16) |
+| `borg-user-audacious` | user | Backup inclusion/exclusion patterns |
+| `nas-audacious` | user | Astute NAS wake-on-demand systemd user service |
+| `pipewire-audacious` | user | Audio routing and pro-audio latency config |
+| `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
+| `ardour-audacious` | user | DAW config (optional) |
+| `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
+| `root-audacious-efisync` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
+| `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
+| `root-network-audacious` | system | systemd-networkd wired ethernet config with MAC-based link naming |
+| `root-backup-audacious` | system | Borg systemd timers (backup daily, check weekly, deep-check monthly) |
+| `root-sudoers-audacious` | system | Passwordless sudo for srv-astute.mount control (NAS mounting) |
+| `root-proaudio-audacious` | system | Real-time audio kernel tuning (rtprio limits, threadirqs) |
 
 ---
 
-### 15.3 Verification
+## 16) NAS setup (Astute integration)
 
-Check services:
+**Goal:** Audacious can wake Astute on-demand for NFS storage, with automatic sleep inhibitor to prevent Astute suspending while NAS is active.
 
-    systemctl list-units | grep -E 'efi-sync|powertop|usb-nosuspend|borg'
+### NFS mount
 
-Confirm:
-- EFI sync mirrors `/boot/efi` and `/boot/efi-backup`
-- powertop and usb-nosuspend apply power tuning
-- borg timers appear under:
+Add to fstab:
 
-      systemctl list-timers | grep borg
+```sh
+echo "astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0" | sudo tee -a /etc/fstab
+sudo mkdir -p /srv/astute
+```
+
+**Why noauto:** Mount controlled by systemd (srv-astute.mount) triggered by `nas-open` bash function.
+
+### SSH key for NAS inhibitor
+
+Generate dedicated SSH key for NAS control (no passphrase, restricted command):
+
+```sh
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_astute_nas -C "audacious to astute NAS inhibit" -N ""
+```
+
+Copy public key to encrypted USB backup key for recovery.
+
+**On Astute**, add to `~/.ssh/authorized_keys`:
+
+```
+command="/usr/local/libexec/astute-nas-inhibit.sh",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAAA...KEY... audacious to astute NAS inhibit
+```
+
+**Why forced command:** SSH key can only toggle the sleep inhibitor, nothing else.
+
+### Verify NAS functions
+
+**On Audacious:**
+
+```sh
+source ~/.bashrc.d/30-astute.sh
+nas-open   # wakes astute, enables inhibitor, mounts /srv/astute, cd to mount
+ls         # should show NAS contents
+nas-close  # unmounts, disables inhibitor, allows astute to suspend
+```
+
+Check inhibitor on Astute:
+
+```sh
+ssh astute 'systemctl status nas-inhibit.service'
+```
+
+Should show active while NAS is open, inactive after close.
 
 ---
 
-### 15.4 Post-stow checks
+## 17) Python toolchain (optional)
 
-    systemctl --user list-units | grep -E 'mako|waybar|swayidle'
-
-Ensure:
-- Sway autostarts on TTY1  
-- mako notifications work  
-- EFI sync and power tuning are active  
-
----
-
-### 15.5 Install uv (Python toolchain manager)
-
-```bash
+```sh
 curl -Ls https://astral.sh/uv/install.sh | sh
 ```
 
-This installs `uv` and `uvx` to `~/.local/bin`. Confirm with `uv --version`.
+Installs `uv` and `uvx` to `~/.local/bin`. Verify: `uv --version`
 
 ---
 
-## 16) Swap (optional)
+## 18) Swap (optional)
+
+For hibernation or low-memory scenarios:
 
 ```sh
 zfs create -V 8G -b 4K -o compression=off -o logbias=throughput \
-  -o sync=always -o primarycache=metadata -o secondarycache=none \
+  -O sync=always -O primarycache=metadata -O secondarycache=none \
   rpool/swap
 mkswap /dev/zvol/rpool/swap
 echo "/dev/zvol/rpool/swap none swap defaults,pri=10 0 0" >> /etc/fstab
 ```
 
+**Note:** With 32GB RAM + zram, disk swap is rarely needed. Swappiness set to 60 in root-cachyos-audacious.
+
 ---
 
-## 17) Avoid ZFS hostid import warnings
+## 19) ZFS hostid
+
+Prevent import warnings:
 
 ```sh
 zgenhostid -f $(hostid)
@@ -494,30 +468,56 @@ zgenhostid -f $(hostid)
 
 ---
 
-## 18) Finalize and reboot
+## 20) Finalize and reboot
 
 ```sh
-exit
+exit  # leave chroot
 umount -Rl /mnt
 zpool export rpool
 reboot
 ```
 
-System should unlock, boot via systemd-boot, and autologin to Sway.
+System should:
+1. Prompt for ZFS passphrase at boot
+2. Boot via systemd-boot UKI
+3. Autologin to TTY1 as alchemist
+4. Launch Sway automatically
 
----
+Verify boot:
 
-## Appendix: sysctl notes
-
-```ini
-# /etc/sysctl.d/99-gaming-desktop-settings.conf
-vm.swappiness = 60
+```sh
+zpool status                # both nvme devices online
+bootctl list                # UKI present and set as default
+systemctl --failed          # should be empty
+systemctl list-timers       # borg timers scheduled
 ```
 
-Apply with `sudo sysctl --system`.
+---
+
+## Troubleshooting
+
+**Boot fails to find pool:**
+- See [RECOVERY.audacious.md](RECOVERY.audacious.md) for ZFS import and chroot procedures
+
+**EFI sync not working:**
+- `systemctl status efi-sync.path efi-sync.service`
+- `diff -r /boot/efi/EFI/Linux /boot/efi-backup/EFI/Linux` (should be identical)
+
+**NAS mount fails:**
+- Verify astute is reachable: `ping astute`
+- Check NFS server: `ssh astute 'systemctl status nfs-server'`
+- Check fstab entry matches astute export
+
+**Borg backups not running:**
+- `systemctl status borg-backup.timer`
+- `journalctl -u borg-backup.service -n 50`
+- Verify `~/.config/borg/passphrase` exists and is readable
 
 ---
 
-**References:**
-- [RECOVERY.audacious.md](RECOVERY.audacious.md)
-- [installed-software.audacious.md](installed-software.audacious.md)
+## References
+
+- [RECOVERY.audacious.md](RECOVERY.audacious.md) - Boot and ZFS recovery procedures
+- [RESTORE.audacious.md](RESTORE.audacious.md) - Full system restore from Borg backups
+- [installed-software.audacious.md](installed-software.audacious.md) - Complete package list
+- [Debian ZFS documentation](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/)
