@@ -164,7 +164,8 @@ sudo apt update
 
 ```sh
 sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
-  powertop git stow ethtool vim htop lm-sensors cpufrequtils
+  nfs-common powertop git stow ethtool vim htop lm-sensors cpufrequtils \
+  smartmontools unattended-upgrades apt-cacher-ng
 ```
 
 3. Install kernel headers and build ZFS for the running kernel:
@@ -230,7 +231,7 @@ sudo zpool import -d /dev ironwolf
 sudo zpool import -d /dev/disk/by-id ironwolf
 ```
 
-Expected result: `ironwolf` is online and datasets mount at /srv/nas.
+Expected result: `ironwolf` is online, root dataset mounts at /ironwolf, and datasets mount at /srv/nas and /srv/backups.
 
 ---
 
@@ -354,7 +355,74 @@ Expected result: SSH accepts the key without a shell, and Borg can list repos.
 
 ---
 
-## §12 ZFS maintenance and disk health
+## §12 Dotfiles deployment
+
+Deploy host-specific configuration and systemd units from this repo.
+
+Steps:
+1. From the `alchemist` user:
+
+```sh
+cd ~/dotfiles
+stow profile-common bash-astute bin-astute nas-astute
+```
+
+2. Deploy system packages:
+
+```sh
+sudo stow --target=/ root-nas-astute root-power-astute
+sudo root-power-astute/install.sh
+```
+
+3. Reload systemd and enable services:
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now powertop.service astute-idle-suspend.timer nas-inhibit.service
+```
+
+Expected result: dotfile symlinks point into `~/dotfiles`, and custom services are enabled.
+
+---
+
+## §13 Media/cache services (optional)
+
+Astute currently runs optional services not required for NAS or backups.
+
+Steps:
+1. Add the Jellyfin repository (deb822 format):
+
+```sh
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/jellyfin.gpg
+sudo tee /etc/apt/sources.list.d/jellyfin.sources >/dev/null <<'EOF'
+Types: deb
+URIs: https://repo.jellyfin.org/debian
+Suites: trixie
+Components: main
+Signed-By: /etc/apt/keyrings/jellyfin.gpg
+EOF
+sudo apt update
+```
+
+2. Install media and cache services:
+
+```sh
+sudo apt install jellyfin jellyfin-ffmpeg7 mpd
+```
+
+3. Enable services:
+
+```sh
+sudo systemctl enable --now jellyfin.service mpd.service apt-cacher-ng.service \
+  unattended-upgrades.service
+```
+
+Expected result: Jellyfin and MPD are active, apt-cacher-ng serves on the LAN, and unattended upgrades are enabled.
+
+---
+
+## §14 ZFS maintenance and disk health
 
 Enable scrubs, ZED events, and monitor drive health.
 
@@ -379,10 +447,15 @@ systemctl status zfs-zed.service
 systemctl status fstrim.timer
 ```
 
-4. Install SMART tools and check disk health using stable by-id paths:
+4. Enable SMART monitoring:
 
 ```sh
-sudo apt install smartmontools
+sudo systemctl enable --now smartmontools.service
+```
+
+5. Check disk health using stable by-id paths:
+
+```sh
 sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62ETJT
 sudo smartctl -a /dev/disk/by-id/ata-ST4000VN006-3CW104_ZW62F68T
 ```
