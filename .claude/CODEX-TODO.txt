@@ -73,14 +73,23 @@ READY WHEN ABOVE COMPLETE (medium priority)
 
 ────────────────────────────────────────────────────────────────
 
-[CLAUDE ONLY] - DO NOT ATTEMPT
-───────────────────────────────
+IMPORTANT POLICIES FOR ALL TASKS
+─────────────────────────────────
 
-[x] TEST NAS SERVICE CHANGES (requires ssh/systemd testing)
-[x] FIX ssh-astute SCRIPT (requires WOL testing)
-[x] INVESTIGATE ASTUTE SLEEP ISSUES (requires SSH debugging)
-[x] STANDARDIZE STOW NAMING (requires actual stow operations)
-[x] ANY GIT COMMITS (Claude reviews and commits all work)
+**Git Push:** Use SSH agent discovery script (see HANDOFF.md)
+**Sudo commands:** NEVER run directly - present to user and request output
+**Complex SSH/systemd:** Possible but note uncertainties in handoff
+**Git commits:** Both Claude and Codex can commit after testing
+
+CLAUDE EXPERTISE RECOMMENDED (but not blocked)
+───────────────────────────────────────────────
+
+These benefit from Claude's robust handling, but Codex can attempt:
+
+[x] Complex SSH debugging (note any agent/connection issues in handoff)
+[x] Multi-step systemd testing (document each verification step)
+[x] NAS wake/sleep orchestration (high complexity, multi-system)
+[x] Backup testing (high-stakes, requires careful verification)
 
 ────────────────────────────────────────────────────────────────
 
