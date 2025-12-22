@@ -1,83 +1,83 @@
-# RECOVERY.md — Debian 13 (Trixie) ZFS + systemd-boot Emergency Checklist
+# Debian 13 (Trixie) on ZFS - Recovery Guide
 
-> **Purpose:** Get `audacious` booting again after something breaks.  
-> Focus: ZFS import, chroot, UKI + bootloader rebuild, and system service sanity.  
-> Not for Borg or user data recovery — see `RESTORE.md` for that.
-
----
-
-## 🧭 Quick Reference — Symptoms → Actions
-
-| Symptom | Action |
-|----------|--------|
-| System drops to initramfs shell | Go to §2 (Import ZFS pool manually) |
-| ZFS pool not found or degraded | Go to §2 (Import and scrub pool) |
-| Boots to blank screen or kernel panic | Go to §5 (Rebuild initramfs + UKI) |
-| systemd-boot missing or EFI errors | Go to §6 (Reinstall bootloader + re-sync ESPs) |
-| Power/EFI sync services not running | Go to §7 (Restow configs and restart services) |
+**Purpose:** Restore bootability for audacious (ZFS root, systemd-boot UKI).
+**Scope:** ZFS import, chroot, initramfs/UKI rebuild, bootloader repair, service sanity.
+**Not covered:** Borg or user data recovery (see `RESTORE.audacious.md`).
 
 ---
 
-## 1️⃣ Boot Environment Setup
+## §1 Boot live environment
 
-1. Boot from the **Debian 13 Live ISO**.
-2. Open a terminal and become root:
+Use a Debian 13 Live ISO to get a clean rescue shell.
 
-```bash
+Steps:
+1. Boot the Debian 13 Live ISO.
+2. Become root:
+
+```sh
 sudo -i
 ```
 
-3. Install tools:
+3. Install recovery tools:
 
-```bash
+```sh
 apt update
-apt install -y zfsutils-linux gdisk systemd-boot systemd-ukify dosfstools rsync git stow
+apt install -y zfsutils-linux gdisk systemd-boot systemd-ukify \
+  dosfstools rsync git stow
 ```
 
-4. Verify both disks and EFI partitions:
+4. Verify disks and EFI partitions:
 
-```bash
+```sh
 lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE
 ```
 
+Expected result: both NVMe disks and their EFI partitions are visible.
+
 ---
 
-## 2️⃣ Import and Mount ZFS Pool
+## §2 Import and mount ZFS pool
 
-1. Check ZFS devices:
+Import the encrypted ZFS root pool and mount datasets.
 
-```bash
+Steps:
+1. Detect pools:
+
+```sh
 zpool import
 ```
 
-2. Import pool (read-write, encrypted):
+2. Import the pool (encrypted, read-write):
 
-```bash
+```sh
 zpool import -l rpool
 ```
 
-> If it says "no pools available", confirm with `ls /dev/disk/by-id` that both drives exist.
-
 3. Mount datasets:
 
-```bash
+```sh
 zfs mount rpool/ROOT/debian
 zfs mount -a
 ```
 
 4. Verify mount layout:
 
-```bash
+```sh
 mount | grep rpool
 ```
 
+Expected result: `rpool/ROOT/debian` is mounted at `/mnt` and datasets are mounted.
+
 ---
 
-## 3️⃣ Mount System for chroot
+## §3 Mount system for chroot
 
-1. Mount standard virtual filesystems:
+Prepare a full chroot with kernel, devices, and EFI mounts.
 
-```bash
+Steps:
+1. Bind standard virtual filesystems:
+
+```sh
 mount --rbind /dev  /mnt/dev
 mount --rbind /proc /mnt/proc
 mount --rbind /sys  /mnt/sys
@@ -85,103 +85,109 @@ mount --rbind /sys  /mnt/sys
 
 2. Mount EFI partitions:
 
-```bash
+```sh
 mount /dev/nvme0n1p1 /mnt/boot/efi
 mkdir -p /mnt/boot/efi-backup
 mount /dev/nvme1n1p1 /mnt/boot/efi-backup
 ```
 
-3. Copy DNS resolution:
+3. Copy DNS resolver config:
 
-```bash
+```sh
 cp /etc/resolv.conf /mnt/etc/resolv.conf
 ```
 
 4. Enter the chroot:
 
-```bash
+```sh
 chroot /mnt /bin/bash
 ```
 
+Expected result: a root shell inside the installed system.
+
 ---
 
-## 4️⃣ Basic System Checks (inside chroot)
+## §4 Basic checks (inside chroot)
 
-1. Confirm hostname and network:
+Confirm the system view is consistent before rebuilding boot assets.
 
-```bash
-echo $(hostname)
+Steps:
+1. Check hostname and network:
+
+```sh
+hostname
 systemctl status systemd-networkd systemd-resolved
 ```
 
-2. Check ZFS and mount health:
+2. Check ZFS health:
 
-```bash
+```sh
 zpool status
 zfs list
 ```
 
-3. Check root filesystem integrity:
+3. Confirm root mount:
 
-```bash
+```sh
 mount | grep ' / '
 ```
 
-4. Ensure APT sources are valid:
+4. Verify APT sources:
 
-```bash
+```sh
 grep -v '^#' /etc/apt/sources.list
 apt update
 ```
 
+Expected result: ZFS pool is healthy and APT metadata refreshes.
+
 ---
 
-## 5️⃣ Rebuild initramfs and UKI
+## §5 Rebuild initramfs and UKI
 
-> Use this when kernel updates break boot, or you see initramfs errors.
+Use this for kernel or initramfs boot failures.
 
-1. Confirm kernel version:
+Steps:
+1. Confirm kernel and UKI config files:
 
-```bash
+```sh
 uname -r
-```
-
-2. Ensure kernel config files exist:
-
-```bash
 cat /etc/kernel/cmdline
 cat /etc/kernel/install.conf
 cat /etc/kernel/uki.conf
 ```
 
-3. Rebuild initramfs + UKI:
+2. Rebuild initramfs and UKI:
 
-```bash
+```sh
 update-initramfs -u -k all
 kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 ```
 
-4. Verify UKI is present:
+3. Verify UKI output:
 
-```bash
+```sh
 ls -lh /boot/efi/EFI/Linux/*.efi
 ```
 
+Expected result: a fresh UKI exists in `/boot/efi/EFI/Linux/`.
+
 ---
 
-## 6️⃣ Reinstall or Repair systemd-boot
+## §6 Repair systemd-boot and ESP sync
 
-> Use when EFI boot entry or loader files are missing or corrupted.
+Use this if EFI entries are missing or corrupted.
 
+Steps:
 1. Reinstall systemd-boot:
 
-```bash
+```sh
 bootctl install
 ```
 
-2. Check loader config:
+2. Verify loader configuration:
 
-```bash
+```sh
 cat /boot/efi/loader/loader.conf
 ```
 
@@ -194,128 +200,144 @@ console-mode auto
 editor no
 ```
 
-3. List EFI entries and verify UKI presence:
+3. List EFI entries and verify UKI:
 
-```bash
+```sh
 bootctl list
 ```
 
 4. Set latest UKI as default:
 
-```bash
-bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
+```sh
+bootctl set-default "$(bootctl list | awk '/\\.efi/{print $2; exit}')"
 ```
 
-5. Confirm both ESPs are synced:
+5. Verify ESP sync:
 
-```bash
+```sh
 diff -rq /boot/efi /boot/efi-backup || echo "ESP copies differ!"
 ```
 
 If out of sync:
 
-```bash
+```sh
 systemctl restart efi-sync.path
 rsync -aHAXv /boot/efi/ /boot/efi-backup/
 ```
 
+Expected result: both ESPs contain identical UKIs.
+
 ---
 
-## 7️⃣ Verify Power and System Services
+## §7 Restore services from dotfiles
 
-> If power management or sync services stopped working after recovery.
+Reapply stowed system configs and restart critical services.
 
-1. Restow configs:
+Steps:
+1. Restow system packages:
 
-```bash
+```sh
 cd /home/alchemist/dotfiles
-sudo stow --target=/ etc-power-audacious
-sudo stow --target=/ etc-systemd-audacious
-sudo stow --target=/ etc-cachyos-audacious
-sudo stow --target=/ backup-systemd-audacious
+sudo stow -t / root-power-audacious root-audacious-efisync \
+  root-cachyos-audacious root-network-audacious \
+  root-backup-audacious root-proaudio-audacious
+sudo root-sudoers-audacious/install.sh
 ```
 
 2. Reload systemd and enable services:
 
-```bash
-systemctl daemon-reload
-systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path \
-    borg-backup.timer borg-check.timer borg-check-deep.timer
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
+sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer
+sudo systemctl enable --now zfs-trim-monthly@rpool.timer
+sudo systemctl enable --now zfs-scrub-monthly@rpool.timer
+sudo udevadm control --reload-rules && sudo udevadm trigger
+sudo sysctl --system
 ```
 
-3. Reload udev rules:
+3. Verify services:
 
-```bash
-udevadm control --reload-rules
-udevadm trigger
-```
-
-4. Confirm services:
-
-```bash
+```sh
 systemctl list-units | grep -E 'powertop|usb-nosuspend|efi-sync|borg'
 ```
 
+Expected result: core services are active with no failures.
+
 ---
 
-## 8️⃣ Exit, Unmount, and Reboot
+## §8 Exit, unmount, reboot
 
+Leave the chroot and cleanly unmount before rebooting.
+
+Steps:
 1. Exit chroot:
 
-```bash
+```sh
 exit
 ```
 
-2. Unmount cleanly:
+2. Unmount and export pool:
 
-```bash
+```sh
 umount -Rl /mnt
 zpool export rpool
 ```
 
 3. Reboot:
 
-```bash
+```sh
 reboot
 ```
 
+Expected result: system prompts for ZFS passphrase and boots.
+
 ---
 
-## 🧰 Optional: Repair ZFS or Boot Issues
+## §9 Optional repairs
 
-If ZFS won't import:
+Use these only when the standard flow fails.
 
-```bash
+Steps:
+1. Import pool with altroot:
+
+```sh
 zpool import -f -l -o altroot=/mnt rpool
 ```
 
-If the pool is degraded:
+2. Scrub a degraded pool:
 
-```bash
+```sh
 zpool status
 zpool scrub rpool
 ```
 
-If systemd-boot fails to find entries:
+3. Refresh bootloader:
 
-```bash
+```sh
 bootctl update
 ```
 
+Expected result: pool imports and bootloader metadata is current.
+
 ---
 
-## ✅ Post-Recovery Checklist
+## §10 Post-recovery checks
 
-After boot:
+Confirm the system is stable after boot.
 
-```bash
+Steps:
+1. Verify ZFS and services:
+
+```sh
 zpool status
 systemctl list-units | grep -E 'efi-sync|powertop|borg'
 ```
 
-If all active and no errors — recovery complete.
+Expected result: ZFS is healthy and timers are active.
 
 ---
 
-**Next:** Restore Borg backups and verify user data — see [`RESTORE.md`](RESTORE.md).
+## References
 
+- `RESTORE.audacious.md` for Borg restores
