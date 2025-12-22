@@ -1,32 +1,45 @@
 # Installed Software (Structured List)
 
-This document provides a machine-readable, script-friendly inventory of manually installed software.
-Each section reflects installation *origin*, not function — making system state auditable and reproducible.
+Machine-readable inventory of manually installed software. Sections reflect installation origin, not function. Enables auditable, reproducible system state.
+
+Last drift check: 2025-12-22
 
 ---
 
-## Base System (installed via INSTALL.audacious.md)
+## Base System (via INSTALL.audacious.md §1-13)
+
+### Boot & filesystem
 - cryptsetup — LUKS encryption for ZFS unlock
-- initramfs-tools — Initramfs generator (ZFS-reliable)
 - zfs-initramfs — ZFS support during early boot
-- linux-image-amd64 — main kernel image
-- linux-headers-amd64 — build headers for modules
+- linux-headers-amd64 — module build headers
 - systemd-boot — EFI bootloader for UKI
 - systemd-ukify — UKI generation tooling
 - systemd-zram-generator — swap-on-zram backend
-- systemd-networkd — primary network management daemon
-- systemd-resolved — DNS resolution
+- intel-microcode — CPU microcode patches
+- plymouth — graphical boot splash
+- plymouth-themes — boot theme package
+
+### Network & firmware
 - openssh-client — SSH connectivity
 - iproute2 — modern networking tools
+- iputils-ping — ping utility
 - firmware-amd-graphics — AMD GPU firmware
 - firmware-realtek — NIC firmware
-- intel-microcode — CPU microcode patches
+
+### Build tools (baseline)
+- build-essential — compiler and build tools metapackage
+
+### System utilities
+- sudo — privilege escalation
+- apt-listchanges — package changelog viewer
+- usb.ids — USB device database
+- usbutils — USB inspection tools (lsusb)
 
 ---
 
-## Desktop Infrastructure (installed via INSTALL.audacious.md)
+## Desktop Infrastructure (via INSTALL.audacious.md §14)
 
-### Core session & UI
+### Compositor & session
 - sway — Wayland compositor
 - swaybg — wallpaper management
 - swayidle — power/idle controller
@@ -35,102 +48,110 @@ Each section reflects installation *origin*, not function — making system stat
 - wofi — application launcher
 - mako-notifier — notification daemon
 - xwayland — X11 compatibility
+- mate-polkit — authentication agent
+
+### Desktop utilities
 - grim — screenshot tool
 - slurp — region selection tool
 - wl-clipboard — clipboard manager
 - xdg-desktop-portal — desktop portal services
 - xdg-desktop-portal-wlr — Wayland portal implementation
-- profile-sync-daemon — reduces browser write amplification
 
 ### Audio subsystem
 - pipewire-audio — audio engine
+- pipewire-jack — JACK compatibility layer
 - wireplumber — policy/session manager
 - pavucontrol — graphical mixer
-- pulseaudio-utils - for pactl
-- pipewire-jack - for JACK support
+- pulseaudio-utils — pactl utility
+- playerctl — MPRIS media controller (critical for idle-shutdown)
 
-### Toolchain and environment applied at build time
+### Development & dotfiles
 - git — version control
 - stow — dotfile deployment
-- curl — transfer utility
-- rsync — file/dir synchronisation
-- tree — directory visualiser
-- hdparm — drive tuning
-- plymouth — graphical boot splash
-- plymouth-themes — theme package
-- desktop-base — Debian branding defaults
+- wget — HTTP download utility
+- rsync — file/directory synchronization
+- tree — directory visualizer
+- jq — JSON processor
+- npm — Node package manager (Codex dependency)
+- emacs — text editor (dotfiles dependency)
+- lf — terminal file manager
+- nano — minimal fallback editor
 
-### Fonts installed at build time
+### Storage & backup
+- borgbackup — encrypted backups
+- nfs-common — NFS client utilities
+- wakeonlan — WOL magic packet sender
+- hdparm — drive tuning
+
+### Power management
+- power-profiles-daemon — power profile control
+- powertop — power optimization diagnostics
+
+### Fonts
 - fonts-jetbrains-mono — primary UI font
 - fonts-dejavu — general fallback set
+- fonts-noto — multilingual family
+- fonts-symbola — Unicode symbol/emoji fallback
+
+### Themes
+- desktop-base — Debian branding defaults
+
+### System utilities
+- profile-sync-daemon — reduces browser write amplification
+- nftables — firewall subsystem
+- plocate — file indexer
+- ncdu — interactive disk-usage inspector
 
 ---
 
-## User Applications (installed post-build)
+## Integral 1.0 Audio Workstation
 
-### Applications
-- firefox-esr — web browser
-- chromium — web browser (secondary / backup)
+**See:** `~/personal/audio-workstation-notes.md` for complete documentation of the Integral audio workstation stack.
+
+### Core packages (summary)
+- ardour — DAW/recording software
+- surge-xt — polyphonic synthesizer
+- dragonfly-reverb-lv2 — reverb effect suite
+- x42-plugins — LV2 effect plugin collection
+- fluid-soundfont-gm — General MIDI soundfont
+- faust — DSP development language
+- golang-go — Go compiler (for Faust tooling + boot.dev CLI)
+
+### Supporting libraries
+- libmxml1 — XML parsing (audio plugin dependency)
+- lilv-utils — LV2 plugin tools
+
+---
+
+## User Applications (post-installation)
+
+### Web & communication
+- firefox-esr — primary web browser
 - discord — VoIP and community client
 - zoom — video conferencing client
-- heroic (local .deb) — Epic/GOG/Prime Gaming client
-- steam-installer — Steam client (non-free)
-- lutris — GOG/Epic game launcher
-- openjdk-21-jdk — Java runtime for Minecraft
-- transmission - torrenting client
 
-### Document & media
-- zathura — lightweight PDF/document viewer
+### Gaming
+- heroic (local .deb) — Epic/GOG/Prime Gaming launcher
+- steam-installer — Steam client (non-free)
+- lutris — multi-platform game launcher
+- prismlauncher — Minecraft launcher (open-source)
+- openjdk-21-jdk — Java runtime for Minecraft
+
+### Media
+- vlc — media player
+- jellyfin-media-player — Jellyfin client
+- imv — Wayland image viewer
+- gimp — image editor
+- ncmpcpp — TUI music player client
+- picard — music tagging software
+- kid3-cli — music tagging CLI utility
+- imagemagick — image manipulation CLI tools
+
+### Documents
+- zathura — PDF/document viewer
 - zathura-pdf-poppler — rendering backend
 - poppler-utils — PDF extraction toolkit
 - tesseract-ocr — OCR engine
 
-### Music
-- strawberry - music player
-- mpd - music player daemon
-- ncmpcpp - TUI client for mpd
-- picard - tagging software
-
-### DAW
-
-- ardour - DAW/recording software
-
 ### Utilities
-- lf — terminal file manager
-- imv — Wayland-native image viewer
-- jq — JSON processor
-- sc — TUI spreadsheet
-- nftables — firewall subsystem
-- power-profiles-daemon — power profile control
-- powertop — power optimisation diagnostics
-- usbutils — USB inspection tools (`lsusb`)
-- wakeonlan — WOL magic packet sender
-- nano — minimal fallback editor
-- sqv — OpenPGP signature verification utility
-- kid3-cli - Music tagging cli utility
-- imagemagick - command line tools for image manipulation
-- ncdu — interactive TUI disk-usage inspector
-- plocate - file indexer
-
-### Storage & backup
-- borgbackup — encrypted backups
-- autofs — automount service
-- nfs-common — NFS client utilities
-
-### Fonts installed later
-- fonts-noto — multilingual family
-- fonts-symbola — Unicode symbol/font fallback
-
----
-
-## [meta]
-- system: audacious (Debian 13 Trixie)
-- origin-model: layered
-- layers:
-    - base-system: installed via INSTALL.audacious.md
-    - desktop-infrastructure: installed via INSTALL.audacious.md
-    - user-applications: post-build additions
-- management: manual curation (origin-aware, not auto-generated)
-- notes: Base + desktop layers are reproducible install-state; user layer reflects later additions.
-- last-updated: 2025-12-13
-- last-checked-for-drift: 2025-11-30
+- transmission — torrent client
