@@ -4,7 +4,6 @@ Documentation=man:systemd-inhibit(1)
 
 [Service]
 Type=simple
-PAMName=login
 ExecStart=/usr/bin/systemd-inhibit \
     --what=sleep \
     --mode=block \
@@ -15,5 +14,4 @@ RuntimeMaxSec=3600
 KillMode=control-group
 
 [Install]
-WantedBy=default.target
-
+WantedBy=multi-user.target

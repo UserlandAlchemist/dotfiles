@@ -2,10 +2,12 @@
 set -eu
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+DOTFILES_DIR="$(dirname "$PKG_DIR")"
 
 echo "Installing root-power-astute (Astute power policy)"
 
 echo "→ Stowing systemd units"
+cd "$DOTFILES_DIR"
 stow -t / root-power-astute
 
 echo "→ Installing sudoers rule (nas-inhibit)"
