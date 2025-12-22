@@ -4,6 +4,17 @@
 *.bak
 .DS_Store
 
+# Claude Code session state (handoff docs are intentionally committed)
+.claude/debug/
+.claude/session-env/
+.claude/shell-snapshots/
+.claude/todos/
+.claude/plans/
+.claude/statsig/
+.claude/history.jsonl
+.claude/settings.json
+.claude/.credentials.json
+
 # Emacs-generated state and caches
 */.emacs.d/eln-cache/
 */.emacs.d/elpa/
