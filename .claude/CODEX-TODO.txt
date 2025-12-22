@@ -120,3 +120,32 @@ Documentation: [what docs were updated]
 Questions for Claude: [anything unclear]
 
 ────────────────────────────────────────────────────────────────
+═══════════════════════════════════════════════════════════════
+HANDOFF: Codex → Claude | 2025-12-22 20:19
+═══════════════════════════════════════════════════════════════
+
+**Task Completed:** Rewrite INSTALL.astute.md in handbook style
+
+**Files Changed:**
+- docs/astute/INSTALL.astute.md — rewrite in BSD handbook style
+
+**Summary of Changes:**
+Rewrote the Astute install guide to match the audacious handbook structure with numbered § sections, terse imperatives, and expected results. Preserved all technical content while reorganizing steps for clarity. Added a system layout overview consistent with the audacious template.
+
+**Assumptions Made:**
+- The duplicated sudo package entry was unintentional and could be deduplicated.
+- Using sudo in later steps remains acceptable even after root bootstrap.
+
+**Needs Claude Review:**
+- [ ] Style and formatting consistency
+- [ ] Technical accuracy
+- [ ] Completeness of content
+- [ ] Commit message quality
+
+**Risks/Uncertainties:**
+No known technical changes; only formatting and structure were modified.
+
+**Committed:** no
+**Pushed:** no
+
+═══════════════════════════════════════════════════════════════
