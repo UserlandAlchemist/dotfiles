@@ -1,0 +1,113 @@
+CODEX AUTONOMOUS WORK QUEUE
+============================
+Updated: 2025-12-22 19:35
+
+These tasks are SAFE for Codex to work on independently when Claude hits usage limits.
+DO NOT attempt tasks marked [CLAUDE ONLY] - they require system testing.
+
+────────────────────────────────────────────────────────────────
+
+READY TO START (highest priority)
+──────────────────────────────────
+
+[ ] REWRITE INSTALL.astute.md IN HANDBOOK STYLE
+    Location: docs/astute/INSTALL.astute.md
+    Template: docs/audacious/INSTALL.audacious.md (use as style reference)
+    Goal: Make it match the BSD handbook style - numbered sections, terse, imperative
+    Keep: All technical content
+    Change: Structure, tone, formatting
+
+    Steps:
+    1. Read docs/audacious/INSTALL.audacious.md fully to understand style
+    2. Read current docs/astute/INSTALL.astute.md (if exists)
+    3. Rewrite using same structure/tone as audacious version
+    4. Use § symbols for major sections
+    5. Clear numbered steps with expected results
+    6. Focus on "why" in prose, "what" in commands
+
+[ ] DOCUMENT VANILLA TRIXIE DIVERGENCE
+    Location: Create docs/audacious/VANILLA-DIVERGENCE.md
+    Goal: List everywhere we diverge from stock Debian Trixie
+
+    Known divergences to document:
+    - .bashrc is edited directly (should use drop-in overlays)
+    - Systemd units in user/system dirs
+    - Custom scripts in /usr/local/libexec
+    - Manual /opt installations (sfizz, zyn-fusion, vcv-rack)
+    - Custom kernel parameters (via UKI)
+    - Power management policies
+
+    Format:
+    ## File/Area Modified
+    **Location:** /path/to/file
+    **Divergence:** What we changed
+    **Reason:** Why we changed it
+    **Vanilla path:** What stock Debian does
+    **Recovery impact:** How this affects reinstalls
+
+────────────────────────────────────────────────────────────────
+
+READY WHEN ABOVE COMPLETE (medium priority)
+────────────────────────────────────────────
+
+[ ] REWRITE RECOVERY.audacious.md IN HANDBOOK STYLE
+    Same approach as INSTALL.astute.md task above
+    Template: INSTALL.audacious.md style
+    Keep all technical recovery procedures
+
+[ ] REWRITE RESTORE.audacious.md IN HANDBOOK STYLE
+    Same approach as INSTALL.astute.md task above
+    Template: INSTALL.audacious.md style
+    Keep all Borg restore procedures
+
+[ ] AUDIT .gitignore COMPLETENESS
+    Check if we're missing any patterns for:
+    - SSH keys (should never be committed)
+    - known_hosts files
+    - API tokens
+    - Cache directories
+    - Compiled files
+    - Session files
+
+    Output: List of suggested additions (don't edit .gitignore directly)
+
+────────────────────────────────────────────────────────────────
+
+[CLAUDE ONLY] - DO NOT ATTEMPT
+───────────────────────────────
+
+[x] TEST NAS SERVICE CHANGES (requires ssh/systemd testing)
+[x] FIX ssh-astute SCRIPT (requires WOL testing)
+[x] INVESTIGATE ASTUTE SLEEP ISSUES (requires SSH debugging)
+[x] STANDARDIZE STOW NAMING (requires actual stow operations)
+[x] ANY GIT COMMITS (Claude reviews and commits all work)
+
+────────────────────────────────────────────────────────────────
+
+COMPLETED (for reference)
+──────────────────────────
+
+[✓] Create AGENTS.md collaboration guide
+[✓] Refactor NAS service to use SSH config
+[✓] Add astute-nas SSH host entry
+[✓] Create DRIFT-CHECK.md procedure
+[✓] Rewrite INSTALL.audacious.md in handbook style
+[✓] Update installed-software.audacious.md
+
+────────────────────────────────────────────────────────────────
+
+HANDOFF INSTRUCTIONS FOR CODEX:
+
+When you complete work, create a summary at the bottom of this file:
+
+HANDOFF: Codex → Claude | YYYY-MM-DD HH:MM
+Task: [which task from above]
+Files changed: [list]
+Changes made: [brief summary]
+Assumptions: [any assumptions about system/preferences]
+Needs testing: [yes/no and what kind]
+Risks: [anything that might break]
+Documentation: [what docs were updated]
+Questions for Claude: [anything unclear]
+
+────────────────────────────────────────────────────────────────
