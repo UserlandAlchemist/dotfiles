@@ -424,7 +424,14 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.j
 
 2. Set up Prism Launcher repository:
 
-**Note:** The keyring must be manually installed at `/usr/share/keyrings/prismlauncher-archive-keyring.gpg` (not owned by any package).
+First, download and install the keyring:
+
+```sh
+wget -q https://prism-launcher-for-debian.github.io/repo/prismlauncher.gpg \
+  -O /usr/share/keyrings/prismlauncher-archive-keyring.gpg
+```
+
+Then add the repository:
 
 ```sh
 echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" \
