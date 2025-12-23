@@ -16,10 +16,10 @@ ssh-astute() {
     logger -t astute-ssh "Sending WOL to ${host}"
     wakeonlan "${mac}"
 
-    echo "Waiting for ${host} to wake up..."
+    echo "Waiting for ${host} to wake up (up to 60s)..."
 
-    # Wait loop with longer timeout (host is waking from suspend)
-    for i in $(seq 1 30); do
+    # Wait loop with 60s timeout (wake-from-suspend can be slow)
+    for i in $(seq 1 60); do
         # Use 3-second timeout after WOL (SSH might be slower to start)
         if ssh -o BatchMode=yes -o ConnectTimeout=3 "${host}" true 2>/dev/null; then
             echo "${host} is up after ${i} seconds"
@@ -27,11 +27,17 @@ ssh-astute() {
             ssh -A "${host}"
             return
         fi
+
+        # Progress indicator every 10 seconds
+        if [ $((i % 10)) -eq 0 ]; then
+            echo "  Still waiting... (${i}s elapsed)"
+        fi
+
         sleep 1
     done
 
-    echo "Warning: ${host} did not respond within 30 seconds"
-    logger -t astute-ssh "WARNING: ${host} timeout after WOL"
+    echo "Warning: ${host} did not respond within 60 seconds"
+    logger -t astute-ssh "WARNING: ${host} timeout after WOL (60s)"
 
     # One final attempt with full timeout
     echo "Attempting connection anyway..."
