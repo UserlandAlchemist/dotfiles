@@ -1,4 +1,4 @@
-# backup-systemd-audacious
+# root-backup-audacious
 
 Systemd timers and services for unattended BorgBackup on host audacious.
 
@@ -17,7 +17,7 @@ mode using environment variables defined in the user configuration.
 
 Run as root:
 
-    sudo stow --target=/ backup-systemd-audacious
+    sudo stow --target=/ root-backup-audacious
     sudo systemctl daemon-reload
     sudo systemctl enable --now \
         borg-backup.timer \
