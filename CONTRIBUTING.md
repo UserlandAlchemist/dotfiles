@@ -1,11 +1,14 @@
-# CLAUDE.md
+# Contributing Guide
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-Also read `AGENTS.md` for contributor guidelines.
+This file provides guidance when working with code in this repository, whether you're human or AI.
+
+---
 
 ## Repository Purpose
 
 This is a personal dotfiles repository for "the Wolfpack" - a small ecosystem of independent Linux machines (audacious, astute, artful, steamdeck) managed using GNU Stow. All hosts run Debian 13 (Trixie) Stable except the Steam Deck. The repository follows a "repo-first" philosophy: plain text configuration, no wrappers or daemons, transparent and understandable systems designed for long-term maintainability and fast recovery.
+
+---
 
 ## Architecture
 
@@ -19,15 +22,15 @@ The repository uses per-host stow packages with a specific naming convention:
 - Examples: `bash-audacious/`, `bin-audacious/`, `emacs-audacious/`, `waybar-audacious/`
 
 **System-level packages** (deployed with `sudo stow --target=/ <package>`):
-- Format: `root-<concern>-<hostname>/` OR `root-<hostname>-<concern>/` (inconsistent - being standardized)
+- Format: `root-<concern>-<hostname>/`
 - Install to: `/` (system root)
 - Examples: `root-power-audacious/`, `root-efisync-audacious/`, `root-backup-audacious/`
 
-**Special cases:**
+**Shared configuration:**
 - `profile-common/` - Shared shell profile deployed first on all hosts
-- `docs/<hostname>/` - Per-host documentation (INSTALL, RECOVERY, RESTORE guides)
 
-**IMPORTANT**: There is known inconsistency in `root-*` package naming (some are `root-concern-host`, others are `root-host-concern`). This is acknowledged drift that needs standardization.
+**Documentation:**
+- `docs/<hostname>/` - Per-host documentation (INSTALL, RECOVERY, RESTORE guides)
 
 ### Sudoers File Handling
 
@@ -70,6 +73,8 @@ Sudoers files **cannot** be managed directly via stow due to permissions require
 **Steam Deck**:
 - SteamOS (not managed by this repo except for limited dotfiles)
 - Portable gaming and auxiliary system
+
+---
 
 ## Key Subsystems
 
@@ -173,6 +178,8 @@ Design: Fail-open for remote checks; critical jobs must use `systemd-inhibit`.
 - `astute-idle-suspend.timer` + `.service`
 - Suspends on idle, WOL wakes
 
+---
+
 ## Common Workflows
 
 ### Deploying Configuration
@@ -258,6 +265,8 @@ Each host has complete rebuild documentation in `docs/<hostname>/`:
 
 Recovery docs are mechanically tested and versioned alongside config.
 
+---
+
 ## Secrets Management
 
 **NEVER committed to git**:
@@ -273,6 +282,8 @@ Recovery docs are mechanically tested and versioned alongside config.
 - Borg repository key export
 - Recovery documentation
 
+---
+
 ## Design Principles
 
 When modifying this repository:
@@ -285,16 +296,7 @@ When modifying this repository:
 6. **Explicit over clever**: Direct scripts and clear dependencies over abstraction layers
 7. **Secrets never committed**: Use .gitignore and external encrypted storage
 
-## Known Issues and Drift
-
-As of 2025-12-23, the following are acknowledged:
-
-1. **Documentation drift**: Some features (NAS inhibitor SSH key setup) are implemented but not documented
-
-Note: The following issues were recently resolved:
-- ✅ Naming inconsistency standardized: all packages now follow `root-<concern>-<host>` pattern
-- ✅ Package organization fixed: NAS inhibitor consolidated into `root-power-astute/`
-- ✅ Vanilla Trixie divergence resolved: `.bashrc` now uses wrapper + drop-in pattern
+---
 
 ## Testing Requirements
 
@@ -314,6 +316,8 @@ Before committing changes that affect:
 
 **Sudoers changes**: Always validate with `visudo -c` before deployment
 
+---
+
 ## Git Workflow
 
 Standard workflow:
@@ -325,14 +329,180 @@ git commit -m "description"
 git push
 ```
 
-Commit message style (from git log):
+### Commit Message Style
+
 - Use imperative mood
 - Focus on "why" rather than "what"
 - Reference affected host in prefix when relevant
 - **NEVER** reference AI tools (Claude Code, LLMs, etc.) in commit messages
 - Opportunistically remove previous AI references when editing commits
-- Exception: LLM-specific documentation (AGENTS.md, HANDOFF.md, etc.) may reference AI tools
 
-SSH requirements for remote operations:
-- Pushing to astute or GitHub from astute requires ssh-agent with id_alchemist identity unlocked
-- Before SSH operations to astute, verify agent is running and key is loaded
+### SSH Requirements for Remote Operations
+
+Pushing to astute or GitHub from astute requires ssh-agent with `id_alchemist` identity unlocked.
+
+**Find and connect to active agent:**
+
+```bash
+# Find the most recent agent socket with keys loaded
+for sock in $(ls -t /tmp/ssh-*/agent.* 2>/dev/null); do
+  if SSH_AUTH_SOCK="$sock" ssh-add -l &>/dev/null; then
+    export SSH_AUTH_SOCK="$sock"
+    echo "Using agent: $SSH_AUTH_SOCK"
+    ssh-add -l
+    break
+  fi
+done
+
+# Verify it works
+if [ -z "$SSH_AUTH_SOCK" ]; then
+  echo "No SSH agent found with keys loaded"
+  echo "Please start agent and add key"
+  exit 1
+fi
+
+# Now git push will work
+git push
+```
+
+**If no agent found**, start one:
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_alchemist
+```
+
+---
+
+## Coding Standards
+
+### Bash Scripts
+
+- Always `#!/usr/bin/env bash`
+- Always `set -euo pipefail` for safety
+- Prefer explicit over clever
+- Comment complex logic, not obvious operations
+
+### Systemd Units
+
+- Absolute paths for all executables
+- Comments above each directive explaining "why"
+- Use dependencies correctly (After=, Requires=, Wants=)
+
+### Stow Packages
+
+- One concern per package
+- Never mix user and system scopes
+- Match naming: `<tool>-<host>` or `root-<concern>-<host>`
+
+### Documentation
+
+**Tone:**
+- Terse, technical, imperative
+- BSD handbook style: clear numbered steps, "do X, then Y"
+- No marketing language or enthusiasm
+- Focus on "why" in prose, "what" in code
+
+**Formatting:**
+- Use `---` horizontal rules to separate major sections
+- Code blocks: triple backticks with language hint
+- Commands: show as `code` or in blocks, never as plain text
+- File paths: always absolute when clarity matters
+- Lists: `-` for unordered, numbered for sequential steps
+
+**Structure (for INSTALL docs):**
+```markdown
+# Title
+
+Brief purpose statement (1-2 sentences).
+
+---
+
+## §1 First Major Step
+
+Clear description of what and why.
+
+Steps:
+1. First command
+2. Second command
+
+Expected result: [what you should see]
+
+---
+
+## §2 Next Major Step
+[continue...]
+```
+
+---
+
+## Known Issues and Drift
+
+As of 2025-12-23, the following are acknowledged:
+
+1. **Documentation drift**: Some features (NAS inhibitor SSH key setup) are implemented but not documented
+
+Note: The following issues were recently resolved:
+- ✅ Naming inconsistency standardized: all packages now follow `root-<concern>-<host>` pattern
+- ✅ Package organization fixed: NAS inhibitor consolidated into `root-power-astute/`
+- ✅ Vanilla Trixie divergence resolved: `.bashrc` now uses wrapper + drop-in pattern
+
+---
+
+## LLM Collaboration Guidelines
+
+### Sudo Command Policy
+
+**NEVER run sudo commands directly.** Instead:
+1. Present the command to the user
+2. Explain what it does and why
+3. Request they run it and provide the output
+4. Continue based on the output
+
+Example:
+```
+I need to reload the systemd daemon. Please run:
+
+  sudo systemctl daemon-reload
+
+And provide any output or errors.
+```
+
+### Handoff Protocol
+
+When multiple AI agents work on this repository, use this format for handoffs:
+
+```markdown
+## Handoff: [Agent Name] → [Next Agent]
+**Date:** YYYY-MM-DD HH:MM
+**Goal:** [One sentence: what were you trying to accomplish?]
+
+### Scope
+Files changed:
+- path/to/file1 — brief description
+- path/to/file2 — brief description
+
+### Work Completed
+- [x] Task 1 description
+- [x] Task 2 description
+- [ ] Task 3 — NOT completed because [reason]
+
+### Assumptions Made
+- Assumption 1 about system state
+- Assumption 2 about user preference
+
+### Commands Run (if any)
+```bash
+command1  # output: [key result]
+command2  # output: [key result]
+```
+
+### Tests Needed
+- [ ] Test X to verify Y
+- [ ] Test Z to verify W
+
+### Risks/Unknowns
+- Thing 1 that needs verification
+- Thing 2 that might break
+```
+
+---

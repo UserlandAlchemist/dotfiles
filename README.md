@@ -1,65 +1,84 @@
 # Userland Dotfiles
 
-Declarative, host-specific configuration for Linux systems, designed for clarity, reproducibility, and long-term maintainability across a small ecosystem of independent machines (“the Wolfpack”).
+Configuration management for "the Wolfpack" — a small ecosystem of independent Linux systems managed using GNU Stow. Designed for clarity, reproducibility, and fast recovery.
 
 ---
 
-## Philosophy
+## What is this?
 
-These dotfiles follow a few core principles:
+This repository contains all configuration for multiple Debian-based hosts:
+- **audacious** — Main workstation (ZFS root, Sway, development + gaming)
+- **astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
+- **artful** — Cloud instance (Hetzner, currently inactive)
+- **steamdeck** — Portable system (limited dotfiles)
 
-- **Understandable systems** — everything is plain text, transparent, and easy to reason about.
-- **Repo-first** — prefer software provided by the system’s native package manager; avoid Snap, AppImage, and Flatpak layers to keep systems predictable and easy to recover.
-- **No wrappers or daemons** — configuration is managed directly through GNU Stow and standard tools.
-- **Per-host modularity** — each machine has its own isolated tree of configs and documentation.
-- **Fast recovery** — every host can be rebuilt entirely from its install docs, recovery notes, and stow packages.
-- **Sustainable design** — hardware is reused and cascaded between machines where possible, and systems sleep or shut down aggressively to reduce waste.
-
----
-
-## The Wolfpack
-
-Hostnames are named after Royal Navy submarines, and “Wolfpack” describes both the naming and the architecture: a group of independent, low-maintenance machines with clearly defined roles that cooperate without being tightly coupled.
-
-At the centre is **Audacious**, a full Linux workstation for development and general computing that also behaves like a console when gaming—fast to boot, minimal overhead, and powered off aggressively when not in use. Supporting it is **Astute**, a low-power server that provides storage, backups, and GPU fallback while sleeping whenever possible. **Artful** offers a lightweight cloud presence, and the **Steam Deck** acts as a portable companion system.
-
-Together these hosts form a small, efficient ecosystem: one powerful workstation supported by lean, purpose-built infrastructure, with no unnecessary overlap or complexity. It is a “workstation × homelab” hybrid rather than a traditional multi-server lab, prioritising clarity, sustainability, and low waste.
+Everything is plain text, version controlled, and deployable via GNU Stow. No configuration managers, no wrappers, no abstractions — just files that map directly to their target locations.
 
 ---
 
-## Distro choice
+## Architecture
 
-All hosts (except the SteamDeck) currently run **Debian 13 (Trixie)** as a practical baseline. Debian Stable offers excellent ZFS-on-root support, predictable behaviour for long-term systems, and is widely available on cloud providers such as Hetzner. Using the same distro across all machines reduces context switching and simplifies recovery. This is a pragmatic choice rather than a permanent requirement; the repo-first design of these dotfiles keeps them portable.
+### Package Organization
+
+Configuration is split into **per-host stow packages** using a consistent naming convention:
+
+**User-level packages** (deploy to `$HOME`):
+```
+<tool>-<hostname>/
+```
+Examples: `bash-audacious/`, `sway-audacious/`, `emacs-audacious/`
+
+**System-level packages** (deploy to `/`):
+```
+root-<concern>-<hostname>/
+```
+Examples: `root-power-audacious/`, `root-backup-audacious/`, `root-efisync-audacious/`
+
+**Shared configuration:**
+```
+profile-common/
+```
+Shell profile sourced first on all hosts.
+
+**Documentation:**
+```
+docs/<hostname>/
+```
+Per-host install guides, recovery procedures, and restore documentation.
+
+### Why Per-Host Packages?
+
+- **Independent recovery:** Each host can be rebuilt from its own packages without touching others
+- **No shared config drift:** Changes to one host never affect another
+- **Clear ownership:** Every file belongs to exactly one host
+- **Fast deployment:** Stow only the packages needed for the current host
 
 ---
 
-## Layout
+## Quick Start
 
-Each directory ending in `-<hostname>` defines configuration for a specific system.  
-The `docs/<hostname>/` directory contains its complete install, recovery, and restore guides.
-
----
-
-## How it works
-
-All configuration is linked into place using **GNU Stow**, ensuring each package can be safely applied or removed.
-
-Example:
+### Deploy user configuration
 
 ```bash
 cd ~/dotfiles
 stow bash-audacious bin-audacious sway-audacious waybar-audacious
-sudo stow --target=/ root-power-audacious root-efisync-audacious
 ```
 
-To restow after edits:
+### Deploy system configuration
+
+```bash
+sudo stow --target=/ root-power-audacious root-efisync-audacious
+sudo systemctl daemon-reload
+```
+
+### Restow after edits
 
 ```bash
 stow --restow bash-audacious bin-audacious
 sudo stow --restow --target=/ root-power-audacious
 ```
 
-To remove:
+### Remove packages
 
 ```bash
 stow -D sway-audacious waybar-audacious
@@ -68,33 +87,116 @@ sudo stow -D --target=/ root-power-audacious
 
 ---
 
-## Current Hosts
+## Key Subsystems
 
-| Host        | OS                       | Role |
-|-------------|---------------------------|------|
-| **audacious** | Debian 13 (Trixie)        | Main workstation (development + console-like gaming, ZFS root, Sway) |
-| **astute**    | Debian 13 (Trixie)        | Low-power server (NAS, backups, GPU fallback, suspend-on-idle) |
-| **artful**    | Debian Stable (Hetzner)   | Lightweight public cloud node (reverse proxy, demos, access) |
-| **steamdeck** | SteamOS                   | Portable auxiliary system and companion device |
+### NAS Wake-on-Demand (Audacious ↔ Astute)
+Multi-layer orchestration allowing Audacious to wake Astute from suspend, mount NFS storage, and prevent Astute from sleeping while in use.
 
+- User service: `astute-nas.service` (WOL + SSH + mount)
+- Bash helpers: `nas-open`, `nas-close`
+- Remote inhibitor: `nas-inhibit.service` on Astute
+- SSH forced commands for security
 
-## Documentation
+See: `nas-audacious/README.md`, `root-power-astute/README.md`
 
-Each host’s documentation lives under its own folder:
+### Intelligent Idle Shutdown (Audacious)
+Script triggered by `swayidle` after 20 minutes of inactivity. Checks for media playback, remote streaming, and systemd inhibitors before shutting down. Allows unattended work up to 90 minutes.
 
-- [`docs/audacious/README.audacious.md`](docs/audacious/README.audacious.md) — Overview for Audacious  
-- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Full install guide  
-- [`docs/audacious/RECOVERY.audacious.md`](docs/audacious/RECOVERY.audacious.md) — Boot and ZFS recovery  
-- [`docs/audacious/RESTORE.audacious.md`](docs/audacious/RESTORE.audacious.md) — Borg restore procedure  
+See: `bin-audacious/.local/bin/idle-shutdown.sh`
 
-Global reference:
-- [`docs/hosts-overview.md`](docs/hosts-overview.md)
+### Encrypted Backups (Audacious → Astute)
+Automated BorgBackup with systemd timers. Multiple daily backups, weekly integrity checks, monthly deep verification. SSH key authentication, encrypted repository.
+
+See: `borg-user-audacious/README.md`, `root-backup-audacious/README.md`
+
+### Dual EFI Synchronization (Audacious)
+Automatic mirroring of primary ESP to backup ESP whenever kernel images update. Both NVMe drives can boot independently.
+
+See: `root-efisync-audacious/README.md`
+
+### Boot Stack (Audacious)
+systemd-boot with Unified Kernel Images (UKI) instead of GRUB. ZFS root filesystem on encrypted RAID1.
+
+See: `docs/audacious/INSTALL.audacious.md`
+
+---
+
+## Documentation Map
+
+### Per-Host Guides
+Each host has complete rebuild documentation:
+
+**Audacious:**
+- [`docs/audacious/README.audacious.md`](docs/audacious/README.audacious.md) — Overview
+- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Full installation from scratch
+- [`docs/audacious/RECOVERY.audacious.md`](docs/audacious/RECOVERY.audacious.md) — Boot and ZFS recovery
+- [`docs/audacious/RESTORE.audacious.md`](docs/audacious/RESTORE.audacious.md) — Borg data restoration
+- [`docs/audacious/VANILLA-DIVERGENCE.md`](docs/audacious/VANILLA-DIVERGENCE.md) — Divergence from stock Debian
+- [`docs/audacious/DRIFT-CHECK.md`](docs/audacious/DRIFT-CHECK.md) — Package drift detection procedure
+- [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
+
+**Astute:**
+- [`docs/astute/INSTALL.astute.md`](docs/astute/INSTALL.astute.md) — Full installation from scratch
+- [`docs/astute/installed-software.astute.md`](docs/astute/installed-software.astute.md) — Complete package inventory
+
+### Network Reference
+- [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
+- [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
+
+### Development
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — Repository structure, conventions, and contributor guidelines
+
+---
+
+## Design Principles
+
+### Repo-First Philosophy
+- **Plain text configuration:** Everything versioned, transparent, understandable
+- **Standard Debian packages:** No Snaps, AppImages, or Flatpaks
+- **No wrappers or daemons:** Direct use of GNU Stow and systemd
+- **Explicit over clever:** Clear scripts and dependencies over abstraction
+
+### Per-Host Isolation
+- **Single-host recovery:** Each machine can be rebuilt independently
+- **No shared files:** Avoid config that blocks single-host recovery
+- **Documented divergence:** Track how systems differ from vanilla Debian
+
+### Secrets Management
+Never committed to git:
+- SSH keys (`ssh-*/.ssh/id_*`)
+- Borg passphrases (`borg-user-*/.config/borg/passphrase`)
+- API tokens (`.config/*/api.token`)
+- SSH known_hosts
+
+Recovery location: Encrypted USB key (blue) contains all secrets.
+
+---
+
+## The Wolfpack
+
+Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling.
+
+**Audacious** is the central workstation — powerful, fast-booting, aggressively powered off when idle. **Astute** provides storage and backups while sleeping whenever possible. **Artful** offers lightweight cloud presence. The **Steam Deck** acts as a portable companion.
+
+Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
+
+---
+
+## Distro Choice
+
+All hosts (except Steam Deck) run **Debian 13 (Trixie) Stable**. This provides:
+- Excellent ZFS-on-root support
+- Predictable long-term behavior
+- Wide cloud provider availability (Hetzner)
+- Reduced context switching across machines
+
+This is a pragmatic choice, not a permanent requirement. The repo-first design keeps dotfiles portable.
 
 ---
 
 ## License
 
-All original configuration, scripts, and documentation © Userland Alchemist.  
+All original configuration, scripts, and documentation © Userland Alchemist.
 Shared under the **MIT License** unless otherwise noted.
 
 ---
