@@ -370,7 +370,6 @@ stow profile-common bash-astute bin-astute nas-astute
 2. Deploy system packages:
 
 ```sh
-sudo stow --target=/ root-nas-astute root-power-astute
 sudo root-power-astute/install.sh
 ```
 

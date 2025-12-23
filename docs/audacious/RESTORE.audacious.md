@@ -240,7 +240,7 @@ sudo rsync -aHAXv /restore/etc/ /etc/
 
 ```sh
 cd ~/dotfiles
-sudo stow -t / root-power-audacious root-audacious-efisync \
+sudo stow -t / root-power-audacious root-efisync-audacious \
   root-cachyos-audacious root-network-audacious \
   root-backup-audacious root-proaudio-audacious
 sudo root-sudoers-audacious/install.sh
