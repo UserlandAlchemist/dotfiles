@@ -18,38 +18,70 @@
 
 ---
 
-## 1) Boot Debian Live ISO
+## §1 Boot Debian Live ISO
 
-Become root and install bootstrap tools:
+Prepare the live environment with tools needed for ZFS installation.
+
+Steps:
+1. Boot the Debian 13 (Trixie) Live ISO.
+2. Become root:
 
 ```sh
 sudo -i
+```
+
+3. Enable contrib and non-free-firmware:
+
+```sh
 sed -i 's/main/main contrib non-free-firmware/' /etc/apt/sources.list
 apt update
+```
+
+4. Install bootstrap tools:
+
+```sh
 apt install -y debootstrap gdisk zfsutils-linux \
                systemd-boot systemd-ukify \
                dosfstools rsync git stow
 ```
 
+Expected result: Live environment ready with ZFS and boot tooling.
+
 ---
 
-## 2) Partition disks
+## §2 Partition disks
+
+Create EFI System Partitions and ZFS partitions on both NVMe drives.
+
+Steps:
+1. Partition first NVMe:
 
 ```sh
 sgdisk --zap-all /dev/nvme0n1
 sgdisk -n1:1M:+512M -t1:EF00 -c1:"EFI System" /dev/nvme0n1
 sgdisk -n2:0:0     -t2:BF01 -c2:"ZFS"         /dev/nvme0n1
 mkfs.vfat -F32 /dev/nvme0n1p1
+```
 
+2. Partition second NVMe:
+
+```sh
 sgdisk --zap-all /dev/nvme1n1
 sgdisk -n1:1M:+512M -t1:EF00 -c1:"EFI System" /dev/nvme1n1
 sgdisk -n2:0:0     -t2:BF01 -c2:"ZFS"         /dev/nvme1n1
 mkfs.vfat -F32 /dev/nvme1n1p1
 ```
 
+Expected result: Both NVMe drives have 512MB ESP and remaining space for ZFS.
+
 ---
 
-## 3) Create ZFS pool
+## §3 Create ZFS pool
+
+Create encrypted ZFS mirror pool with optimized settings.
+
+Steps:
+1. Create the pool:
 
 ```sh
 zpool create -o ashift=12 \
@@ -61,9 +93,9 @@ zpool create -o ashift=12 \
   rpool mirror /dev/nvme0n1p2 /dev/nvme1n1p2
 ```
 
-**Why:** `ashift=12` matches 4K sectors. `compression=lz4` chosen over default (off) for reduced write amplification and free space savings with negligible CPU overhead on NVMe. `encryption=aes-256-gcm` provides AEAD.
+**Why:** `ashift=12` matches 4K sectors. `compression=lz4` reduces write amplification with negligible CPU overhead. `encryption=aes-256-gcm` provides AEAD encryption.
 
-Create datasets:
+2. Create datasets:
 
 ```sh
 zfs create -o mountpoint=none                 rpool/ROOT
@@ -74,15 +106,22 @@ zfs create -o mountpoint=/srv                 rpool/SRV
 zfs mount rpool/ROOT/debian
 ```
 
+Expected result: Pool created and root dataset mounted at /mnt.
+
 ---
 
-## 4) Bootstrap Debian
+## §4 Bootstrap Debian
+
+Install minimal Debian Trixie base system into ZFS.
+
+Steps:
+1. Run debootstrap:
 
 ```sh
 debootstrap --arch=amd64 trixie /mnt http://deb.debian.org/debian
 ```
 
-Bind mounts and chroot prep:
+2. Prepare chroot environment:
 
 ```sh
 mount --rbind /dev  /mnt/dev
@@ -92,12 +131,24 @@ mount /dev/nvme0n1p1 /mnt/boot/efi
 mkdir -p /mnt/boot/efi-backup
 mount /dev/nvme1n1p1 /mnt/boot/efi-backup
 cp /etc/resolv.conf /mnt/etc/resolv.conf
+```
+
+3. Enter chroot:
+
+```sh
 chroot /mnt /bin/bash
 ```
 
+Expected result: Inside chroot with network access and both ESPs mounted.
+
 ---
 
-## 5) APT sources
+## §5 Configure APT sources
+
+Set up package repositories for Debian Trixie.
+
+Steps:
+1. Create sources.list:
 
 ```ini
 # /etc/apt/sources.list
@@ -106,58 +157,123 @@ deb http://security.debian.org/debian-security trixie-security main contrib non-
 deb http://deb.debian.org/debian trixie-updates main contrib non-free-firmware
 ```
 
+2. Update package index:
+
 ```sh
 apt update
 ```
 
+Expected result: APT configured with Trixie repositories.
+
 ---
 
-## 6) Base system
+## §6 Install base system
+
+Install kernel, ZFS support, and standard utilities.
+
+Steps:
+1. Install essential packages:
 
 ```sh
 apt install -y linux-image-amd64 linux-headers-amd64 \
                initramfs-tools zfs-initramfs tasksel
+```
+
+2. Install standard system utilities:
+
+```sh
 tasksel install standard
 ```
 
+Expected result: Bootable kernel and ZFS initramfs support installed.
+
 ---
 
-## 7) System identity
+## §7 Configure system identity
+
+Set hostname, hosts file, and locale configuration.
+
+Steps:
+1. Set hostname:
 
 ```sh
 echo audacious > /etc/hostname
+```
+
+2. Configure hosts file:
+
+```sh
 cat > /etc/hosts <<'EOF'
 127.0.0.1   localhost
 127.0.1.1   audacious
 EOF
+```
+
+3. Install and configure locales:
+
+```sh
 apt install -y locales console-setup keyboard-configuration
 dpkg-reconfigure locales console-setup keyboard-configuration
 ```
 
+Expected result: System identity configured with proper locale settings.
+
 ---
 
-## 8) User and sudo
+## §8 Create user and enable sudo
+
+Create the primary user account with sudo access.
+
+Steps:
+1. Install sudo:
 
 ```sh
 apt install -y sudo
+```
+
+2. Create user:
+
+```sh
 useradd -m -s /bin/bash alchemist
 passwd alchemist
+```
+
+3. Add user to required groups:
+
+```sh
 usermod -aG sudo,audio,video,input,systemd-journal alchemist
 ```
 
+Expected result: User `alchemist` can log in and use sudo.
+
 ---
 
-## 9) Network
+## §9 Configure network
 
-**Why systemd-networkd:** Consistent with systemd-boot, no NetworkManager complexity.
+Set up systemd-networkd for wired ethernet connectivity.
+
+**Why systemd-networkd:** Consistent with systemd-boot philosophy, avoids NetworkManager complexity.
+
+Steps:
+1. Install networking tools:
 
 ```sh
 apt install -y systemd-networkd systemd-resolved
+```
+
+2. Enable services:
+
+```sh
 systemctl enable systemd-networkd systemd-resolved
+```
+
+3. Link resolved stub:
+
+```sh
 ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 ```
 
-DHCP wired config (replace `Name=` with actual NIC from `ip link`):
+4. Create wired network configuration (replace `Name=` with actual interface from `ip link`):
 
 ```ini
 # /etc/systemd/network/20-wired.network
@@ -170,21 +286,35 @@ DHCP=yes
 
 **Note:** This will be overridden by `root-network-audacious` during dotfiles deployment.
 
+Expected result: DHCP networking configured for primary ethernet interface.
+
 ---
 
-## 10) Firmware
+## §10 Install firmware
+
+Install AMD graphics, Intel microcode, and network card firmware.
+
+Steps:
+1. Install firmware packages:
 
 ```sh
 apt install -y firmware-amd-graphics intel-microcode firmware-realtek
 ```
 
-For AMD CPUs: `apt install -y amd64-microcode`
+**Note:** For AMD CPUs, also install: `apt install -y amd64-microcode`
+
+Expected result: GPU, CPU, and NIC firmware available for hardware initialization.
 
 ---
 
-## 11) Initramfs + UKI
+## §11 Configure initramfs and UKI
 
-**Why initramfs-tools:** Reliable ZFS encrypted pool unlocking (multiple vdevs) before import.
+Set up initramfs-tools to generate Unified Kernel Images for ZFS encrypted pool unlock.
+
+**Why initramfs-tools:** Provides reliable ZFS encrypted pool unlocking with multiple vdevs.
+
+Steps:
+1. Configure kernel install layout:
 
 ```ini
 # /etc/kernel/install.conf
@@ -193,27 +323,45 @@ initrd_generator=initramfs-tools
 uki_generator=ukify
 ```
 
+2. Configure UKI generator:
+
 ```ini
 # /etc/kernel/uki.conf
 [UKI]
 Cmdline=@/etc/kernel/cmdline
 ```
 
+3. Set kernel command line:
+
 ```sh
 echo "root=ZFS=rpool/ROOT/debian rw quiet splash" > /etc/kernel/cmdline
+```
+
+4. Generate initramfs and UKI:
+
+```sh
 update-initramfs -u -k all
 kernel-install add "$(uname -r)" /boot/vmlinuz-$(uname -r)
 ```
 
-**Note:** systemd may auto-append `systemd.machine_id=<uuid>` to the kernel cmdline at runtime.
+**Note:** systemd may auto-append `systemd.machine_id=<uuid>` to cmdline at runtime.
+
+Expected result: UKI generated at `/boot/efi/EFI/Linux/*.efi` with ZFS unlock support.
 
 ---
 
-## 12) systemd-boot
+## §12 Install systemd-boot
+
+Install systemd-boot bootloader to both EFI System Partitions.
+
+Steps:
+1. Install bootloader:
 
 ```sh
 bootctl install
 ```
+
+2. Configure loader:
 
 ```ini
 # /boot/efi/loader/loader.conf
@@ -223,17 +371,28 @@ console-mode auto
 editor no
 ```
 
-Set default entry:
+3. Set default boot entry:
 
 ```sh
 bootctl set-default "$(bootctl list | awk '/\.efi/{print $2; exit}')"
 ```
 
+Expected result: systemd-boot installed and configured with generated UKI as default.
+
 ---
 
-## 13) Dual ESP setup
+## §13 Configure dual ESP
 
-Add both ESPs to fstab. Get UUIDs from `blkid /dev/nvme0n1p1 /dev/nvme1n1p1`:
+Add both EFI System Partitions to fstab for redundancy.
+
+Steps:
+1. Get ESP UUIDs:
+
+```sh
+blkid /dev/nvme0n1p1 /dev/nvme1n1p1
+```
+
+2. Add to fstab (replace UUIDs with actual values):
 
 ```ini
 # /etc/fstab
@@ -241,39 +400,53 @@ UUID=<nvme0-or-nvme1-p1>   /boot/efi        vfat  umask=0077,shortname=winnt  0 
 UUID=<nvme0-or-nvme1-p1>   /boot/efi-backup vfat  umask=0077,shortname=winnt  0  1
 ```
 
-**Note:** Either NVMe can be primary; efi-sync keeps them identical. Order doesn't matter.
-
+**Note:** Either NVMe can be primary. `efi-sync.path` keeps them identical.
 **Note:** `efi-sync.path` will be enabled during dotfiles deployment.
+
+Expected result: Both ESPs configured in fstab for automatic mounting.
 
 ---
 
-## 14) Third-party APT repositories (optional)
+## §14 Add third-party repositories
 
-Add extra repositories needed for Jellyfin and Prism Launcher packages.
+Configure additional package sources for Jellyfin and Prism Launcher.
 
-Jellyfin repo:
+Steps:
+1. Set up Jellyfin repository:
 
 ```sh
 mkdir -p /usr/share/keyrings
-curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/debian trixie main" > /etc/apt/sources.list.d/jellyfin.list
+curl -fsSL https://repo.jellyfin.org/jellyfin_team.gpg.key | \
+  gpg --dearmor -o /usr/share/keyrings/jellyfin.gpg
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/jellyfin.gpg] https://repo.jellyfin.org/debian trixie main" \
+  > /etc/apt/sources.list.d/jellyfin.list
 ```
 
-Prism Launcher repo (keyring is manually installed at `/usr/share/keyrings/prismlauncher-archive-keyring.gpg`):
+2. Set up Prism Launcher repository:
+
+**Note:** The keyring must be manually installed at `/usr/share/keyrings/prismlauncher-archive-keyring.gpg` (not owned by any package).
 
 ```sh
-echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" > /etc/apt/sources.list.d/prismlauncher.list
+echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" \
+  > /etc/apt/sources.list.d/prismlauncher.list
 ```
 
-Update package metadata:
+3. Update package metadata:
 
 ```sh
 apt update
 ```
 
+Expected result: Third-party repositories configured for Jellyfin and Prism Launcher packages.
+
 ---
 
-## 15) Desktop packages
+## §15 Install desktop environment
+
+Install Sway compositor and essential desktop packages.
+
+Steps:
+1. Install desktop packages:
 
 ```sh
 apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland \
@@ -284,7 +457,11 @@ apt install -y sway swaybg swayidle swaylock waybar wofi mako-notifier xwayland 
                borgbackup nfs-common wakeonlan zathura
 ```
 
-Autologin to TTY1:
+2. Configure autologin to TTY1:
+
+```sh
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+```
 
 ```ini
 # /etc/systemd/system/getty@tty1.service.d/override.conf
@@ -293,33 +470,40 @@ ExecStart=
 ExecStart=-/sbin/agetty --autologin alchemist --noclear %I $TERM
 ```
 
+Expected result: Sway desktop environment installed with autologin configured.
+
 ---
 
-## 16) Dotfiles deployment
+## §16 Deploy dotfiles
 
-**Goal:** Deploy modular per-host configuration. User packages to `$HOME`, system packages to `/`. Some directories must be real (not symlinks) to hold local secrets or runtime state.
+Deploy modular per-host configuration using GNU Stow.
+
+**Goal:** User packages to `$HOME`, system packages to `/`. Real directories for secrets.
+
+Steps:
+1. Switch to user account:
 
 ```sh
 su - alchemist
 cd ~/dotfiles
 ```
 
-### Create real directories for secrets
+2. Create real directories for secrets:
 
 ```sh
 mkdir -p ~/.ssh ~/.config/psd ~/.config/borg
 chmod 700 ~/.ssh ~/.config/borg
 ```
 
-**Why:** SSH keys and Borg passphrase are local secrets, never committed. PSD writes runtime state that shouldn't touch the repo.
+**Why:** SSH keys and Borg passphrase are local secrets never committed. PSD writes runtime state.
 
-Remove default profile if present:
+3. Remove default profile if present:
 
 ```sh
 test -f ~/.profile && mv ~/.profile ~/.profile.bak
 ```
 
-### Deploy user packages
+4. Deploy user packages:
 
 ```sh
 stow profile-common bash-audacious bin-audacious emacs-audacious \
@@ -329,21 +513,21 @@ stow profile-common bash-audacious bin-audacious emacs-audacious \
      borg-user-audacious nas-audacious pipewire-audacious mimeapps-audacious
 ```
 
-Create Borg passphrase:
+5. Create Borg passphrase:
 
 ```sh
 editor ~/.config/borg/passphrase
 chmod 600 ~/.config/borg/passphrase
 ```
 
-Verify:
+6. Verify user deployment:
 
 ```sh
 ls -l ~/.bashrc ~/.local/bin/idle-shutdown.sh ~/.config/sway/config  # should be symlinks
 test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
 ```
 
-### Deploy system packages
+7. Deploy system packages:
 
 ```sh
 sudo stow -t / root-power-audacious root-audacious-efisync \
@@ -352,9 +536,9 @@ sudo stow -t / root-power-audacious root-audacious-efisync \
 sudo root-sudoers-audacious/install.sh
 ```
 
-**Why install.sh:** Sudoers files require `root:root 0440` ownership, which stow can't set.
+**Why install.sh:** Sudoers files require `root:root 0440` ownership which stow cannot set.
 
-Enable services:
+8. Enable services:
 
 ```sh
 sudo systemctl daemon-reload
@@ -366,7 +550,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 sudo sysctl --system
 ```
 
-Verify:
+9. Verify system deployment:
 
 ```sh
 systemctl status powertop.service efi-sync.path
@@ -376,6 +560,8 @@ systemctl list-timers | grep zfs-scrub
 sysctl vm.swappiness  # should return 60
 ip link show enp7s0   # should be managed by networkd
 ```
+
+Expected result: All dotfiles deployed, services enabled, timers scheduled.
 
 ### Package reference
 
@@ -412,112 +598,144 @@ ip link show enp7s0   # should be managed by networkd
 
 ---
 
-## 17) NAS setup (Astute integration)
+## §17 Configure NAS integration
 
-**Goal:** Audacious can wake Astute on-demand for NFS storage, with automatic sleep inhibitor to prevent Astute suspending while NAS is active.
+Set up wake-on-demand NFS mounting with Astute NAS server and sleep inhibitor.
 
-### NFS mount
+**Goal:** Audacious wakes Astute on-demand for storage, prevents Astute suspension during NAS use.
 
-Add to fstab:
+Steps:
+1. Add NFS mount to fstab:
 
 ```sh
 echo "astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0" | sudo tee -a /etc/fstab
 sudo mkdir -p /srv/astute
 ```
 
-**Why noauto:** Mount controlled by systemd (srv-astute.mount) triggered by `nas-open` bash function.
+**Why noauto:** Mount controlled by systemd (`srv-astute.mount`) triggered via `nas-open` function.
 
-### SSH key for NAS inhibitor
-
-Generate dedicated SSH key for NAS control (no passphrase, restricted command):
+2. Generate dedicated SSH key for NAS control:
 
 ```sh
-ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_astute_nas -C "audacious to astute NAS inhibit" -N ""
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_astute_nas -C "audacious-nas" -N ""
 ```
 
-Copy public key to encrypted USB backup key for recovery.
+3. Copy public key to encrypted USB for recovery.
 
-**On Astute**, add to `~/.ssh/authorized_keys`:
+4. On Astute, add to `~/.ssh/authorized_keys`:
 
 ```
-command="/usr/local/libexec/astute-nas-inhibit.sh",no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-pty ssh-ed25519 AAAA...KEY... audacious to astute NAS inhibit
+command="/usr/local/libexec/astute-nas-inhibit.sh",restrict ssh-ed25519 AAAA...KEY... audacious-nas
 ```
 
-**Why forced command:** SSH key can only toggle the sleep inhibitor, nothing else.
+**Why forced command:** SSH key can only toggle sleep inhibitor, nothing else.
 
-### Verify NAS functions
-
-**On Audacious:**
+5. Test NAS functions:
 
 ```sh
-source ~/.bashrc.d/30-astute.sh
-nas-open   # wakes astute, enables inhibitor, mounts /srv/astute, cd to mount
-ls         # should show NAS contents
-nas-close  # unmounts, disables inhibitor, allows astute to suspend
+source ~/.bashrc.d/50-nas-helpers.sh
+nas-open   # wakes astute, enables inhibitor, mounts /srv/astute
+ls /srv/astute
+nas-close  # unmounts, disables inhibitor
 ```
 
-Check inhibitor on Astute:
+6. Verify inhibitor on Astute:
 
 ```sh
 ssh astute 'systemctl status nas-inhibit.service'
 ```
 
-Should show active while NAS is open, inactive after close.
+Expected result: NAS wake-on-demand working, inhibitor active during use, inactive after close.
 
 ---
 
-## 18) Python toolchain (optional)
+## §18 Install Python toolchain
+
+Install uv for modern Python package management.
+
+Steps:
+1. Install uv:
 
 ```sh
 curl -Ls https://astral.sh/uv/install.sh | sh
 ```
 
-Installs `uv` and `uvx` to `~/.local/bin`. Verify: `uv --version`
+2. Verify installation:
+
+```sh
+uv --version
+```
+
+Expected result: `uv` and `uvx` available in `~/.local/bin`.
 
 ---
 
-## 19) Swap (optional)
+## §19 Configure swap
 
-For hibernation or low-memory scenarios:
+Create ZFS swap volume for hibernation or low-memory scenarios.
+
+Steps:
+1. Create swap zvol:
 
 ```sh
 zfs create -V 8G -b 4K -o compression=off -o logbias=throughput \
   -O sync=always -O primarycache=metadata -O secondarycache=none \
   rpool/swap
+```
+
+2. Format and enable swap:
+
+```sh
 mkswap /dev/zvol/rpool/swap
 echo "/dev/zvol/rpool/swap none swap defaults,pri=10 0 0" >> /etc/fstab
 ```
 
-**Note:** With 32GB RAM + zram, disk swap is rarely needed. Swappiness set to 60 in root-cachyos-audacious.
+**Note:** With 32GB RAM + zram, disk swap is rarely needed. Swappiness set to 60 in `root-cachyos-audacious`.
+
+Expected result: 8GB swap volume available for low-memory conditions.
 
 ---
 
-## 20) ZFS hostid
+## §20 Set ZFS hostid
 
-Prevent import warnings:
+Prevent pool import warnings by setting consistent hostid.
+
+Steps:
+1. Generate hostid:
 
 ```sh
 zgenhostid -f $(hostid)
 ```
 
+Expected result: `/etc/hostid` created, prevents ZFS import warnings.
+
 ---
 
-## 21) Finalize and reboot
+## §21 Finalize and reboot
+
+Exit chroot, export pool, and boot into new system.
+
+Steps:
+1. Exit chroot:
 
 ```sh
-exit  # leave chroot
+exit
+```
+
+2. Unmount and export:
+
+```sh
 umount -Rl /mnt
 zpool export rpool
+```
+
+3. Reboot:
+
+```sh
 reboot
 ```
 
-System should:
-1. Prompt for ZFS passphrase at boot
-2. Boot via systemd-boot UKI
-3. Autologin to TTY1 as alchemist
-4. Launch Sway automatically
-
-Verify boot:
+4. After reboot, verify system:
 
 ```sh
 zpool status                # both nvme devices online
@@ -525,6 +743,8 @@ bootctl list                # UKI present and set as default
 systemctl --failed          # should be empty
 systemctl list-timers       # borg timers scheduled
 ```
+
+Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, autologins to Sway.
 
 ---
 
