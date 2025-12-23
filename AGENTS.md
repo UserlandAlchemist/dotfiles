@@ -3,7 +3,7 @@
 ## Project Structure & Module Organization
 GNU Stow dotfiles for multiple hosts (audacious, astute, artful, steamdeck).
 - User packages: `<tool>-<hostname>/` (e.g., `bash-audacious/`, `sway-audacious/`) → `$HOME`.
-- System packages: `root-<concern>-<hostname>/` or `root-<hostname>-<concern>/` → `/` (naming drift exists).
+- System packages: `root-<concern>-<hostname>/` → `/`.
 - Shared profile: `profile-common/`.
 - Docs: `docs/<hostname>/` with `INSTALL`, `RECOVERY`, `RESTORE`.
 
@@ -17,7 +17,7 @@ GNU Stow dotfiles for multiple hosts (audacious, astute, artful, steamdeck).
 ## Coding Style & Naming Conventions
 - Plain bash + systemd; no wrappers or daemons.
 - Host-specific config; avoid shared files that block single-host recovery.
-- Package naming as above; `root-*` drift is known.
+- Package naming as above; consistent `root-<concern>-<host>` pattern.
 - Never commit secrets (SSH keys, borg passphrases, tokens).
 
 ## Testing Guidelines
