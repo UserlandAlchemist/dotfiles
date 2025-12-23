@@ -42,6 +42,30 @@ CODEX-INSTRUCTIONS.txt
 
 # --- Sensitive / host-local data (never commit) ---
 
+# SSH keys and credentials
+ssh-*/.ssh/id_*
+ssh-*/.ssh/*_rsa
+ssh-*/.ssh/*_dsa
+ssh-*/.ssh/*_ecdsa
+ssh-*/.ssh/*_ed25519
+ssh-*/.ssh/known_hosts
+ssh-*/.ssh/authorized_keys
+
+# SSH keys in any location (catch accidental copies)
+**/id_rsa
+**/id_dsa
+**/id_ecdsa
+**/id_ed25519
+
+# API tokens and secrets
+**/*.token
+**/*.secret
+**/secrets.json
+**/credentials.json
+**/.env
+**/.env.local
+**/.env.*.local
+
 # Borg encryption key and metadata (host-specific)
 borg-user-*/.config/borg/passphrase
 borg-user-*/.config/borg/security/
@@ -49,10 +73,37 @@ borg-user-*/.config/borg/security/
 # PSD runtime state file (can include absolute paths)
 */.config/psd/.psd.conf
 
-# Disallow committing secrets if they ever get copied in by accident
-ssh-*/.ssh/id_*
-ssh-*/.ssh/known_hosts
-ssh-*/.ssh/authorized_keys
-ssh-*/.ssh/*.pub~bin-audacious/.local/bin/prismlauncher
-icons-audacious/.local/share/icons/minecraft.png
-bin-audacious/.local/bin/prismlauncher
+# --- Cache and build artifacts ---
+
+# Python
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+**/*.egg-info/
+
+# Node
+**/node_modules/
+
+# General caches
+**/.cache/
+
+# Build artifacts
+**/build/
+**/dist/
+
+# Compiled files
+**/*.o
+**/*.so
+**/*.dylib
+
+# --- Session and lock files ---
+
+# Vim
+**/.netrwhist
+**/Session.vim
+
+# Lock files (may contain absolute paths)
+**/*.lock
