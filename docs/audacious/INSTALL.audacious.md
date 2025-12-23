@@ -434,7 +434,7 @@ wget -q https://prism-launcher-for-debian.github.io/repo/prismlauncher.gpg \
 Then add the repository:
 
 ```sh
-echo "deb [signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" \
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/prismlauncher-archive-keyring.gpg] https://prism-launcher-for-debian.github.io/repo trixie main" \
   > /etc/apt/sources.list.d/prismlauncher.list
 ```
 
