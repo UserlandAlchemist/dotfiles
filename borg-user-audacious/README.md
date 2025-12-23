@@ -3,7 +3,7 @@
 Per-user BorgBackup configuration for audacious.
 
 This package defines the user-level environment and non-secret configuration
-required by the systemd timers from `backup-systemd-audacious`.
+required by the systemd timers from `root-backup-audacious`.
 
 Contents:
 - `.config/borg/env` — systemd-style environment variables for Borg
@@ -109,5 +109,5 @@ any Borg command to ensure the target system (`astute`) is reachable.
 
 ## Related packages
 
-- `backup-systemd-audacious/` — systemd service and timer units that invoke Borg
+- `root-backup-audacious/` — systemd service and timer units that invoke Borg
 - `ssh-audacious/` — SSH configuration containing the backup key used by Borg

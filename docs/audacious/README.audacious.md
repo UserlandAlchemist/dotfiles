@@ -1,6 +1,6 @@
-# Dotfiles — audacious (Debian 13 “Trixie”)
+# Dotfiles — audacious (Debian 13 "Trixie")
 
-A reproducible desktop configuration for a Debian Trixie system running on ZFS.  
+A reproducible desktop configuration for a Debian Trixie system running on ZFS.
 Built to stay fast, understandable, and fixable.
 
 ---
@@ -16,7 +16,7 @@ These dotfiles define the environment for the host **audacious**, using:
 - **GNU Stow** for configuration management
 - **Amiga-style fonts and cursors**
 
-Everything here is plain text, versioned, and mapped directly to where it belongs in the filesystem.  
+Everything here is plain text, versioned, and mapped directly to where it belongs in the filesystem.
 No external configuration managers, wrappers, or packaging systems.
 
 ---
@@ -25,14 +25,14 @@ No external configuration managers, wrappers, or packaging systems.
 
 The system follows what I call the *Workbenchian* approach — influenced by the Amiga Workbench look and workflow, but designed for modern hardware and software.
 
-- **Minimal dependencies:** standard Debian packages only. No Snaps, AppImages, or Flatpaks.  
-- **Keyboard-driven:** sway, lf, foot, and mako form the core workflow.  
-- **Low friction:** fast startup, low power draw, minimal background noise.  
-- **Dark and readable:** consistent palette for day-long use.  
-- **Retro, not nostalgic:** classic shapes and typefaces, but without dated cruft.  
+- **Minimal dependencies:** standard Debian packages only. No Snaps, AppImages, or Flatpaks.
+- **Keyboard-driven:** sway, lf, foot, and mako form the core workflow.
+- **Low friction:** fast startup, low power draw, minimal background noise.
+- **Dark and readable:** consistent palette for day-long use.
+- **Retro, not nostalgic:** classic shapes and typefaces, but without dated cruft.
 - **Directness over automation:** small scripts, no layers of abstraction.
 
-The goal isn’t to make Linux look like AmigaOS — it’s to keep the same sense of immediacy and control.
+The goal isn't to make Linux look like AmigaOS — it's to keep the same sense of immediacy and control.
 
 ---
 
@@ -51,21 +51,43 @@ Any change here must be recorded in the audio notes (version, source, install st
 
 ## Structure
 
+### User-level packages (deploy to $HOME)
 ```
-bash-audacious/          → Shell configuration (.bashrc, .bash_profile)
+ardour-audacious/        → DAW configuration
+bash-audacious/          → Shell configuration (.bashrc, .bash_profile, drop-ins)
 bin-audacious/           → Personal scripts (~/.local/bin)
 borg-user-audacious/     → Borg config and patterns
-backup-systemd-audacious/→ Borg systemd units and timers
 emacs-audacious/         → Editor configuration and custom theme
-etc-cachyos-audacious/   → Kernel, sysctl, and audio tuning
-etc-power-audacious/     → Power and udev rules, powertop setup
-etc-systemd-audacious/   → Core systemd units (EFI sync, boot)
+environment-audacious/   → Environment variables
 fonts-audacious/         → Amiga + Nerd Fonts
+foot-audacious/          → Terminal emulator config
+git-audacious/           → Git configuration
 icons-audacious/         → Amiga-style cursor theme
-sway-audacious/, waybar-audacious/, wofi-audacious/ → Wayland desktop configuration
+lf-audacious/            → Terminal file manager config
+mako-audacious/          → Notification daemon config
+mimeapps-audacious/      → Default application associations
+nas-audacious/           → NAS wake-on-demand orchestration (user service)
+ncmpcpp-audacious/       → Music player client config
+picard-audacious/        → Music tagger config
+pipewire-audacious/      → Audio routing and pro-audio latency config
+psd-audacious/           → Profile-sync-daemon config
+sway-audacious/          → Wayland compositor config
+waybar-audacious/        → Status bar config
+wofi-audacious/          → Application launcher config
 ```
 
-System-level trees (`etc-*-audacious`, `backup-systemd-audacious`) require `sudo` when stowing.
+### System-level packages (deploy to / with sudo)
+```
+root-backup-audacious/   → Borg systemd units and timers
+root-cachyos-audacious/  → Kernel, sysctl, and I/O scheduler tuning
+root-efisync-audacious/  → Dual ESP synchronization (efi-sync.path, efi-sync.service)
+root-network-audacious/  → systemd-networkd wired ethernet config
+root-power-audacious/    → Power management (powertop, USB autosuspend, SATA power)
+root-proaudio-audacious/ → Real-time audio kernel tuning (rtprio limits)
+root-sudoers-audacious/  → Passwordless sudo for NAS mount control
+```
+
+System-level packages (`root-*-audacious`) require `sudo stow --target=/` when deploying.
 
 ---
 
@@ -76,32 +98,32 @@ Clone and deploy:
 ```bash
 cd ~/dotfiles
 stow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
-sudo stow --target=/ etc-systemd-audacious etc-power-audacious
+sudo stow --target=/ root-power-audacious root-efisync-audacious root-cachyos-audacious
 ```
 
 Restow after changes or reinstalls:
 
 ```bash
 stow --restow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
-sudo stow --restow --target=/ etc-systemd-audacious etc-power-audacious
+sudo stow --restow --target=/ root-power-audacious root-efisync-audacious
 ```
 
 Remove a module:
 
 ```bash
 stow -D sway-audacious waybar-audacious wofi-audacious
-sudo stow -D --target=/ etc-systemd-audacious
+sudo stow -D --target=/ root-efisync-audacious
 ```
 
 ---
 
 ## System Services
 
-Defined under `etc-systemd-audacious` and `etc-power-audacious`:
+Defined under `root-*-audacious` packages:
 
 | Service | Description |
 |----------|-------------|
-| `efi-sync.path` / `.service` | Keeps EFI partitions mirrored |
+| `efi-sync.path` / `.service` | Keeps dual EFI partitions mirrored |
 | `powertop.service` | Applies power settings on boot |
 | `usb-nosuspend.service` | Prevents input device autosuspend |
 | `borg-backup.timer` | Runs regular Borg backups |
@@ -130,19 +152,19 @@ journalctl -u borg-backup.service -n 20
 
 Documentation for setup and recovery:
 
-- [`INSTALL.audacious.md`](INSTALL.audacious.md) — clean installation  
-- [`RECOVERY.audacious.md`](RECOVERY.audacious.md) — boot and ZFS repair  
+- [`INSTALL.audacious.md`](INSTALL.audacious.md) — clean installation
+- [`RECOVERY.audacious.md`](RECOVERY.audacious.md) — boot and ZFS repair
 - [`RESTORE.audacious.md`](RESTORE.audacious.md) — Borg data restore
 
 ---
 
 ## Notes
 
-- User: **alchemist**  
-- Host: **audacious**  
-- Filesystem: **ZFS**  
-- Bootloader: **systemd-boot (UKI)**  
-- OS: **Debian 13 (Trixie)**  
+- User: **alchemist**
+- Host: **audacious**
+- Filesystem: **ZFS**
+- Bootloader: **systemd-boot (UKI)**
+- OS: **Debian 13 (Trixie)**
 - Kernel: **6.10+**
 
 This system is meant to stay understandable years later — the fewer moving parts, the better.
@@ -151,5 +173,5 @@ This system is meant to stay understandable years later — the fewer moving par
 
 ## License
 
-All original configuration and scripts © Userland Alchemist.  
+All original configuration and scripts © Userland Alchemist.
 Shared under the MIT License unless otherwise stated.

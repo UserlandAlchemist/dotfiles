@@ -49,19 +49,21 @@ Example:
 ```bash
 cd ~/dotfiles
 stow bash-audacious bin-audacious sway-audacious waybar-audacious
-sudo stow --target=/ etc-systemd-audacious etc-power-audacious
+sudo stow --target=/ root-power-audacious root-efisync-audacious
 ```
 
 To restow after edits:
 
 ```bash
 stow --restow bash-audacious bin-audacious
+sudo stow --restow --target=/ root-power-audacious
 ```
 
 To remove:
 
 ```bash
 stow -D sway-audacious waybar-audacious
+sudo stow -D --target=/ root-power-audacious
 ```
 
 ---

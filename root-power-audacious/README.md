@@ -1,4 +1,4 @@
-# etc-power-audacious
+# root-power-audacious
 
 System power and latency tuning for **audacious**.
 
@@ -12,7 +12,7 @@ This stow package installs:
 
 Run as root:
 
-    sudo stow --target=/ etc-power-audacious
+    sudo stow --target=/ root-power-audacious
     sudo systemctl daemon-reload
     sudo systemctl enable --now powertop.service usb-nosuspend.service
     sudo udevadm control --reload-rules
