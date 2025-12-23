@@ -530,7 +530,7 @@ test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
 7. Deploy system packages:
 
 ```sh
-sudo stow -t / root-power-audacious root-audacious-efisync \
+sudo stow -t / root-power-audacious root-efisync-audacious \
              root-cachyos-audacious root-network-audacious \
              root-backup-audacious root-proaudio-audacious
 sudo root-sudoers-audacious/install.sh
@@ -589,7 +589,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled.
 | `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
 | `ardour-audacious` | user | DAW config (optional) |
 | `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
-| `root-audacious-efisync` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
+| `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
 | `root-network-audacious` | system | systemd-networkd wired ethernet config with MAC-based link naming |
 | `root-backup-audacious` | system | Borg systemd timers (backup daily, check weekly, deep-check monthly) |

@@ -21,7 +21,7 @@ The repository uses per-host stow packages with a specific naming convention:
 **System-level packages** (deployed with `sudo stow --target=/ <package>`):
 - Format: `root-<concern>-<hostname>/` OR `root-<hostname>-<concern>/` (inconsistent - being standardized)
 - Install to: `/` (system root)
-- Examples: `root-power-audacious/`, `root-audacious-efisync/`, `root-backup-audacious/`
+- Examples: `root-power-audacious/`, `root-efisync-audacious/`, `root-backup-audacious/`
 
 **Special cases:**
 - `profile-common/` - Shared shell profile deployed first on all hosts
@@ -88,7 +88,7 @@ Multi-layer orchestration allowing Audacious to wake Astute for NAS access, then
   - `nas-close` → stops service (unmounts, SSH stop command)
   - `ssh-astute` → WOL + SSH convenience wrapper
 
-**Astute side** (`root-nas-astute/`, `root-power-astute/`):
+**Astute side** (`root-power-astute/`):
 - SSH forced command: `/usr/local/libexec/astute-nas-inhibit.sh`
   - Accepts only `start` or `stop` via `SSH_ORIGINAL_COMMAND`
   - Calls `sudo systemctl start/stop nas-inhibit.service`
@@ -154,7 +154,7 @@ Design: Fail-open for remote checks; critical jobs must use `systemd-inhibit`.
 
 ### Dual EFI Auto-Sync (Audacious)
 
-**Package**: `root-audacious-efisync/`
+**Package**: `root-efisync-audacious/`
 
 - `efi-sync.path` - Watches `/boot/efi/EFI/Linux/` for UKI updates
 - `efi-sync.service` - Uses `rsync` to mirror primary ESP to backup ESP
@@ -287,14 +287,14 @@ When modifying this repository:
 
 ## Known Issues and Drift
 
-As of 2025-12-22, the following are acknowledged:
+As of 2025-12-23, the following are acknowledged:
 
-1. **Naming inconsistency**: `root-*` packages use both `root-concern-host` and `root-host-concern` patterns
-2. **Documentation drift**: Some features (NAS inhibitor SSH key setup) are implemented but not documented
-3. **Vanilla Trixie divergence**: `.bashrc` is edited directly instead of using drop-in overlays
-4. **Package organization**: NAS inhibit script is in `root-nas-astute/` but service/sudoers in `root-power-astute/`
+1. **Documentation drift**: Some features (NAS inhibitor SSH key setup) are implemented but not documented
 
-These are being actively addressed.
+Note: The following issues were recently resolved:
+- ✅ Naming inconsistency standardized: all packages now follow `root-<concern>-<host>` pattern
+- ✅ Package organization fixed: NAS inhibitor consolidated into `root-power-astute/`
+- ✅ Vanilla Trixie divergence resolved: `.bashrc` now uses wrapper + drop-in pattern
 
 ## Testing Requirements
 
