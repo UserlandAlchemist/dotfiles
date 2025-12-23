@@ -5,9 +5,18 @@ ssh-astute() {
     local host="astute"
     local mac="60:45:cb:9b:ab:3b"
 
-    # Quick check if already reachable (short timeout for speed)
+    # Quick non-interactive check if already reachable (keys already loaded)
     if ssh -o BatchMode=yes -o ConnectTimeout=2 "${host}" true 2>/dev/null; then
         logger -t astute-ssh "${host} already reachable, connecting"
+        ssh -A "${host}"
+        return
+    fi
+
+    # BatchMode failed - could be: 1) host down, or 2) keys not loaded
+    # Try interactive check (allows passphrase prompt) before sending WOL
+    if ssh -o ConnectTimeout=3 "${host}" true 2>/dev/null; then
+        # Host was up, just needed key passphrase
+        logger -t astute-ssh "${host} reachable after key load, connecting"
         ssh -A "${host}"
         return
     fi
