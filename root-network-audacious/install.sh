@@ -46,7 +46,11 @@ install -m 0644 "$PKG_DIR/etc/systemd/network/20-wired.network" \
 
 echo "→ Stowing package"
 cd "$DOTFILES_DIR"
-stow -t / root-network-audacious
+stow -t / \
+  --ignore='^install\.sh$' \
+  --ignore='^\.stow-local-ignore$' \
+  --ignore='^etc/systemd/network' \
+  root-network-audacious
 
 echo "→ Setting executable permission"
 chmod 755 /usr/local/bin/apt-proxy-detect.sh
