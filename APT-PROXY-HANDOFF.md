@@ -39,7 +39,7 @@ When astute is down/sleeping, apt operations hang or fail.
 
 ### 1. Detection Script
 
-**Location:** `/usr/local/bin/apt-proxy-detect`
+**Location:** `/usr/local/bin/apt-proxy-detect.sh`
 
 **Purpose:** Quickly determine if apt-cacher-ng on astute is reachable
 
@@ -78,7 +78,7 @@ fi
 
 **New content:**
 ```
-Acquire::http::ProxyAutoDetect "/usr/local/bin/apt-proxy-detect";
+Acquire::http::ProxyAutoDetect "/usr/local/bin/apt-proxy-detect.sh";
 Acquire::https::Proxy "false";
 ```
 
@@ -105,15 +105,15 @@ root-network-audacious/
 ├── usr/
 │   └── local/
 │       └── bin/
-│           └── apt-proxy-detect
+│           └── apt-proxy-detect.sh
 └── install.sh
 ```
 
 **install.sh responsibilities:**
 1. Check if running as root
 2. Stow the package: `stow -t / root-network-audacious`
-3. Set executable permission: `chmod 755 /usr/local/bin/apt-proxy-detect`
-4. Test the setup: run apt-proxy-detect and verify output
+3. Set executable permission: `chmod 755 /usr/local/bin/apt-proxy-detect.sh`
+4. Test the setup: run apt-proxy-detect.sh and verify output
 
 ---
 
@@ -125,7 +125,7 @@ root-network-audacious/
 ssh-astute exit
 
 # Test detection script
-/usr/local/bin/apt-proxy-detect
+/usr/local/bin/apt-proxy-detect.sh
 # Expected output: http://192.168.1.154:3142
 
 # Test apt uses proxy
@@ -139,7 +139,7 @@ sudo apt update
 nas-close
 
 # Test detection script
-/usr/local/bin/apt-proxy-detect
+/usr/local/bin/apt-proxy-detect.sh
 # Expected output: DIRECT
 
 # Test apt bypasses proxy
@@ -176,12 +176,12 @@ apt falls back to direct downloads from Debian mirrors.
 1. Deploy proxy configuration:
    ```bash
    cd ~/dotfiles
-   sudo root-network-audacious/install.sh
+   sudo ./root-network-audacious/install.sh
    ```
 
 2. Test detection:
    ```bash
-   /usr/local/bin/apt-proxy-detect
+   /usr/local/bin/apt-proxy-detect.sh
    # Returns: http://192.168.1.154:3142 (if astute up)
    # Returns: DIRECT (if astute down)
    ```
@@ -192,7 +192,7 @@ apt falls back to direct downloads from Debian mirrors.
    ```
 
 **How it works:**
-- apt calls `/usr/local/bin/apt-proxy-detect` before each operation
+- apt calls `/usr/local/bin/apt-proxy-detect.sh` before each operation
 - Script checks if astute:3142 is reachable (1s timeout)
 - Returns proxy URL if available, "DIRECT" otherwise
 - Zero-config failover, no manual intervention needed
@@ -222,7 +222,7 @@ Add section on apt proxy architecture:
 
 **Configuration:**
 - `/etc/apt/apt.conf.d/01proxy` - ProxyAutoDetect configuration
-- `/usr/local/bin/apt-proxy-detect` - Reachability detection script
+- `/usr/local/bin/apt-proxy-detect.sh` - Reachability detection script
 - Managed via stow: `root-network-audacious` package
 ```
 

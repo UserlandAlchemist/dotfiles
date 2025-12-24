@@ -666,13 +666,13 @@ Setup:
 
 ```sh
 cd ~/dotfiles
-sudo root-network-audacious/install.sh
+sudo ./root-network-audacious/install.sh
 ```
 
 2. Test detection:
 
 ```sh
-/usr/local/bin/apt-proxy-detect
+/usr/local/bin/apt-proxy-detect.sh
 # Returns: http://192.168.1.154:3142 (if astute up)
 # Returns: DIRECT (if astute down)
 ```
@@ -684,7 +684,7 @@ sudo apt update  # Should work whether astute is up or down
 ```
 
 How it works:
-- apt calls `/usr/local/bin/apt-proxy-detect` before each operation
+- apt calls `/usr/local/bin/apt-proxy-detect.sh` before each operation
 - Script checks if astute:3142 is reachable (1s timeout)
 - Returns proxy URL if available, "DIRECT" otherwise
 - Zero-config failover, no manual intervention needed
