@@ -2,7 +2,7 @@
 
 Machine-readable inventory of manually installed software. Sections reflect installation origin, not function. Enables auditable, reproducible system state.
 
-Last drift check: 2025-12-22
+Last drift check: 2025-12-24
 
 ---
 
