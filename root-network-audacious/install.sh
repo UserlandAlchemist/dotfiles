@@ -11,6 +11,32 @@ fi
 
 echo "Installing root-network-audacious (apt proxy failover)"
 
+backup_conflict() {
+  TARGET="$1"
+  SOURCE="$2"
+
+  if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
+    if [ -L "$TARGET" ]; then
+      RESOLVED="$(readlink -f "$TARGET" 2>/dev/null || true)"
+      if [ "$RESOLVED" = "$SOURCE" ]; then
+        return 0
+      fi
+    fi
+
+    TS="$(date +%Y%m%d-%H%M%S)"
+    BACKUP="${TARGET}.bak-${TS}"
+    echo "→ Backing up $TARGET to $BACKUP"
+    mv "$TARGET" "$BACKUP"
+  fi
+}
+
+backup_conflict /etc/apt/apt.conf.d/01proxy \
+  "$PKG_DIR/etc/apt/apt.conf.d/01proxy"
+backup_conflict /etc/systemd/network/10-wired.link \
+  "$PKG_DIR/etc/systemd/network/10-wired.link"
+backup_conflict /etc/systemd/network/20-wired.network \
+  "$PKG_DIR/etc/systemd/network/20-wired.network"
+
 echo "→ Stowing package"
 cd "$DOTFILES_DIR"
 stow -t / root-network-audacious
