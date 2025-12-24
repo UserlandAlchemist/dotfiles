@@ -5,10 +5,18 @@ After=network-online.target
 
 [Service]
 Type=oneshot
+StandardOutput=journal
+StandardError=journal
 WorkingDirectory=/home/alchemist
 
+# System backup uses separate state directories (no conflict with user borg commands)
+Environment="BORG_BASE_DIR=/var/lib/borg/audacious"
+Environment="BORG_CONFIG_DIR=/var/lib/borg/audacious/config"
+Environment="BORG_CACHE_DIR=/var/cache/borg/audacious"
+Environment="BORG_SECURITY_DIR=/var/lib/borg/audacious/security"
+
+# Backup script will source passphrase and SSH config from user directory
 Environment="HOME=/home/alchemist"
-EnvironmentFile=/home/alchemist/.config/borg/env
 
 SuccessExitStatus=0 1
 
@@ -21,7 +29,4 @@ IOSchedulingPriority=7
 Restart=no
 TimeoutStartSec=0
 
-ExecStart=/usr/bin/systemd-inhibit \
-  --what=shutdown:sleep \
-  --why="Borg backup in progress (Audacious → Astute)" \
-  /usr/local/lib/borg/run-backup.sh
+ExecStart=/usr/local/lib/borg/run-backup-with-logging.sh

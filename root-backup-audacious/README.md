@@ -57,9 +57,10 @@ Before enabling the timers, ensure all of the following are in place.
 3. Network reachability
 
     - The target host (`astute`) must be online or reachable via Wake-on-LAN.
-    - Each unit uses the helper script:
-          /usr/local/lib/borg/wait-for-astute.sh
-      to send a magic packet and wait briefly before invoking Borg.
+    - `borg-backup.service` uses `/usr/local/lib/borg/run-backup.sh` which
+      sends WOL and waits for repository availability (60s timeout).
+    - `borg-check.service` uses `/usr/local/lib/borg/wait-for-astute.sh` as
+      an `ExecStartPre=` to wake Astute before running integrity checks.
     - If the host is unreachable, Borg will exit with an error and
       the timer will retry at the next scheduled interval.
 
@@ -78,16 +79,74 @@ for passwords or manual input.
 
 ## Details
 
-- `borg-backup.service` performs the main backup operation and runs
-  `borg prune` as `ExecStartPost=` to apply retention rules.
-- `borg-check.service` performs a quick weekly repository check.
-- `borg-check-deep.service` performs a full integrity check monthly.
+- `borg-backup.service` runs `/usr/local/lib/borg/run-backup.sh` which performs:
+  1. Wake-on-LAN to Astute
+  2. `borg create` with progress and stats
+  3. `borg prune` to apply retention rules (keep last 2 backups)
+  4. `borg compact` to reclaim space
 
-All units use the shared environment file:
+  The service runs as **root** under `systemd-inhibit --what=shutdown:sleep`
+  to prevent system shutdown during backup.
 
-    EnvironmentFile=%h/.config/borg/env
+- `borg-check.service` runs as user `alchemist` and performs quick repository
+  integrity checks. Uses `EnvironmentFile=/home/alchemist/.config/borg/env`.
 
-and assume the repository and SSH configuration are defined there.
+- `borg-check-deep.service` performs full deep verification monthly.
+
+---
+
+## Troubleshooting
+
+### Timers show as "enabled" but don't run
+
+**Symptom:** `systemctl list-timers` shows "-" for NEXT/LAST, or timers don't appear at all.
+
+**Cause:** Timers were enabled but not started. The `--now` flag both enables and starts,
+but if you only ran `systemctl enable`, the timer won't activate until next boot.
+
+**Fix:**
+```bash
+sudo systemctl daemon-reload
+sudo systemctl start borg-backup.timer borg-check.timer borg-check-deep.timer
+systemctl list-timers | grep borg  # Verify timers are scheduled
+```
+
+### Permission denied on Borg cache or config
+
+**Symptom:** `borg list` or manual backup commands fail with "Permission denied" on
+`~/.config/borg/security/`.
+
+**Cause:** `borg-backup.service` runs as root and may create root-owned security files
+in the user's home directory.
+
+**Fix:**
+```bash
+sudo chown -R alchemist:alchemist ~/.config/borg/security/
+```
+
+**Note:** The service uses a separate cache directory (`/var/cache/borg/audacious-backup/`)
+to avoid conflicts with user commands. The service must run as root to use
+`systemd-inhibit --what=shutdown:sleep` (user services cannot create system-wide
+shutdown inhibitors).
+
+### Verify backups are running
+
+Check recent backup archives:
+```bash
+source ~/.config/borg/env
+borg list "$BORG_REPO"
+```
+
+Check last backup time:
+```bash
+borg list "$BORG_REPO" --last 1
+```
+
+Check service status:
+```bash
+systemctl status borg-backup.service
+journalctl -u borg-backup.timer -u borg-backup.service --since "1 week ago"
+```
 
 ---
 
