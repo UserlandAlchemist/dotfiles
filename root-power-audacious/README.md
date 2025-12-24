@@ -10,13 +10,19 @@ This stow package installs:
 
 ## Deploy
 
-Run as root:
+Install systemd units as real files (avoid `/home` symlink breakage at boot):
 
-    sudo stow --target=/ root-power-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now powertop.service usb-nosuspend.service
-    sudo udevadm control --reload-rules
-    sudo udevadm trigger
+1. Run the install script:
+```bash
+sudo /home/alchemist/dotfiles/root-power-audacious/install.sh
+```
+
+2. Enable services and reload rules:
+```bash
+sudo systemctl enable --now powertop.service usb-nosuspend.service
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+```
 
 ## Notes
 

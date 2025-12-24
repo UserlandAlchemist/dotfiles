@@ -1,0 +1,5 @@
+^etc/systemd/system$
+^etc/systemd/system/powertop\.service$
+^etc/systemd/system/usb-nosuspend\.service$
+^install\.sh$
+^\.stow-local-ignore$
