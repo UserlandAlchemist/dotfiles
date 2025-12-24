@@ -1,0 +1,220 @@
+AGENTS AUTONOMOUS WORK QUEUE
+============================
+Updated: 2025-12-23 15:00
+
+These tasks are SAFE for Codex to work on independently when Claude hits usage limits.
+DO NOT attempt tasks marked [CLAUDE ONLY] - they require system testing.
+
+────────────────────────────────────────────────────────────────
+═══════════════════════════════════════════════════════════════
+HANDOFF: Claude → (ready for next session) | 2025-12-23 17:00
+═══════════════════════════════════════════════════════════════
+
+**Session Summary:** Documentation audit + comprehensive ssh-astute testing & fixes
+
+**Tasks Completed This Session:**
+1. ✓ RECOVERY.astute.md - Complete NAS disaster recovery (730 lines)
+2. ✓ SSH-KEY-SETUP.md - Comprehensive SSH key documentation (693 lines)
+3. ✓ SECRETS-RECOVERY.md - Blue USB backup procedures (913 lines)
+4. ✓ INSTALL.audacious.md §14 - Prism Launcher keyring fix
+5. ✓ INSTALL-AUDIO-TOOLS.md - Pro audio manual installations (691 lines)
+6. ✓ .gitignore audit and fix - Added security patterns, fixed corruption
+7. ✓ ssh-astute comprehensive testing - All scenarios tested with user
+8. ✓ ssh-astute timeout fixes - 30s→60s for slow wake scenarios
+9. ✓ ssh-astute interactive check - Prompts for passphrase, avoids false WOL
+
+**Files Changed:**
+- docs/astute/RECOVERY.astute.md (new)
+- docs/SSH-KEY-SETUP.md (new)
+- docs/SECRETS-RECOVERY.md (new)
+- docs/audacious/INSTALL-AUDIO-TOOLS.md (new)
+- docs/audacious/INSTALL.audacious.md (Prism keyring fix)
+- .gitignore (fixed corruption, added patterns)
+- icons-audacious/.local/share/icons/minecraft.png (added, was incorrectly ignored)
+- bash-audacious/.bashrc.d/40-ssh-helpers.sh (timeouts + interactive check)
+- root-backup-audacious/usr/local/lib/borg/wait-for-astute.sh (added WOL skip check)
+
+**ssh-astute Testing Results:**
+- Test 1 (sleep, 30s timeout): FAILED - SSH ready at ~40-43s
+- Test 2 (awake): PASSED - Skip-WOL logic perfect (<2s)
+- Test 3 (sleep, 30s timeout): PASSED - Fast wake in 5s (shows variability)
+- Issue found: Keys not loaded causes 60s false wait
+- Fix: Added interactive check before WOL
+
+**Total Documentation Added:** ~3,800 lines across 6 files
+
+**All commits pushed:** Yes (commit b0e6de1)
+
+**Remaining Tasks:** None! All documentation audit tasks complete, ssh-astute fully tested & fixed.
+
+═══════════════════════════════════════════════════════════════
+────────────────────────────────────────────────────────────────
+
+READY TO START (high priority)
+────────────────────────────────────
+
+[ ] SET UP VM TESTING ENVIRONMENT
+    Location: Host system (Audacious)
+    Architecture: docs/VM-ARCHITECTURE.md (COMPLETE - read this first!)
+
+    Goal: Set up libvirt/QEMU VMs for testing installation documentation
+
+    VMs to create:
+    1. test-audacious (4GB RAM, 2 vCPUs, 2x30GB disks)
+       - Test INSTALL.audacious.md
+       - Emulate ZFS mirror, dual ESP, systemd-boot UKI
+
+    2. test-astute (2GB RAM, 2 vCPUs, 3x20GB disks)
+       - Test INSTALL.astute.md
+       - Emulate ext4 root, ZFS data pool
+
+    Implementation steps:
+    1. Install libvirt/QEMU packages
+    2. Set up networking (bridge or NAT - ask user preference)
+    3. Download Debian 13 (Trixie) ISO
+    4. Create disk images (qcow2)
+    5. Define VMs with virt-install
+    6. Test boot from ISO
+    7. Walk user through first test install
+    8. Set up snapshots for rollback
+
+    User decisions needed:
+    - Network mode: Bridge (VMs on LAN) or NAT (isolated)?
+    - Resource allocation okay? (12GB RAM, 10 vCPUs total)
+    - Start with both VMs or just test-audacious first?
+
+[ ] IMPLEMENT APT PROXY FAILOVER (HIGH PRIORITY)
+    **Architecture designed by Claude - see APT-PROXY-HANDOFF.md**
+
+    Goal: Automatic failover when astute (apt-cacher-ng) is unreachable.
+
+    Implementation:
+    1. Create root-network-audacious/ stow package:
+       - /usr/local/bin/apt-proxy-detect (detection script)
+       - /etc/apt/apt.conf.d/01proxy (ProxyAutoDetect config)
+       - install.sh (deployment + permissions)
+
+    2. Test both modes:
+       - With astute up (should use proxy)
+       - With astute down (should use DIRECT)
+
+    3. Update documentation:
+       - INSTALL.audacious.md network section
+       - docs/network-overview.md apt proxy architecture
+
+    **CRITICAL:** Read APT-PROXY-HANDOFF.md for complete engineering specification.
+    All architectural decisions documented there. Follow spec exactly.
+
+    Testing workflow:
+    - Boot from ISO, follow INSTALL.*.md exactly
+    - Document any deviations or unclear steps
+    - Update documentation based on findings
+    - Use snapshots for quick iteration
+
+    Future: test-gentoo and test-openbsd (after Debian VMs working)
+
+    IMPORTANT: User wants to participate in setup, not just have it done.
+    Guide them through the process, explain choices, let them run commands.
+
+────────────────────────────────────────────────────────────────
+
+IMPORTANT POLICIES FOR ALL TASKS
+─────────────────────────────────
+
+**Git Push:** Use SSH agent discovery script (see CONTRIBUTING.md)
+**Sudo commands:** NEVER run directly - present to user and request output
+**Complex SSH/systemd:** Possible but note uncertainties in handoff
+**Git commits:** Both Claude and Codex can commit after testing
+
+CLAUDE EXPERTISE RECOMMENDED (but not blocked)
+───────────────────────────────────────────────
+
+These benefit from Claude's robust handling, but Codex can attempt:
+
+[x] Complex SSH debugging (note any agent/connection issues in handoff)
+[x] Multi-step systemd testing (document each verification step)
+[x] NAS wake/sleep orchestration (high complexity, multi-system)
+[x] Backup testing (high-stakes, requires careful verification)
+
+────────────────────────────────────────────────────────────────
+
+COMPLETED (for reference)
+──────────────────────────
+
+SESSION: 2025-12-23
+[✓] Create RECOVERY.astute.md with ZFS data pool recovery
+[✓] Create SSH-KEY-SETUP.md - comprehensive SSH key documentation
+[✓] Create SECRETS-RECOVERY.md - Blue USB creation/maintenance
+[✓] Fix INSTALL.audacious.md §14 - Prism Launcher keyring
+[✓] Document /opt audio tools - INSTALL-AUDIO-TOOLS.md
+[✓] Audit .gitignore completeness and fix issues
+[✓] Fix ssh-astute WOL timeout handling for wake-from-suspend
+
+PREVIOUS SESSIONS:
+[✓] Create AGENTS.md collaboration guide
+[✓] Refactor NAS service to use SSH config
+[✓] Add astute-nas SSH host entry
+[✓] Create DRIFT-CHECK.md procedure
+[✓] Create drift-check automation script (bin-audacious/.local/bin/check-drift.sh)
+[✓] Rewrite INSTALL.audacious.md in handbook style
+[✓] Rewrite INSTALL.astute.md in handbook style
+[✓] Update installed-software.audacious.md
+[✓] Create docs/audacious/VANILLA-DIVERGENCE.md
+[✓] Rewrite RECOVERY.audacious.md with drive replacement procedures
+[✓] Consolidate CLAUDE.md + AGENTS.md + HANDOFF.md → CONTRIBUTING.md
+[✓] Rewrite README.md with clear architecture overview
+[✓] Restructure docs/hosts-overview.md
+[✓] Clarify docs/network-overview.md
+[✓] Fix .gitignore to exclude .claude/ but keep settings.local.json
+[✓] Refactor bash init to use drop-in overlays
+[✓] Rewrite RECOVERY/RESTORE docs in handbook style
+
+────────────────────────────────────────────────────────────────
+
+HANDOFF INSTRUCTIONS FOR AGENTS:
+
+When you complete work, create a summary at the bottom of this file:
+
+HANDOFF: Codex → Claude | YYYY-MM-DD HH:MM
+Task: [which task from above]
+Files changed: [list]
+Changes made: [brief summary]
+Assumptions: [any assumptions about system/preferences]
+Needs testing: [yes/no and what kind]
+Risks: [anything that might break]
+Documentation: [what docs were updated]
+Questions for Claude: [anything unclear]
+
+────────────────────────────────────────────────────────────────
+═══════════════════════════════════════════════════════════════
+HANDOFF: Codex → Claude | 2025-12-24 00:20
+═══════════════════════════════════════════════════════════════
+
+Task: VM setup prep + document virt-viewer
+
+Files changed:
+- docs/audacious/installed-software.audacious.md — added virt-viewer
+
+Changes made:
+- Installed libvirt/QEMU stack and virt-viewer on audacious
+- Created test-audacious VM with netinst ISO (needs switch to Live ISO)
+- Documented virt-viewer in installed software list
+
+Assumptions:
+- VM testing should use Debian Live ISO to match INSTALL.audacious.md
+
+Needs testing:
+- Switch VM CD to Live ISO and start install per docs
+
+Risks:
+- VM currently attached to netinst ISO
+- Unrelated local changes exist (bash/emacs/profile files) not touched by Codex
+
+Documentation:
+- Updated docs/audacious/installed-software.audacious.md
+
+Questions for Claude:
+- Proceed with Live ISO swap and VM install steps?
+- Decide whether to implement apt proxy failover + stow proxy config (TODOs added)
+
+═══════════════════════════════════════════════════════════════

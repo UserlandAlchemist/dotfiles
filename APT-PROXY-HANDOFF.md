@@ -242,7 +242,7 @@ Add section on apt proxy architecture:
 - [ ] Update docs/network-overview.md
 - [ ] Add installed software entry (if any new packages needed)
 - [ ] Commit all changes with clear message
-- [ ] Update CODEX-TODO.txt with completion status
+- [ ] Update AGENTS-TODO.txt with completion status
 
 ---
 
