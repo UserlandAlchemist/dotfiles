@@ -6,8 +6,18 @@ PROXY_HOST="192.168.1.154"
 PROXY_PORT="3142"
 PROXY_URL="http://${PROXY_HOST}:${PROXY_PORT}"
 
-if ping -c1 -W1 "$PROXY_HOST" >/dev/null 2>&1; then
-  echo "$PROXY_URL"
-else
-  echo "DIRECT"
+if command -v ping >/dev/null 2>&1; then
+  if ping -c1 -W1 "$PROXY_HOST" >/dev/null 2>&1; then
+    echo "$PROXY_URL"
+    exit 0
+  fi
 fi
+
+if command -v timeout >/dev/null 2>&1; then
+  if timeout 1 bash -c "exec 3<>/dev/tcp/${PROXY_HOST}/${PROXY_PORT}" >/dev/null 2>&1; then
+    echo "$PROXY_URL"
+    exit 0
+  fi
+fi
+
+echo "DIRECT"
