@@ -11,6 +11,8 @@
 # LLM collaboration task files (ephemeral state, not permanent docs)
 CODEX-TODO.txt
 CODEX-INSTRUCTIONS.txt
+AGENTS-TODO.txt
+AGENTS-INSTRUCTIONS.txt
 
 # Emacs-generated state and caches
 */.emacs.d/eln-cache/
