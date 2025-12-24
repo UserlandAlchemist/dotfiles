@@ -41,6 +41,13 @@ backup_conflict /etc/apt/apt.conf.d/01proxy \
   "$PKG_DIR/etc/apt/apt.conf.d/01proxy" \
   /var/backups/apt-proxy
 
+echo "→ Installing apt-proxy-detect (non-symlink)"
+backup_conflict /usr/local/bin/apt-proxy-detect.sh \
+  "$PKG_DIR/usr/local/bin/apt-proxy-detect.sh" \
+  /var/backups/apt-proxy
+install -m 0755 "$PKG_DIR/usr/local/bin/apt-proxy-detect.sh" \
+  /usr/local/bin/apt-proxy-detect.sh
+
 echo "→ Installing systemd-networkd files (non-symlink)"
 mkdir -p /etc/systemd/network
 backup_conflict /etc/systemd/network/10-wired.link \
@@ -58,10 +65,8 @@ stow -t / \
   --ignore='^install\.sh$' \
   --ignore='^\.stow-local-ignore$' \
   --ignore='^etc/systemd/network' \
+  --ignore='^usr/local/bin' \
   root-network-audacious
-
-echo "→ Setting executable permission"
-chmod 755 /usr/local/bin/apt-proxy-detect.sh
 
 echo "→ Testing apt-proxy-detect"
 OUTPUT="$(/usr/local/bin/apt-proxy-detect.sh 2>/dev/null || true)"

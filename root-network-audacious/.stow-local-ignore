@@ -1,3 +1,5 @@
 ^etc/systemd/network$
 ^etc/systemd/network/10-wired\.link$
 ^etc/systemd/network/20-wired\.network$
+^usr/local/bin$
+^usr/local/bin/apt-proxy-detect\.sh$
