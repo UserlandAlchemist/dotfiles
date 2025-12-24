@@ -120,6 +120,16 @@ READY TO START (high priority)
 
 ────────────────────────────────────────────────────────────────
 
+[ ] WAYBAR ASTUTE INDICATOR: TRIGGER IDLE-CHECK ON CLICK
+    Goal: When Astute is up, clicking the Waybar Astute indicator should
+    trigger the idle-check early (same click still sends WOL when down).
+
+    Notes:
+    - Needs Claude engineering decision on implementation.
+    - Preserve existing click behavior when Astute is down.
+
+────────────────────────────────────────────────────────────────
+
 IMPORTANT POLICIES FOR ALL TASKS
 ─────────────────────────────────
 
