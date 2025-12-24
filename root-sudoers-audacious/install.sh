@@ -14,4 +14,4 @@ install -o root -g root -m 0440 \
 echo "→ Validating sudoers"
 visudo -c
 
-echo "✓ etc-sudoers-audacious installed successfully"
+echo "✓ root-sudoers-audacious installed successfully"

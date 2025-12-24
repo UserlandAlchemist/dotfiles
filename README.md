@@ -143,9 +143,6 @@ Each host has complete rebuild documentation:
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 
-### Development
-- [`CONTRIBUTING.md`](CONTRIBUTING.md) — Repository structure, conventions, and contributor guidelines
-
 ---
 
 ## Design Principles
