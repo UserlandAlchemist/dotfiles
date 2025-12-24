@@ -101,6 +101,7 @@ Last drift check: 2025-12-22
 - nftables — firewall subsystem
 - plocate — file indexer
 - ncdu — interactive disk-usage inspector
+- virt-viewer — SPICE/VNC viewer for libvirt VMs
 
 ---
 
