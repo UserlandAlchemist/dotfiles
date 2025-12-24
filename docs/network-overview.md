@@ -66,6 +66,24 @@ A detailed per-device accounting is not required for core Wolfpack documentation
 
 ---
 
+## APT Proxy (apt-cacher-ng)
+
+- **Service:** apt-cacher-ng on astute:3142
+- **Clients:** audacious (automatic failover)
+
+**Architecture:**
+- Astute caches Debian packages via apt-cacher-ng
+- Audacious uses `Acquire::http::ProxyAutoDetect` for proxy selection
+- Detection script pings astute with a 1s timeout
+- Falls back to DIRECT if astute is unavailable
+
+**Configuration:**
+- `/etc/apt/apt.conf.d/01proxy` - ProxyAutoDetect configuration
+- `/usr/local/bin/apt-proxy-detect` - Reachability detection script
+- Managed via stow: `root-network-audacious` package
+
+---
+
 ## Notes
 
 - LAN operates as a simple **192.168.1.0/24** flat network.

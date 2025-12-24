@@ -656,6 +656,41 @@ Expected result: NAS wake-on-demand working, inhibitor active during use, inacti
 
 ---
 
+### APT Proxy (apt-cacher-ng)
+
+Audacious uses apt-cacher-ng running on Astute to cache package downloads.
+Failover is automatic: if Astute is unreachable, apt falls back to direct downloads.
+
+Setup:
+1. Deploy proxy configuration:
+
+```sh
+cd ~/dotfiles
+sudo root-network-audacious/install.sh
+```
+
+2. Test detection:
+
+```sh
+/usr/local/bin/apt-proxy-detect
+# Returns: http://192.168.1.154:3142 (if astute up)
+# Returns: DIRECT (if astute down)
+```
+
+3. Verify failover:
+
+```sh
+sudo apt update  # Should work whether astute is up or down
+```
+
+How it works:
+- apt calls `/usr/local/bin/apt-proxy-detect` before each operation
+- Script checks if astute:3142 is reachable (1s timeout)
+- Returns proxy URL if available, "DIRECT" otherwise
+- Zero-config failover, no manual intervention needed
+
+---
+
 ## §18 Install Python toolchain
 
 Install uv for modern Python package management.

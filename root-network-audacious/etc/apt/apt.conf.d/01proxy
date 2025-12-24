@@ -1,0 +1,2 @@
+Acquire::http::ProxyAutoDetect "/usr/local/bin/apt-proxy-detect";
+Acquire::https::Proxy "false";

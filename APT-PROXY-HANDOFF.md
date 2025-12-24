@@ -230,19 +230,19 @@ Add section on apt proxy architecture:
 
 ## Implementation Checklist for Codex
 
-- [ ] Create `root-network-audacious/` directory structure
-- [ ] Write `apt-proxy-detect` script with exact logic above
-- [ ] Create `01proxy` config with ProxyAutoDetect
-- [ ] Write `install.sh` with permission setup and testing
+- [x] Create `root-network-audacious/` directory structure
+- [x] Write `apt-proxy-detect` script with exact logic above
+- [x] Create `01proxy` config with ProxyAutoDetect
+- [x] Write `install.sh` with permission setup and testing
 - [ ] Test script manually (astute up and down)
 - [ ] Run install.sh and verify stow deployment
 - [ ] Test apt update with astute up
 - [ ] Test apt update with astute down
-- [ ] Update INSTALL.audacious.md network section
-- [ ] Update docs/network-overview.md
+- [x] Update INSTALL.audacious.md network section
+- [x] Update docs/network-overview.md
 - [ ] Add installed software entry (if any new packages needed)
 - [ ] Commit all changes with clear message
-- [ ] Update AGENTS-TODO.txt with completion status
+- [x] Update AGENTS-TODO.txt with completion status
 
 ---
 
