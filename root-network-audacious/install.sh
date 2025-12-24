@@ -32,10 +32,17 @@ backup_conflict() {
 
 backup_conflict /etc/apt/apt.conf.d/01proxy \
   "$PKG_DIR/etc/apt/apt.conf.d/01proxy"
+
+echo "→ Installing systemd-networkd files (non-symlink)"
+mkdir -p /etc/systemd/network
 backup_conflict /etc/systemd/network/10-wired.link \
   "$PKG_DIR/etc/systemd/network/10-wired.link"
 backup_conflict /etc/systemd/network/20-wired.network \
   "$PKG_DIR/etc/systemd/network/20-wired.network"
+install -m 0644 "$PKG_DIR/etc/systemd/network/10-wired.link" \
+  /etc/systemd/network/10-wired.link
+install -m 0644 "$PKG_DIR/etc/systemd/network/20-wired.network" \
+  /etc/systemd/network/20-wired.network
 
 echo "→ Stowing package"
 cd "$DOTFILES_DIR"
