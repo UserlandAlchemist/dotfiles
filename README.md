@@ -139,9 +139,10 @@ Each host has complete rebuild documentation:
 - [`docs/astute/INSTALL.astute.md`](docs/astute/INSTALL.astute.md) — Full installation from scratch
 - [`docs/astute/installed-software.astute.md`](docs/astute/installed-software.astute.md) — Complete package inventory
 
-### Network Reference
+### System Reference
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
+- [`docs/SUBSYSTEMS.md`](docs/SUBSYSTEMS.md) — Critical subsystems reference (for emergencies)
 
 ---
 
