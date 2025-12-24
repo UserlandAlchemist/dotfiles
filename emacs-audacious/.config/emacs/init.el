@@ -77,3 +77,57 @@
   (setq ansi-color-map (ansi-color-make-color-map))
   (with-eval-after-load 'vterm
     (setq vterm-color-palette amiga-colors)))
+
+;; --- IDE features (Emacs built-ins) ---
+;; Minimal IDE setup using only built-in Emacs 30+ features
+
+;; File and command history
+(recentf-mode 1)                  ; Track recently opened files (C-x C-r)
+(savehist-mode 1)                 ; Save minibuffer history across sessions
+
+;; Editing enhancements
+(global-hl-line-mode 1)           ; Highlight current line
+(electric-pair-mode 1)            ; Auto-close parentheses, brackets, quotes
+
+;; Completion UI
+(fido-vertical-mode 1)            ; Vertical minibuffer completion (built-in alternative to ido/vertico)
+
+;; Project navigation
+(setq project-switch-commands 'project-find-file)  ; C-x p p goes straight to file search
+
+;; Code search and navigation
+(setq xref-search-program 'ripgrep)  ; Use ripgrep for project-wide search (requires ripgrep package)
+
+;; LSP integration (requires language servers installed separately)
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer"))))
+;; Note: Eglot is built-in to Emacs 30+. Install rust-analyzer with: rustup component add rust-analyzer
+
+;; --- Debian ELPA packages ---
+;; Add Debian's packaged Emacs extensions to load-path
+
+(let ((default-directory "/usr/share/emacs/site-lisp/elpa/"))
+  (when (file-directory-p default-directory)
+    (add-to-list 'load-path default-directory)
+    (normal-top-level-add-subdirs-to-load-path)))
+
+(require 'package)
+(setq package-enable-at-startup t)
+(package-initialize)
+
+;; --- Treemacs file tree sidebar ---
+;; Requires: elpa-treemacs package
+;; Toggle with: C-c t
+
+(when (require 'treemacs nil t)  ; Load only if installed, don't error if missing
+  (setq treemacs-width 30)
+  (global-set-key (kbd "C-c t") #'treemacs))
+
+;; --- Tree-sitter for Rust ---
+;; Modern syntax highlighting and code parsing for Rust
+;; After first use, run: M-x treesit-install-language-grammar RET rust RET
+
+(when (fboundp 'treesit-available-p)
+  (setq treesit-language-source-alist
+        '((rust "https://github.com/tree-sitter/tree-sitter-rust")))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-ts-mode)))
