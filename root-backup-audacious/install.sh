@@ -54,6 +54,7 @@ cd "$DOTFILES_DIR"
 stow -t / \
   --ignore='^install\.sh$' \
   --ignore='^\.stow-local-ignore$' \
+  --ignore='^README\.md$' \
   --ignore='^etc/systemd/system' \
   root-backup-audacious
 
