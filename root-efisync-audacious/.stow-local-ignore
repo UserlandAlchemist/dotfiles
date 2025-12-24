@@ -1,0 +1,5 @@
+^etc/systemd/system$
+^etc/systemd/system/efi-sync\.service$
+^etc/systemd/system/efi-sync\.path$
+^install\.sh$
+^\.stow-local-ignore$

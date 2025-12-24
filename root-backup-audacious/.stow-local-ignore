@@ -1,0 +1,9 @@
+^etc/systemd/system$
+^etc/systemd/system/borg-backup\.service$
+^etc/systemd/system/borg-backup\.timer$
+^etc/systemd/system/borg-check\.service$
+^etc/systemd/system/borg-check\.timer$
+^etc/systemd/system/borg-check-deep\.service$
+^etc/systemd/system/borg-check-deep\.timer$
+^install\.sh$
+^\.stow-local-ignore$

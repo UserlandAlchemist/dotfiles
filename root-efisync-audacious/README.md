@@ -10,11 +10,17 @@ These units keep the primary EFI System Partition (/boot/efi) mirrored to a seco
 
 ## Deploy
 
-Run as root:
+Install systemd units as real files (avoid `/home` symlink breakage at boot):
 
-    sudo stow --target=/ root-efisync-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now efi-sync.path
+1. Run the install script:
+```bash
+sudo /home/alchemist/dotfiles/root-efisync-audacious/install.sh
+```
+
+2. Enable the path unit:
+```bash
+sudo systemctl enable --now efi-sync.path
+```
 
 ## Requirements
 

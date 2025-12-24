@@ -15,14 +15,20 @@ mode using environment variables defined in the user configuration.
 
 ## Deploy
 
-Run as root:
+Install systemd units as real files (avoid `/home` symlink breakage at boot):
 
-    sudo stow --target=/ root-backup-audacious
-    sudo systemctl daemon-reload
-    sudo systemctl enable --now \
-        borg-backup.timer \
-        borg-check.timer \
-        borg-check-deep.timer
+1. Run the install script:
+```bash
+sudo /home/alchemist/dotfiles/root-backup-audacious/install.sh
+```
+
+2. Enable timers:
+```bash
+sudo systemctl enable --now \
+  borg-backup.timer \
+  borg-check.timer \
+  borg-check-deep.timer
+```
 
 After enabling, verify that timers are active:
 
