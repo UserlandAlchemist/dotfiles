@@ -14,6 +14,7 @@ echo "Installing root-network-audacious (apt proxy failover)"
 backup_conflict() {
   TARGET="$1"
   SOURCE="$2"
+  BACKUP_DIR="${3:-}"
 
   if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
     if [ -L "$TARGET" ]; then
@@ -24,14 +25,21 @@ backup_conflict() {
     fi
 
     TS="$(date +%Y%m%d-%H%M%S)"
-    BACKUP="${TARGET}.bak-${TS}"
+    if [ -n "$BACKUP_DIR" ]; then
+      mkdir -p "$BACKUP_DIR"
+      BASE="$(basename "$TARGET")"
+      BACKUP="${BACKUP_DIR}/${BASE}.bak-${TS}"
+    else
+      BACKUP="${TARGET}.bak-${TS}"
+    fi
     echo "→ Backing up $TARGET to $BACKUP"
     mv "$TARGET" "$BACKUP"
   fi
 }
 
 backup_conflict /etc/apt/apt.conf.d/01proxy \
-  "$PKG_DIR/etc/apt/apt.conf.d/01proxy"
+  "$PKG_DIR/etc/apt/apt.conf.d/01proxy" \
+  /var/backups/apt-proxy
 
 echo "→ Installing systemd-networkd files (non-symlink)"
 mkdir -p /etc/systemd/network
