@@ -9,6 +9,7 @@ Instructions for AI agents working in this repository. This file is for LLM beha
 - Follow repo architecture and workflow documentation; do not duplicate it here.
 - Keep changes minimal, explicit, and easy to hand off.
 - Prefer safe, reversible edits.
+- Use `.sh` suffix for scripts.
 
 ---
 

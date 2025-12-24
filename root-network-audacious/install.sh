@@ -16,10 +16,10 @@ cd "$DOTFILES_DIR"
 stow -t / root-network-audacious
 
 echo "→ Setting executable permission"
-chmod 755 /usr/local/bin/apt-proxy-detect
+chmod 755 /usr/local/bin/apt-proxy-detect.sh
 
 echo "→ Testing apt-proxy-detect"
-OUTPUT="$(/usr/local/bin/apt-proxy-detect 2>/dev/null || true)"
+OUTPUT="$(/usr/local/bin/apt-proxy-detect.sh 2>/dev/null || true)"
 case "$OUTPUT" in
   "DIRECT"|"http://192.168.1.154:3142")
     echo "✓ apt-proxy-detect returned: $OUTPUT"
