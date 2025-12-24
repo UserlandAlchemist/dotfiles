@@ -101,7 +101,15 @@ Last drift check: 2025-12-22
 - nftables — firewall subsystem
 - plocate — file indexer
 - ncdu — interactive disk-usage inspector
-- virt-viewer — SPICE/VNC viewer for libvirt VMs
+
+### Virtualization (VM testing environment)
+- qemu-system-x86 — QEMU/KVM hypervisor for x86_64
+- libvirt-daemon-system — libvirt management daemon
+- libvirt-clients — virsh CLI and libvirt client tools
+- virtinst — virt-install VM creation tool
+- qemu-utils — QEMU disk image management (qemu-img)
+- ovmf — UEFI firmware for VMs (required for systemd-boot testing)
+- virt-viewer — SPICE/VNC viewer for VM console access
 
 ---
 
