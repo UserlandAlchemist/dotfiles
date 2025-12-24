@@ -65,7 +65,6 @@ borg prune --list \
   "$REPO"
 
 echo "Compacting repository..."
-borg compact
 borg compact "$REPO"
 
 echo "Backup completed successfully"
