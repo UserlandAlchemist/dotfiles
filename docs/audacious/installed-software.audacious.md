@@ -74,8 +74,12 @@ Last drift check: 2025-12-22
 - jq — JSON processor
 - npm — Node package manager (Codex dependency)
 - emacs — text editor (dotfiles dependency)
+- elpa-treemacs — Emacs file tree sidebar
 - lf — terminal file manager
 - nano — minimal fallback editor
+- lld — LLVM linker (Rust/UEFI development)
+- ninja-build — fast build system
+- ripgrep — recursive regex search tool (Emacs xref backend)
 
 ### Storage & backup
 - borgbackup — encrypted backups
@@ -110,6 +114,7 @@ Last drift check: 2025-12-22
 - qemu-utils — QEMU disk image management (qemu-img)
 - ovmf — UEFI firmware for VMs (required for systemd-boot testing)
 - virt-viewer — SPICE/VNC viewer for VM console access
+- mtools — DOS filesystem tools (for creating UEFI boot media)
 
 ---
 
@@ -147,7 +152,6 @@ Last drift check: 2025-12-22
 - openjdk-21-jdk — Java runtime for Minecraft
 
 ### Media
-- vlc — media player
 - jellyfin-media-player — Jellyfin client
 - imv — Wayland image viewer
 - gimp — image editor
@@ -162,5 +166,48 @@ Last drift check: 2025-12-22
 - poppler-utils — PDF extraction toolkit
 - tesseract-ocr — OCR engine
 
-### Utilities
-- transmission — torrent client
+---
+
+## Non-APT Software (manual installations)
+
+**Rationale:** Software installed outside Debian package management for specific development workflows or unavailability in repositories.
+
+### Audio production tools
+**Documentation:** See `docs/audacious/INSTALL-AUDIO-TOOLS.md` for complete installation procedures.
+
+**Installed:**
+- sfizz → `/usr/local/lib/lv2/sfizz.lv2` — SFZ sample-based synthesizer
+- ZynAddSubFX Fusion → `/opt/zyn-fusion` — Advanced software synthesizer
+- VCV Rack → `/opt/vcv-rack/` — Virtual modular synthesizer
+
+### Rust development toolchain
+**Installation method:** rustup (https://rustup.rs/)
+
+**Installed:** 2025-12-23
+
+**Location:** `~/.cargo/` and `~/.rustup/`
+
+**Components:**
+- rustup — Rust toolchain installer and version manager
+- rustc 1.92.0 — Rust compiler
+- cargo 1.92.0 — Rust package manager and build tool
+- rust-analyzer 1.92.0 — Rust Language Server for IDE support
+- clippy — Rust linter
+- rustfmt — Rust code formatter
+
+**Integration:**
+- PATH configured via `~/.cargo/env`
+- Sourced in `bash-audacious/.bashrc.d/30-rust-env.sh` (Audacious-specific)
+- Emacs Eglot LSP integration configured in `emacs-audacious/.config/emacs/init.el`
+
+**Update procedure:**
+```sh
+rustup update
+```
+
+**Uninstall procedure:**
+```sh
+rustup self uninstall
+# Then remove ~/.cargo and ~/.rustup
+# And remove sourcing from dotfiles
+```
