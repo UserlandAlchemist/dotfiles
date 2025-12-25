@@ -2,3 +2,4 @@
 ^etc/systemd/.*
 ^install\.sh$
 ^\.stow-local-ignore$
+^README\.md$
