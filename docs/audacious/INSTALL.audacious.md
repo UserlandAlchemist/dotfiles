@@ -570,9 +570,10 @@ systemctl list-timers | grep zfs-trim
 systemctl list-timers | grep zfs-scrub
 sysctl vm.swappiness  # should return 60
 ip link show enp7s0   # should be managed by networkd
+journalctl -b --system -o short-monotonic | head -n 20
 ```
 
-Expected result: All dotfiles deployed, services enabled, timers scheduled.
+Expected result: All dotfiles deployed, services enabled, timers scheduled, system journal has early boot entries.
 
 ### Package reference
 
@@ -599,7 +600,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled.
 | `pipewire-audacious` | user | Audio routing and pro-audio latency config |
 | `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
 | `ardour-audacious` | user | DAW config (optional) |
-| `root-system-audacious` | system | System configuration fixes for minimal Debian (journald ForwardToSyslog override) |
+| `root-system-audacious` | system | System configuration fixes for minimal Debian (journald syslog override, journald waits for /var on ZFS) |
 | `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
 | `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
