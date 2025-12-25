@@ -22,8 +22,8 @@ set $term foot
 
 set $menu wofi --show drun
 
-font pango:Topaz Plus NF Mono 13
-### Window Chrome Colors — Amiga Dark 1995
+font pango:Topaz Plus NF Mono 14
+### Window Chrome Colors — Amiga Workbench Dark
 # Format: border background text indicator child_border
 client.focused #5078FF #5078FF #FFFFFF #5078FF #5078FF
 client.focused_inactive #606060 #606060 #E6E6E6 #606060 #606060
@@ -37,9 +37,9 @@ focus_follows_mouse no
 hide_edge_borders both
 
 # QoL: gaps + workspace
-
-# gaps inner 8
-# smart_gaps on
+# Workbench always showed desktop between windows - more authentic
+gaps inner 8
+smart_gaps on
 workspace_auto_back_and_forth yes
 
 include /etc/sway/config-vars.d/*

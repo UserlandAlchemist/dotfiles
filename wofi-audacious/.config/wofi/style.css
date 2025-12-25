@@ -1,17 +1,16 @@
-/* Amiga / Topaz-flavoured wofi theme */
+/* Amiga Workbench Dark – Application launcher */
 
 * {
-  /* Try your Topaz family names; fall back to monospace */
   font-family: "TopazPlus NF Mono", "TopazPlusNFMono", "Topaz Plus", monospace;
-  font-size: 13px;
+  font-size: 14pt;  /* Standardized across UI */
   color: #E6E6E6;
 }
 
-/* Window & containers */
+/* Window & containers - Sharp edges like Workbench */
 window {
-  background: #404040;
-  border: 1px solid #606060;
-  border-radius: 8px;
+  background: #242424;  /* Match waybar panel color */
+  border: 2px solid #606060;
+  border-radius: 0;  /* NO rounded corners - pure Workbench */
 }
 
 #outer-box {
@@ -24,8 +23,8 @@ window {
   padding: 6px 8px;
   margin-bottom: 8px;
   border: 1px solid #606060;
-  border-radius: 6px;
-  background: #333333;
+  border-radius: 0;  /* Sharp edges */
+  background: #303030;  /* Slightly darker than window */
   color: #E6E6E6;
 }
 
@@ -37,11 +36,11 @@ window {
   background: transparent;
 }
 
-/* Rows */
+/* Rows - Tighter spacing like Workbench menus */
 #entry {
   padding: 6px 8px;
-  margin: 0 0 4px 0;
-  border-radius: 6px;
+  margin: 0 0 2px 0;  /* Reduced from 4px */
+  border-radius: 0;  /* Sharp edges */
   background: transparent;
   color: #E6E6E6;
 }
