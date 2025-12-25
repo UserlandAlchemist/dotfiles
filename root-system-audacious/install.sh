@@ -51,9 +51,6 @@ install_systemd_config etc/systemd/journald.conf.d/syslog.conf
 # Ensure journald waits for /var mount (separate ZFS dataset)
 install_systemd_config etc/systemd/system/systemd-journald.service.d/wait-for-var.conf
 
-# Enable debug logging to diagnose boot-time journal creation failure
-install_systemd_config etc/systemd/system/systemd-journald.service.d/debug.conf
-
 echo "→ Stowing package (excluding systemd configs)"
 cd "$DOTFILES_DIR"
 stow -t / \
@@ -70,8 +67,7 @@ echo "✓ root-system-audacious installed successfully"
 echo ""
 echo "Changes applied:"
 echo "  - journald ForwardToSyslog override"
-echo "  - journald waits for /var mount (fixes boot-time system log failure)"
-echo "  - journald debug logging enabled (for boot diagnostics)"
+echo "  - journald waits for /var mount (ZFS dataset)"
 echo ""
-echo "Reboot to capture debug logs showing why system journal fails at boot:"
+echo "Reboot to verify journald persistent storage at boot:"
 echo "  sudo reboot"
