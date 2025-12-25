@@ -8,15 +8,29 @@ This package contains system-level configuration overrides that don't fit into m
 
 ## Contents
 
-### journald configuration
+### journald configuration workaround
 
-**File**: `etc/systemd/journald.conf.d/10-no-syslog-forward.conf`
+**File**: `etc/systemd/journald.conf.d/syslog.conf`
 
-**Purpose**: Disable `ForwardToSyslog` to prevent journald from wedging.
+**Purpose**: Fix syslog forwarding + work around persistent storage failure.
 
-**Background**: Debian's default systemd configuration enables `ForwardToSyslog=yes` (from `/usr/lib/systemd/journald.conf.d/syslog.conf`), which assumes rsyslog is installed. In our minimal debootstrap install, rsyslog is not present. This causes journald to repeatedly try forwarding logs to a non-existent socket, eventually wedging after boot and stopping all journal output for 30-40 minutes until manually restarted.
+**Background**:
+1. Debian's default enables `ForwardToSyslog=yes` which assumes rsyslog is installed. In our minimal debootstrap, rsyslog is not present, causing journald wedging.
+2. More critically: persistent storage (`Storage=auto` or `Storage=persistent`) **silently fails** at boot - journald creates no system journal in `/var/log/journal/` and captures zero system-level logs until manually restarted. Even with `After=var.mount`, persistent mode fails.
 
-**Fix**: Override `ForwardToSyslog=no` since we rely solely on journald (no traditional syslog daemon).
+**Workaround**: Use `Storage=volatile` to write logs to `/run/log/journal/` (RAM). This works perfectly and provides complete boot logs with debug output. Logs are lost on reboot, but this is better than having NO system logs at all.
+
+**Status**: Temporary workaround. Root cause of persistent storage failure under investigation (possibly filesystem permissions, ZFS ACLs, or deeper issues with `/var` writes at boot time).
+
+### journald /var mount dependency (unsuccessful)
+
+**File**: `etc/systemd/system/systemd-journald.service.d/wait-for-var.conf`
+
+**Purpose**: Attempted fix - ensure journald waits for `/var` mount before starting.
+
+**Background**: `/var` is on separate ZFS dataset (`rpool/VAR`). Hypothesis was journald started before `/var` ready.
+
+**Result**: Adding `After=var.mount` did not fix persistent storage failure. Journald still creates no system journal even when starting after `/var` is mounted. Issue runs deeper than timing/dependencies.
 
 ## Deploy
 
@@ -34,7 +48,8 @@ The script will:
 
 ## Related Issues
 
-- Journald wedging after boot (40min journal blackout)
+- Journald wedging after boot (40min journal blackout from ForwardToSyslog)
+- Journald failing to capture system logs when /var on separate ZFS dataset
 - System units symlinking to /home failing to load before /home mounts
 - Debian expecting rsyslog in standard server installs
 
