@@ -40,6 +40,8 @@ backup_conflict() {
 backup_conflict /etc/apt/apt.conf.d/01proxy \
   "$PKG_DIR/etc/apt/apt.conf.d/01proxy" \
   /var/backups/apt-proxy
+install -m 0644 "$PKG_DIR/etc/apt/apt.conf.d/01proxy" \
+  /etc/apt/apt.conf.d/01proxy
 
 echo "→ Installing apt-proxy-detect (non-symlink)"
 backup_conflict /usr/local/bin/apt-proxy-detect.sh \
@@ -58,15 +60,6 @@ install -m 0644 "$PKG_DIR/etc/systemd/network/10-wired.link" \
   /etc/systemd/network/10-wired.link
 install -m 0644 "$PKG_DIR/etc/systemd/network/20-wired.network" \
   /etc/systemd/network/20-wired.network
-
-echo "→ Stowing package"
-cd "$DOTFILES_DIR"
-stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^etc/systemd/network' \
-  --ignore='^usr/local/bin' \
-  root-network-audacious
 
 echo "→ Testing apt-proxy-detect"
 OUTPUT="$(/usr/local/bin/apt-proxy-detect.sh 2>/dev/null || true)"

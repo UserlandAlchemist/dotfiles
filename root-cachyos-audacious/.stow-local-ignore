@@ -1,5 +1,13 @@
 ^etc/systemd$
 ^etc/systemd/.*
+^etc/modprobe\.d$
+^etc/modprobe\.d/.*
+^etc/sysctl\.d$
+^etc/sysctl\.d/.*
+^etc/tmpfiles\.d$
+^etc/tmpfiles\.d/.*
+^etc/udev$
+^etc/udev/.*
 ^install\.sh$
 ^\.stow-local-ignore$
 ^README\.md$

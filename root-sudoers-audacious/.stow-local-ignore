@@ -1,0 +1,5 @@
+^etc/sudoers\.d$
+^etc/sudoers\.d/.*
+^README\.md$
+^install\.sh$
+^\.stow-local-ignore$

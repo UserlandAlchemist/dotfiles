@@ -40,6 +40,17 @@ install_unit() {
   install -m 0644 "$SOURCE" "$TARGET"
 }
 
+install_script() {
+  RELPATH="$1"
+  SOURCE="$PKG_DIR/$RELPATH"
+  TARGET="/$RELPATH"
+  TARGETDIR="$(dirname "$TARGET")"
+
+  mkdir -p "$TARGETDIR"
+  backup_conflict "$TARGET" "$SOURCE"
+  install -m 0755 "$SOURCE" "$TARGET"
+}
+
 echo "Installing root-backup-audacious (systemd units as real files)"
 
 install_unit borg-backup.service
@@ -48,6 +59,10 @@ install_unit borg-check.service
 install_unit borg-check.timer
 install_unit borg-check-deep.service
 install_unit borg-check-deep.timer
+install_script usr/local/lib/borg/run-backup.sh
+install_script usr/local/lib/borg/run-backup-with-logging.sh
+install_script usr/local/lib/borg/run-deep-check.sh
+install_script usr/local/lib/borg/wait-for-astute.sh
 
 echo "→ Stowing package (excluding systemd units)"
 cd "$DOTFILES_DIR"
@@ -56,6 +71,7 @@ stow -t / \
   --ignore='^\.stow-local-ignore$' \
   --ignore='^README\.md$' \
   --ignore='^etc/systemd/system' \
+  --ignore='^usr/local/lib' \
   root-backup-audacious
 
 echo "→ Reloading systemd"

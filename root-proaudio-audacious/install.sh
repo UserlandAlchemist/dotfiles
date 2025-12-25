@@ -2,7 +2,6 @@
 set -eu
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-DOTFILES_DIR="$(dirname "$PKG_DIR")"
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "ERROR: run as root" >&2
@@ -28,16 +27,12 @@ backup_conflict() {
   fi
 }
 
-echo "Installing root-sudoers-audacious (NAS mount policy)"
+echo "Installing root-proaudio-audacious (real-time audio limits)"
 
-echo "→ Installing sudoers rule (nas-mount)"
-backup_conflict /etc/sudoers.d/nas-mount.sudoers \
-  "$PKG_DIR/etc/sudoers.d/nas-mount.sudoers"
-install -o root -g root -m 0440 \
-  "$PKG_DIR/etc/sudoers.d/nas-mount.sudoers" \
-  /etc/sudoers.d/nas-mount.sudoers
+backup_conflict /etc/security/limits.d/20-audio.conf \
+  "$PKG_DIR/etc/security/limits.d/20-audio.conf"
+install -o root -g root -m 0644 \
+  "$PKG_DIR/etc/security/limits.d/20-audio.conf" \
+  /etc/security/limits.d/20-audio.conf
 
-echo "→ Validating sudoers"
-visudo -c
-
-echo "✓ root-sudoers-audacious installed successfully"
+echo "✓ root-proaudio-audacious installed successfully"
