@@ -85,6 +85,7 @@ root-network-audacious/  → systemd-networkd wired ethernet config
 root-power-audacious/    → Power management (powertop, USB autosuspend, SATA power)
 root-proaudio-audacious/ → Real-time audio kernel tuning (rtprio limits)
 root-sudoers-audacious/  → Passwordless sudo for NAS mount control
+root-system-audacious/   → System configuration fixes for minimal Debian (journald override)
 ```
 
 System-level packages (`root-*-audacious`) require `sudo stow --target=/` when deploying.
@@ -98,14 +99,25 @@ Clone and deploy:
 ```bash
 cd ~/dotfiles
 stow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
-sudo stow --target=/ root-power-audacious root-efisync-audacious root-cachyos-audacious
+
+# System packages use install scripts (deploys systemd configs as real files, then stows the rest)
+sudo root-system-audacious/install.sh
+sudo root-power-audacious/install.sh
+sudo root-efisync-audacious/install.sh
+sudo root-cachyos-audacious/install.sh
+sudo root-backup-audacious/install.sh
+sudo root-network-audacious/install.sh
+sudo root-sudoers-audacious/install.sh
+sudo root-proaudio-audacious/install.sh
 ```
 
 Restow after changes or reinstalls:
 
 ```bash
 stow --restow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
-sudo stow --restow --target=/ root-power-audacious root-efisync-audacious
+
+# For system packages, re-run install scripts
+sudo root-system-audacious/install.sh
 ```
 
 Remove a module:
