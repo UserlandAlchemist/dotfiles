@@ -5,6 +5,8 @@
 ^etc/systemd/system/borg-check\.timer$
 ^etc/systemd/system/borg-check-deep\.service$
 ^etc/systemd/system/borg-check-deep\.timer$
+^usr/local/lib$
+^usr/local/lib/.*
 ^README\.md$
 ^install\.sh$
 ^\.stow-local-ignore$

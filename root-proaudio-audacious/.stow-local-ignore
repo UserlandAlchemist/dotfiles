@@ -1,0 +1,5 @@
+^etc/security/limits\.d$
+^etc/security/limits\.d/.*
+^README\.md$
+^install\.sh$
+^\.stow-local-ignore$

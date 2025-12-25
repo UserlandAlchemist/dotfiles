@@ -1,0 +1,11 @@
+^etc/systemd/system$
+^etc/systemd/system/.*
+^etc/modprobe\.d$
+^etc/modprobe\.d/.*
+^etc/sudoers\.d$
+^etc/sudoers\.d/.*
+^usr/local/libexec$
+^usr/local/libexec/.*
+^README\.md$
+^install\.sh$
+^\.stow-local-ignore$
