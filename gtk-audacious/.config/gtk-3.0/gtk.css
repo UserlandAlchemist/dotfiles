@@ -1,0 +1,115 @@
+/* Amiga Workbench Dark - GTK3 Color Overrides
+ *
+ * This overrides Arc-Dark's blue-gray palette with Workbench colors
+ * Matches waybar/wofi/sway color scheme
+ */
+
+@define-color workbench_bg     #202020;
+@define-color workbench_panel  #242424;
+@define-color workbench_border #303030;
+@define-color workbench_fg     #E6E6E6;
+@define-color workbench_shadow #606060;
+@define-color workbench_blue   #5078FF;
+@define-color workbench_orange #FFA040;
+@define-color workbench_teal   #40C8FF;
+
+/* Override Arc-Dark's blue-gray backgrounds with pure grays */
+* {
+    /* Replace Arc's #383c4a (blue-gray) with Workbench panel color */
+    background-color: @workbench_panel;
+}
+
+/* Darker backgrounds (sidebars, inactive areas) */
+.sidebar,
+.background {
+    background-color: @workbench_bg;
+}
+
+/* Selected/focused items - use Workbench blue instead of Arc's blue */
+*:selected,
+*:checked,
+.view:selected,
+row:selected {
+    background-color: @workbench_blue;
+    color: white;
+}
+
+/* Text color - ensure it's Workbench light gray */
+* {
+    color: @workbench_fg;
+}
+
+/* Borders - use Workbench border gray instead of Arc's blue-gray */
+*,
+.frame,
+border {
+    border-color: @workbench_border;
+}
+
+/* Headers and titlebars */
+headerbar,
+.titlebar {
+    background-color: @workbench_panel;
+    border-bottom: 1px solid @workbench_border;
+    color: @workbench_fg;
+}
+
+/* Buttons - match workspace tabs (subtle bevel) */
+button {
+    background-color: @workbench_border;
+    border: 1px solid @workbench_shadow;
+    color: @workbench_fg;
+}
+
+button:hover {
+    background-color: @workbench_panel;
+}
+
+button:active,
+button:checked {
+    background-color: @workbench_blue;
+    color: white;
+}
+
+/* Entries (text inputs) */
+entry {
+    background-color: @workbench_border;
+    border: 1px solid @workbench_shadow;
+    color: @workbench_fg;
+}
+
+entry:focus {
+    border-color: @workbench_blue;
+}
+
+/* Menus */
+menu,
+.menu {
+    background-color: @workbench_panel;
+    border: 1px solid @workbench_border;
+}
+
+menuitem:hover {
+    background-color: @workbench_blue;
+    color: white;
+}
+
+/* Tooltips */
+tooltip {
+    background-color: @workbench_bg;
+    color: @workbench_fg;
+    border: 1px solid @workbench_border;
+}
+
+/* Scrollbars - minimal Workbench-style */
+scrollbar {
+    background-color: @workbench_bg;
+}
+
+scrollbar slider {
+    background-color: @workbench_shadow;
+}
+
+scrollbar slider:hover {
+    background-color: @workbench_fg;
+}
