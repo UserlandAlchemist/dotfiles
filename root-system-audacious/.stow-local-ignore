@@ -1,0 +1,5 @@
+^etc/systemd$
+^etc/systemd/.*
+^README\.md$
+^install\.sh$
+^\.stow-local-ignore$

@@ -1,0 +1,4 @@
+^etc/systemd$
+^etc/systemd/.*
+^install\.sh$
+^\.stow-local-ignore$
