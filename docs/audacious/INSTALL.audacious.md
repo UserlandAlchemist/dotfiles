@@ -537,13 +537,17 @@ test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
 7. Deploy system packages:
 
 ```sh
-sudo stow -t / root-power-audacious root-efisync-audacious \
-             root-cachyos-audacious root-network-audacious \
-             root-backup-audacious root-proaudio-audacious
+sudo root-system-audacious/install.sh
+sudo root-power-audacious/install.sh
+sudo root-efisync-audacious/install.sh
+sudo root-cachyos-audacious/install.sh
+sudo root-network-audacious/install.sh
+sudo root-backup-audacious/install.sh
 sudo root-sudoers-audacious/install.sh
+sudo root-proaudio-audacious/install.sh
 ```
 
-**Why install.sh:** Sudoers files require `root:root 0440` ownership which stow cannot set.
+**Why install.sh:** System packages deploy systemd configs as real files (not symlinks to /home) to avoid boot-time mount dependencies, then stow remaining files.
 
 8. Enable services:
 
@@ -595,6 +599,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled.
 | `pipewire-audacious` | user | Audio routing and pro-audio latency config |
 | `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
 | `ardour-audacious` | user | DAW config (optional) |
+| `root-system-audacious` | system | System configuration fixes for minimal Debian (journald ForwardToSyslog override) |
 | `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
 | `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
