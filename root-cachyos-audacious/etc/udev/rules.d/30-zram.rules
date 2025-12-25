@@ -10,5 +10,8 @@
 #
 # Also it's better to disable Zswap, as this may prevent ZRAM from working
 # properly or keeping a proper count of compressed pages via zramctl.
-ACTION=="change", KERNEL=="zram0", ATTR{initstate}=="1", SYSCTL{vm.swappiness}="150", \
+#
+# NOTE: vm.swappiness is now set in sysctl.d/99-gaming-desktop-settings.conf (150)
+# Zswap disable on zram initialization:
+ACTION=="change", KERNEL=="zram0", ATTR{initstate}=="1", \
     RUN+="/bin/sh -c 'echo N > /sys/module/zswap/parameters/enabled'"
