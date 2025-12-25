@@ -91,3 +91,28 @@ Factual record of where Audacious diverges from stock Debian Trixie defaults. Fo
 **Reason:** Required versions not available in Debian.
 **Vanilla path:** `/opt` typically empty on stock Debian.
 **Recovery impact:** Requires manual reinstall steps not covered by apt.
+
+---
+
+## Systemd journald configuration override
+**Location:** `/etc/systemd/journald.conf.d/syslog.conf` (via `root-system-audacious`)
+**Divergence:** Overrides Debian's default `ForwardToSyslog=yes` with `ForwardToSyslog=no`.
+**Reason:** Minimal debootstrap install doesn't include rsyslog. Debian's default assumes rsyslog is present, causing journald to wedge when trying to forward to non-existent socket.
+**Vanilla path:** `/usr/lib/systemd/journald.conf.d/syslog.conf` sets `ForwardToSyslog=yes`.
+**Recovery impact:** Without override, journald wedges 20-40 minutes after boot on minimal installs without rsyslog.
+
+---
+
+## Gaming and performance tuning (sysctl, udev, systemd)
+**Location:** `/etc/sysctl.d/99-gaming-desktop-settings.conf`, `/etc/udev/rules.d/*`, `/etc/systemd/*.conf.d/*` (via `root-cachyos-audacious`)
+**Divergence:** Aggressive memory, I/O, and kernel tuning derived from CachyOS optimizations.
+**Key changes:**
+- `vm.swappiness=150` (Debian default: 60) — Optimize for zram compression
+- `kernel.nmi_watchdog=0` (Debian default: 1) — Disable NMI watchdog
+- I/O schedulers: NVMe=none, SSD=mq-deadline, HDD=bfq (Debian uses defaults)
+- Transparent hugepages: `defer+madvise` (Debian default: `madvise`)
+- Systemd limits: 1M open files (Debian default: 1024)
+- Fast service timeouts: 15s start, 10s stop (Debian default: 90s)
+**Reason:** Desktop performance and gaming workload optimization (MTGA, MMOs, streaming).
+**Vanilla path:** Debian uses conservative defaults for broad compatibility.
+**Recovery impact:** Without these tweaks, system will be more conservative (slower I/O, lower memory pressure, longer timeouts).
