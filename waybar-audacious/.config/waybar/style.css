@@ -45,6 +45,7 @@ border: 0; /* no per-module borders/underlines */
     padding: 2px 8px;
     margin: 6px 2px 4px 0;
     background: #303030;
+    color: @fg;  /* Ensure workspace numbers are visible */
     /* Workbench bevel: light on top/left, dark on bottom/right */
     border-top: 1px solid rgba(255,255,255,0.10);
     border-left: 1px solid rgba(255,255,255,0.08);
