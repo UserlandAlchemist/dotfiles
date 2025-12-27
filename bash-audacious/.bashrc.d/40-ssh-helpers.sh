@@ -4,51 +4,45 @@
 ssh-astute() {
     local host="astute"
     local mac="60:45:cb:9b:ab:3b"
+    local max_wait=60
 
-    # Quick non-interactive check if already reachable (keys already loaded)
+    # Quick check: already up with loaded keys?
     if ssh -o BatchMode=yes -o ConnectTimeout=2 "${host}" true 2>/dev/null; then
-        logger -t astute-ssh "${host} already reachable, connecting"
         ssh -A "${host}"
         return
     fi
 
-    # BatchMode failed - could be: 1) host down, or 2) keys not loaded
-    # Try interactive check (allows passphrase prompt) before sending WOL
-    if ssh -o ConnectTimeout=3 "${host}" true 2>/dev/null; then
-        # Host was up, just needed key passphrase
-        logger -t astute-ssh "${host} reachable after key load, connecting"
+    # Check if SSH port is reachable (distinguishes "down" from "needs passphrase")
+    if nc -z -w2 "${host}" 22 2>/dev/null; then
+        # SSH daemon is up, just need to authenticate (may prompt for passphrase)
         ssh -A "${host}"
         return
     fi
 
     # Host is down, send WOL
-    logger -t astute-ssh "Sending WOL to ${host}"
+    echo "Waking ${host}..."
     wakeonlan "${mac}"
 
-    echo "Waiting for ${host} to wake up (up to 60s)..."
-
-    # Wait loop with 60s timeout (wake-from-suspend can be slow)
-    for i in $(seq 1 60); do
-        # Use 3-second timeout after WOL (SSH might be slower to start)
-        if ssh -o BatchMode=yes -o ConnectTimeout=3 "${host}" true 2>/dev/null; then
-            echo "${host} is up after ${i} seconds"
-            logger -t astute-ssh "${host} responded after ${i}s"
+    # Wait for SSH daemon to respond
+    echo "Waiting for ${host} (up to ${max_wait}s)..."
+    local waited=0
+    while [ ${waited} -lt ${max_wait} ]; do
+        if nc -z -w1 "${host}" 22 2>/dev/null; then
+            echo "${host} is up (${waited}s)"
             ssh -A "${host}"
             return
         fi
 
         # Progress indicator every 10 seconds
-        if [ $((i % 10)) -eq 0 ]; then
-            echo "  Still waiting... (${i}s elapsed)"
+        if [ $((waited % 10)) -eq 0 ] && [ ${waited} -gt 0 ]; then
+            echo "  ${waited}s elapsed..."
         fi
 
         sleep 1
+        waited=$((waited + 1))
     done
 
-    echo "Warning: ${host} did not respond within 60 seconds"
-    logger -t astute-ssh "WARNING: ${host} timeout after WOL (60s)"
-
-    # One final attempt with full timeout
-    echo "Attempting connection anyway..."
+    # Timeout - try connecting anyway in case nc is having issues
+    echo "Timeout after ${max_wait}s, attempting connection..."
     ssh -A "${host}"
 }
