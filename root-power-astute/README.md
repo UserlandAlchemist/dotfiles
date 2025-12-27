@@ -67,7 +67,7 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 **Automatic (timer-based):**
 1. Timer triggers every 3 minutes
 2. `astute-idle-check.sh` runs checks:
-   - `w -h | grep 'pts/'` - Any interactive SSH sessions?
+   - `w -h` - Any interactive SSH or local console sessions (pts/ or tty)?
    - `systemd-inhibit --list` - Any sleep inhibitors?
    - `find /srv/nas -maxdepth 4 -mmin -10` - Recent NAS file activity?
    - Jellyfin API - Any active clients in last 20 minutes?
