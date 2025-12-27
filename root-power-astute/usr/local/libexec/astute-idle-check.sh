@@ -28,22 +28,9 @@ check_jellyfin_activity() {
     ' >/dev/null
 }
 
-# Check for active login sessions (interactive only - with allocated TTY)
-if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
-	# Only count sessions with an actual TTY device allocated (pts/0, pts/1, etc.)
-	# Non-interactive SSH commands show TTY=- and shouldn't prevent sleep
-	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '$7 != "-" {print $1}')
-
-	# Debug logging
-	logger -t "$TAG" "Session check: found sessions: $(loginctl list-sessions --no-legend | wc -l)"
-	logger -t "$TAG" "Session check: INTERACTIVE_SESSIONS='$INTERACTIVE_SESSIONS'"
-
-	if [ -n "$INTERACTIVE_SESSIONS" ]; then
-		echo "Astute staying awake - SSH session active"
-    		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
-    		exit 0
-	fi
-fi
+# Session detection disabled - loginctl doesn't reliably distinguish interactive SSH
+# The manual click trigger now uses systemd (no user session created)
+# TODO: Find reliable way to detect interactive SSH sessions if needed
 
 # Check for active inhibitors
 if systemd-inhibit --list --no-legend | grep -q .; then

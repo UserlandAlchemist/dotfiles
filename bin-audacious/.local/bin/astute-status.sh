@@ -17,18 +17,26 @@ underline() {
 case "$1" in
   click)
     if probe; then
-      # Astute is up - show immediate feedback, then run check
+      # Astute is up - trigger idle check via systemd (won't create user session)
       notify-send -u low -a "Astute Sleep Control" "Idle Check" "Checking if Astute can sleep..."
 
-      # Non-interactive SSH doesn't create TTY session, won't interfere with check
-      MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-        'sudo /usr/local/libexec/astute-idle-check.sh' 2>/dev/null)
+      # Trigger the check via systemd service to avoid creating a user session
+      ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+        'sudo systemctl start astute-idle-suspend.service' 2>/dev/null
 
-      if [ -n "$MSG" ]; then
-        # Astute stayed awake - show the reason
-        notify-send -a "Astute Sleep Control" "Staying Awake" "$MSG"
+      # Brief wait for the check to complete
+      sleep 2
+
+      # Check if Astute is still up or went to sleep
+      if probe; then
+        # Still up - check journalctl for the reason
+        MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+          'sudo journalctl -u astute-idle-suspend.service -n 1 --output=cat' 2>/dev/null)
+        if [ -n "$MSG" ]; then
+          notify-send -a "Astute Sleep Control" "Staying Awake" "$MSG"
+        fi
       else
-        # No output means it suspended
+        # Went to sleep
         notify-send -a "Astute Sleep Control" "Going to Sleep" "Astute is idle and suspending now"
       fi
     else

@@ -6,5 +6,5 @@ Defaults:alchemist !requiretty
 alchemist ALL=(ALL) NOPASSWD: \
   /usr/bin/systemctl start nas-inhibit.service, \
   /usr/bin/systemctl stop nas-inhibit.service, \
-  /usr/local/libexec/astute-idle-check.sh
+  /usr/bin/systemctl start astute-idle-suspend.service
 
