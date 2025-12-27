@@ -17,15 +17,16 @@ logger -t borg-backup "Sending WOL to astute"
 /usr/bin/wakeonlan "$MAC"
 
 # Try for ~60 seconds (6 x 10s) with borg list check
+export BORG_RSH="ssh -i $KEY -T -o BatchMode=yes -o ConnectTimeout=5"
+export BORG_PASSCOMMAND="$PASSCMD"
+export BORG_NONINTERACTIVE=1
+
 i=0
 while [ $i -lt 6 ]; do
-    BORG_RSH="ssh -i $KEY -T -o BatchMode=yes -o ConnectTimeout=5" \
-    BORG_PASSCOMMAND="$PASSCMD" \
-    BORG_NONINTERACTIVE=1 \
-    borg list "$REPO" >/dev/null 2>&1 && {
+    if borg list "$REPO" >/dev/null 2>&1; then
         logger -t borg-backup "astute responded after $((i * 10))s"
         exit 0
-    }
+    fi
     i=$((i+1))
     sleep 10
 done
