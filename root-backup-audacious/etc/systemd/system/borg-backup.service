@@ -1,7 +1,8 @@
 [Unit]
 Description=BorgBackup: Audacious → Astute NAS (6-hourly, WoL Astute)
 Wants=network-online.target
-After=network-online.target
+After=network-online.target home.mount var.mount zfs-mount.service
+RequiresMountsFor=/home/alchemist /var/lib/borg /var/cache/borg
 
 [Service]
 Type=oneshot

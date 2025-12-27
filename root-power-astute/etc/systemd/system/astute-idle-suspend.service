@@ -1,5 +1,7 @@
 [Unit]
 Description=Astute idle suspend check
+After=srv-nas.mount zfs-mount.service
+RequiresMountsFor=/srv/nas
 
 [Service]
 Type=oneshot

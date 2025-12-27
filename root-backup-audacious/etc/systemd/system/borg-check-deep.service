@@ -1,7 +1,8 @@
 [Unit]
 Description=Monthly deep Borg data integrity check (audacious -> astute)
 Wants=network-online.target
-After=network-online.target
+After=network-online.target home.mount zfs-mount.service
+RequiresMountsFor=/home/alchemist
 
 [Service]
 Type=oneshot
