@@ -18,7 +18,7 @@ case "$1" in
   click)
     if probe; then
       # Astute is up - show immediate feedback, then run check
-      notify-send -a "Astute Sleep Control" "Idle Check" "Checking if Astute can sleep..."
+      notify-send -u low -a "Astute Sleep Control" "Idle Check" "Checking if Astute can sleep..."
 
       # Non-interactive SSH doesn't create TTY session, won't interfere with check
       MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
@@ -35,7 +35,7 @@ case "$1" in
       # Astute is down - send WOL
       wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
       touch "$STATE_FILE"
-      notify-send -a "Astute Sleep Control" "Wake on LAN" "Sending magic packet to wake Astute..."
+      notify-send -u low -a "Astute Sleep Control" "Wake on LAN" "Sending magic packet to wake Astute..."
     fi
     exit 0
     ;;
