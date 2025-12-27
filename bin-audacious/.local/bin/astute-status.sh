@@ -29,9 +29,9 @@ case "$1" in
 
       # Check if Astute is still up or went to sleep
       if probe; then
-        # Still up - check journalctl for the reason
+        # Still up - check journalctl for the reason (grep for echo messages from script)
         MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-          'sudo journalctl -u astute-idle-suspend.service -n 1 --output=cat' 2>/dev/null)
+          'sudo journalctl -u astute-idle-suspend.service -n 20 --output=cat | grep "^Astute staying awake"' 2>/dev/null)
         if [ -n "$MSG" ]; then
           notify-send -a "Astute Sleep Control" "Staying Awake" "$MSG"
         fi
