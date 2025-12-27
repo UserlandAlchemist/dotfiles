@@ -17,7 +17,9 @@ underline() {
 case "$1" in
   click)
     if probe; then
-      # Astute is up - run idle check immediately
+      # Astute is up - show immediate feedback, then run check
+      notify-send -a "Astute" "" "Checking Astute status..."
+
       # Non-interactive SSH doesn't create TTY session, won't interfere with check
       MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
         'sudo /usr/local/libexec/astute-idle-check.sh' 2>/dev/null)
