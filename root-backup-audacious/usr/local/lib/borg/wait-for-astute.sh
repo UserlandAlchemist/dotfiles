@@ -1,5 +1,5 @@
 #!/bin/sh
-HOST="astute"
+HOST="borg@astute"
 MAC="60:45:cb:9b:ab:3b"
 REPO="ssh://borg@astute/srv/backups/audacious-borg"
 
