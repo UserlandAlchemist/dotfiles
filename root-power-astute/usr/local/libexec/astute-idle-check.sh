@@ -32,7 +32,7 @@ check_jellyfin_activity() {
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
 	# Only count sessions with an actual TTY device allocated (pts/0, pts/1, etc.)
 	# Non-interactive SSH commands show TTY=- and shouldn't prevent sleep
-	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '$6 != "-" {print $1}')
+	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '$7 != "-" {print $1}')
 
 	# Debug logging
 	logger -t "$TAG" "Session check: found sessions: $(loginctl list-sessions --no-legend | wc -l)"
