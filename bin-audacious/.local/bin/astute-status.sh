@@ -20,8 +20,22 @@ case "$1" in
       # Astute is up - trigger background idle check (SSH session closes immediately)
       # The backgrounded check runs after a delay, allowing the SSH session to close
       ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-        'nohup sh -c "sleep 3; /usr/local/libexec/astute-idle-check.sh" >/tmp/idle-check.log 2>&1 &' 2>/dev/null
+        'nohup sh -c "sleep 3; sudo /usr/local/libexec/astute-idle-check.sh" >/tmp/idle-check.log 2>&1 &' 2>/dev/null
       notify-send -a "Astute" "" "Checking if Astute is idle..."
+
+      # Check result after 5 seconds and notify
+      (
+        sleep 5
+        if probe; then
+          # Still up - read the result from log
+          MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+            'tail -n1 /tmp/idle-check.log 2>/dev/null' 2>/dev/null | grep -E '^Astute')
+          [ -n "$MSG" ] && notify-send -a "Astute" "" "$MSG"
+        else
+          # Went to sleep
+          notify-send -a "Astute" "" "Astute went to sleep"
+        fi
+      ) &
     else
       # Astute is down - send WOL
       wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
