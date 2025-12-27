@@ -30,9 +30,9 @@ check_jellyfin_activity() {
 
 # Check for active login sessions (interactive only)
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
-	# Use 'w' command which shows users with interactive terminals (pts/0, pts/1, etc.)
+	# Use 'w' command which shows users with interactive terminals (pts/0, tty1, etc.)
 	# Non-interactive SSH commands don't appear in 'w' output
-	if w -h | grep -q 'pts/'; then
+	if w -h | awk '$2 ~ /^(pts|tty)/ {found=1} END {exit !found}'; then
 		echo "Astute staying awake - SSH session active"
     		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
     		exit 0
