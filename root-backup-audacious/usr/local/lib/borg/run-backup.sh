@@ -13,18 +13,8 @@ PASSCMD="cat $HOME/.config/borg/passphrase"
 : "${KEY:?}"
 : "${PASSCMD:?}"
 
-# Acquire inhibit lock to prevent shutdown during backup
-# systemd-inhibit with 'cat' keeps the lock held until we kill it
-systemd-inhibit --what=shutdown:sleep --who="borg-backup" --why="Backup in progress (Audacious → Astute)" cat > /dev/null &
-INHIBIT_PID=$!
-
-# Ensure we release the lock on exit (success or failure)
-cleanup() {
-    if [ -n "${INHIBIT_PID:-}" ] && kill -0 "$INHIBIT_PID" 2>/dev/null; then
-        kill "$INHIBIT_PID" 2>/dev/null || true
-    fi
-}
-trap cleanup EXIT
+# Protected from idle shutdown by idle-shutdown.sh checking service status
+# (systemd-inhibit doesn't work from user-context services)
 
 # SSH options for non-interactive robustness
 BORG_RSH="ssh -i $KEY -T -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3"
