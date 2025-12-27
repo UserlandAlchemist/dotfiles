@@ -128,10 +128,37 @@ Populate Blue USB with all secrets and recovery documentation.
 
 Prerequisites:
 - Blue USB created and mounted at /mnt/keyusb (§1)
-- All SSH keys generated (see `SSH-KEY-SETUP.md`)
+- All SSH keys generated (§2.0)
 - Borg repository initialized with passphrase
 
 Steps:
+
+### §2.0 SSH Key Overview
+
+**Key architecture:**
+
+| Key Name | Purpose | Used By | Access To | Type |
+|----------|---------|---------|-----------|------|
+| `id_alchemist` | Main identity | Audacious, Astute | GitHub, Astute (full shell), Audacious (full shell) | ED25519 |
+| `audacious-backup` | Borg backups | Audacious | Astute (borg user, restricted to borg serve) | ED25519 |
+| `id_ed25519_astute_nas` | NAS control | Audacious | Astute (forced command: nas-inhibit only) | ED25519 |
+
+**Key locations:**
+- Audacious: `~/.ssh/id_alchemist`, `~/.ssh/audacious-backup`, `~/.ssh/id_ed25519_astute_nas`
+- Astute: `/srv/backups/.ssh/authorized_keys` (borg), `~/.ssh/authorized_keys` (main + NAS)
+
+**Generate keys (if missing):**
+
+```sh
+ssh-keygen -t ed25519 -f ~/.ssh/id_alchemist -C "alchemist@userlandlab.org"
+ssh-keygen -t ed25519 -f ~/.ssh/audacious-backup -C "audacious-backup" -N ""
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_astute_nas -C "audacious-nas" -N ""
+```
+
+**Deployment notes:**
+- Add `id_alchemist.pub` to GitHub.
+- Install `audacious-backup.pub` in Astute borg user's `authorized_keys` with forced `borg serve`.
+- Install `id_ed25519_astute_nas.pub` in Astute user `authorized_keys` with forced `astute-nas-inhibit` command.
 
 ### §2.1 SSH Keys
 
@@ -244,7 +271,7 @@ Copy essential recovery docs (optional but recommended):
 mkdir -p /mnt/keyusb/docs
 
 # Key recovery procedures
-cp ~/dotfiles/docs/SSH-KEY-SETUP.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/INSTALL.audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/RECOVERY.audacious.md /mnt/keyusb/docs/
@@ -391,7 +418,7 @@ cp ~/.config/jellyfin/api.token /mnt/keyusb/tokens/jellyfin/
 
 **Recovery docs updated:**
 ```sh
-cp ~/dotfiles/docs/SSH-KEY-SETUP.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 # ... other docs as needed
 ```
@@ -757,7 +784,7 @@ Expected result: Borg repository accessible again.
 1. Check password manager backups
 2. Check physical notebook (if you wrote it down)
 3. If truly lost, all secrets must be regenerated:
-   - Generate new SSH keys (see SSH-KEY-SETUP.md)
+  - Generate new SSH keys (see §2.0)
    - Re-deploy to GitHub and Astute
    - Reset Borg repository (lose all backups) or recover passphrase from ~/.config/borg/passphrase if still have access
    - Create new Blue USB with new secrets
@@ -862,7 +889,6 @@ Complete directory tree of Blue USB:
 │   │   └── api.token                   # Jellyfin API token
 │   └── README.txt                      # Token inventory
 └── docs/                               # Recovery documentation copies
-    ├── SSH-KEY-SETUP.md
     ├── SECRETS-RECOVERY.md
     ├── INSTALL.audacious.md
     ├── RECOVERY.audacious.md
@@ -881,7 +907,7 @@ Complete directory tree of Blue USB:
 ## Appendix B: Cross-References
 
 **Related documentation:**
-- `SSH-KEY-SETUP.md` — SSH key generation and deployment
+- `SECRETS-RECOVERY.md` — SSH key generation and recovery
 - `docs/audacious/INSTALL.audacious.md` — Full Audacious installation
 - `docs/audacious/RECOVERY.audacious.md` — Audacious disaster recovery
 - `docs/astute/INSTALL.astute.md` — Full Astute installation
