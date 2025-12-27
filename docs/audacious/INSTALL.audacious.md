@@ -18,6 +18,19 @@
 
 ---
 
+## Key deviations from stock Debian
+
+- Encrypted ZFS mirror for root (not ext4)
+- systemd-boot with UKIs (not GRUB + initrd)
+- Dual ESP sync via `root-efisync-audacious`
+- Custom systemd units for power, backup, NAS, and EFI sync
+- Manual /opt and /usr/local audio installs (see INSTALL-AUDIO-TOOLS.md)
+- Journald syslog forwarding override (`ForwardToSyslog=no`)
+- Gaming/perf tuning via sysctl/udev/systemd drop-ins
+- Third-party apt repos for Prism Launcher and Jellyfin
+
+---
+
 ## §1 Boot Debian Live ISO
 
 Prepare the live environment with tools needed for ZFS installation.
