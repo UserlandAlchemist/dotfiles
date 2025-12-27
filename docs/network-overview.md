@@ -80,7 +80,7 @@ A detailed per-device accounting is not required for core Wolfpack documentation
 **Configuration:**
 - `/etc/apt/apt.conf.d/01proxy` - ProxyAutoDetect configuration
 - `/usr/local/bin/apt-proxy-detect.sh` - Reachability detection script
-- Managed via stow: `root-network-audacious` package
+- Installed via `root-network-audacious/install.sh` (real files in `/etc` and `/usr/local`)
 
 ---
 

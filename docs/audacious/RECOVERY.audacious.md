@@ -295,7 +295,7 @@ Expected result: both ESPs contain identical UKIs.
 
 ## §7 Restore services from dotfiles
 
-Reapply stowed system configs and restart critical services.
+Reapply system configs via install scripts and restart critical services.
 
 Steps:
 1. Verify dotfiles repository exists:
@@ -306,13 +306,16 @@ ls -la /home/alchemist/dotfiles
 
 **If missing:** Clone from GitHub or restore from Borg (see RESTORE.audacious.md).
 
-2. Restow system packages:
+2. Install system packages:
 
 ```sh
 cd /home/alchemist/dotfiles
-stow --restow -t / root-power-audacious root-efisync-audacious \
-  root-cachyos-audacious root-network-audacious \
-  root-backup-audacious root-proaudio-audacious
+root-power-audacious/install.sh
+root-efisync-audacious/install.sh
+root-cachyos-audacious/install.sh
+root-network-audacious/install.sh
+root-backup-audacious/install.sh
+root-proaudio-audacious/install.sh
 root-sudoers-audacious/install.sh
 ```
 

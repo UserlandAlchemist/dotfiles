@@ -11,7 +11,7 @@ Sudoers files **cannot** be managed via stow due to permissions requirements.
 **Process:**
 1. Rules live at `<package>/etc/sudoers.d/<name>.sudoers` (note `.sudoers` extension)
 2. Each package with sudoers has `install.sh` that:
-   - Runs `stow` for regular files
+   - Installs system-scope files as real files in `/etc` or `/usr/local`
    - Uses `install -o root -g root -m 0440` to copy sudoers files to `/etc/sudoers.d/`
    - Runs `visudo -c` to validate
 3. Examples: `root-sudoers-audacious/install.sh`, `root-power-astute/install.sh`
@@ -168,8 +168,8 @@ stow profile-common bash-audacious bin-audacious emacs-audacious sway-audacious 
 
 ### Deploy system configuration
 ```bash
-sudo stow --target=/ root-power-audacious root-backup-audacious
-sudo systemctl daemon-reload
+sudo root-power-audacious/install.sh
+sudo root-backup-audacious/install.sh
 ```
 
 ### Packages with sudoers (use install.sh)
