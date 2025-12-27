@@ -3,33 +3,11 @@ set -eu
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 DOTFILES_DIR="$(dirname "$PKG_DIR")"
-BACKUP_DIR="/var/backups/systemd/root-system-audacious"
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "ERROR: run as root" >&2
   exit 1
 fi
-
-backup_conflict() {
-  TARGET="$1"
-  SOURCE="$2"
-
-  if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
-    if [ -L "$TARGET" ]; then
-      RESOLVED="$(readlink -f "$TARGET" 2>/dev/null || true)"
-      if [ "$RESOLVED" = "$SOURCE" ]; then
-        return 0
-      fi
-    fi
-
-    TS="$(date +%Y%m%d-%H%M%S)"
-    mkdir -p "$BACKUP_DIR"
-    BASE="$(basename "$TARGET")"
-    BACKUP="${BACKUP_DIR}/${BASE}.bak-${TS}"
-    echo "→ Backing up $TARGET to $BACKUP"
-    mv "$TARGET" "$BACKUP"
-  fi
-}
 
 install_systemd_config() {
   RELPATH="$1"
@@ -38,7 +16,6 @@ install_systemd_config() {
   TARGETDIR="$(dirname "$TARGET")"
 
   mkdir -p "$TARGETDIR"
-  backup_conflict "$TARGET" "$SOURCE"
   install -m 0644 "$SOURCE" "$TARGET"
 }
 

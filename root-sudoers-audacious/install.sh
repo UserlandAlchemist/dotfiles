@@ -9,30 +9,9 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-backup_conflict() {
-  TARGET="$1"
-  SOURCE="$2"
-
-  if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
-    if [ -L "$TARGET" ]; then
-      RESOLVED="$(readlink -f "$TARGET" 2>/dev/null || true)"
-      if [ "$RESOLVED" = "$SOURCE" ]; then
-        return 0
-      fi
-    fi
-
-    TS="$(date +%Y%m%d-%H%M%S)"
-    BACKUP="${TARGET}.bak-${TS}"
-    echo "→ Backing up $TARGET to $BACKUP"
-    mv "$TARGET" "$BACKUP"
-  fi
-}
-
 echo "Installing root-sudoers-audacious (NAS mount policy)"
 
 echo "→ Installing sudoers rule (nas-mount)"
-backup_conflict /etc/sudoers.d/nas-mount.sudoers \
-  "$PKG_DIR/etc/sudoers.d/nas-mount.sudoers"
 install -o root -g root -m 0440 \
   "$PKG_DIR/etc/sudoers.d/nas-mount.sudoers" \
   /etc/sudoers.d/nas-mount.sudoers
