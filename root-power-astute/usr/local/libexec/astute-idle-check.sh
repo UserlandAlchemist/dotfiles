@@ -28,15 +28,11 @@ check_jellyfin_activity() {
     ' >/dev/null
 }
 
-# Check for active login sessions (interactive only - with TTY)
+# Check for active login sessions (interactive only - with allocated TTY)
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
-	# Only count sessions with Type=tty (interactive shells)
-	# Non-interactive SSH commands have Type=unspecified and shouldn't prevent sleep
-	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '{print $1}' | while read sid; do
-		if loginctl show-session "$sid" 2>/dev/null | grep -q "^Type=tty"; then
-			echo "$sid"
-		fi
-	done)
+	# Only count sessions with an actual TTY device allocated (pts/0, pts/1, etc.)
+	# Non-interactive SSH commands show TTY=- and shouldn't prevent sleep
+	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '$6 != "-" {print $1}')
 
 	if [ -n "$INTERACTIVE_SESSIONS" ]; then
 		echo "Astute staying awake - SSH session active"
