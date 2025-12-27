@@ -17,13 +17,19 @@ underline() {
 case "$1" in
   click)
     if probe; then
-      # Astute is up - trigger idle check (may suspend if idle)
-      ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-        'sudo /usr/local/libexec/astute-idle-check.sh' >/dev/null 2>&1 &
+      # Astute is up - trigger idle check and show result
+      (
+        MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+          'sudo /usr/local/libexec/astute-idle-check.sh' 2>/dev/null)
+        if [ -n "$MSG" ]; then
+          notify-send -a "Astute" "$MSG"
+        fi
+      ) &
     else
       # Astute is down - send WOL
       wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
       touch "$STATE_FILE"
+      notify-send -a "Astute" "Waking Astute..."
     fi
     exit 0
     ;;
