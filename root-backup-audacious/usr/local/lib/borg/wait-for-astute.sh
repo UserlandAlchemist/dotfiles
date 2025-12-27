@@ -3,8 +3,8 @@ HOST="astute"
 MAC="60:45:cb:9b:ab:3b"
 REPO="ssh://borg@astute/srv/backups/audacious-borg"
 
-KEY="$HOME/alchemist/.ssh/audacious-backup"
-PASSCMD="cat $HOME/alchemist/.config/borg/passphrase"
+KEY="$HOME/.ssh/audacious-backup"
+PASSCMD="cat $HOME/.config/borg/passphrase"
 
 # Quick check if already reachable before sending WOL
 if ssh -o BatchMode=yes -o ConnectTimeout=2 -i "$KEY" "$HOST" true 2>/dev/null; then
