@@ -63,8 +63,8 @@ This document lists all machines currently in the network, their hardware specs,
 - Pro audio workstation (Ardour, sfizz, ZynAddSubFX)
 
 **Displays:**
-- MSI MAG274UPF — 3840×2160 @ up to 144 Hz, Adaptive Sync (primary)
-- LG Ultrawide — 2560×1080 @ 60 Hz (secondary)
+- MSI MAG274UPF — 3840×2160 @ up to 144 Hz, Adaptive Sync (primary, right, DP-1)
+- LG Ultrawide — 2560×1080 @ 60 Hz (secondary, left, HDMI-A-1)
 
 **Input:**
 - 8BitDo Ultimate 2 BT controller with charging dock (2.4GHz mode)
