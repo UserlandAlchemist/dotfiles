@@ -72,11 +72,11 @@ install_libexec astute-idle-check.sh
 install_libexec astute-nas-inhibit.sh
 
 echo "→ Installing sudoers rule (nas-inhibit)"
-backup_conflict /etc/sudoers.d/nas-inhibit.sudoers \
+backup_conflict /etc/sudoers.d/nas-inhibit \
   "$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers"
 install -o root -g root -m 0440 \
   "$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers" \
-  /etc/sudoers.d/nas-inhibit.sudoers
+  /etc/sudoers.d/nas-inhibit
 
 echo "→ Reloading systemd"
 systemctl daemon-reload
