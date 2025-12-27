@@ -17,22 +17,17 @@ underline() {
 case "$1" in
   click)
     if probe; then
-      # Astute is up - trigger background idle check (SSH session closes immediately)
-      # The backgrounded check runs after a delay, allowing the SSH session to close
+      # Astute is up - schedule idle check to run in 3 seconds via systemd-run
+      # This runs outside any SSH session context, avoiding false session detection
       ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-        'nohup sh -c "sleep 3; sudo /usr/local/libexec/astute-idle-check.sh" >/tmp/idle-check.log 2>&1 &' 2>/dev/null
-      notify-send -a "Astute" "" "Checking if Astute is idle..."
+        'systemd-run --user --on-active=3s --unit=idle-check-manual sudo /usr/local/libexec/astute-idle-check.sh' >/dev/null 2>&1
 
-      # Check result after 5 seconds and notify
+      # Check result after 5 seconds
       (
         sleep 5
         if probe; then
-          # Still up - read the result from log
-          MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-            'tail -n1 /tmp/idle-check.log 2>/dev/null' 2>/dev/null | grep -E '^Astute')
-          [ -n "$MSG" ] && notify-send -a "Astute" "" "$MSG"
+          notify-send -a "Astute" "" "Astute stayed awake"
         else
-          # Went to sleep
           notify-send -a "Astute" "" "Astute went to sleep"
         fi
       ) &
