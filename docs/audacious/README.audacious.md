@@ -100,7 +100,7 @@ Clone and deploy:
 cd ~/dotfiles
 stow bash-audacious bin-audacious emacs-audacious sway-audacious waybar-audacious wofi-audacious
 
-# System packages use install scripts (deploy boot-critical configs as real files; stow any non-boot files if present)
+# System packages use install scripts for anything outside `~` (see INSTALL.audacious.md for details)
 sudo root-system-audacious/install.sh
 sudo root-power-audacious/install.sh
 sudo root-efisync-audacious/install.sh
