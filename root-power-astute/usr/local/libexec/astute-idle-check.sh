@@ -34,6 +34,10 @@ if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
 	# Non-interactive SSH commands show TTY=- and shouldn't prevent sleep
 	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '$6 != "-" {print $1}')
 
+	# Debug logging
+	logger -t "$TAG" "Session check: found sessions: $(loginctl list-sessions --no-legend | wc -l)"
+	logger -t "$TAG" "Session check: INTERACTIVE_SESSIONS='$INTERACTIVE_SESSIONS'"
+
 	if [ -n "$INTERACTIVE_SESSIONS" ]; then
 		echo "Astute staying awake - SSH session active"
     		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
