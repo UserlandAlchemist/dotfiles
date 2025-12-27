@@ -12,7 +12,7 @@ max-icon-size=24
 max-visible=5
 default-timeout=5000
 format=<b>%a</b>\n%b
-output=DP-1
+output=HDMI-A-1
 
 background-color=#242424EE
 text-color=#E6E6E6
