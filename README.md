@@ -127,16 +127,15 @@ See: `docs/audacious/INSTALL.audacious.md`
 Each host has complete rebuild documentation:
 
 **Audacious:**
-- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Overview + full installation
 - [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Full installation from scratch
 - [`docs/audacious/RECOVERY.audacious.md`](docs/audacious/RECOVERY.audacious.md) — Boot and ZFS recovery
 - [`docs/audacious/RESTORE.audacious.md`](docs/audacious/RESTORE.audacious.md) — Borg data restoration
-- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Divergence summary + install steps
 - [`docs/audacious/DRIFT-CHECK.md`](docs/audacious/DRIFT-CHECK.md) — Package drift detection procedure
 - [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
 
 **Astute:**
 - [`docs/astute/INSTALL.astute.md`](docs/astute/INSTALL.astute.md) — Full installation from scratch
+- [`docs/astute/RECOVERY.astute.md`](docs/astute/RECOVERY.astute.md) — Boot and ZFS recovery
 - [`docs/astute/installed-software.astute.md`](docs/astute/installed-software.astute.md) — Complete package inventory
 
 ### System Reference

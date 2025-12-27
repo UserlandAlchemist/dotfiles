@@ -3,7 +3,6 @@
 **Purpose:** Test installation documentation and experiment with alternative systems (Gentoo, BSD)
 
 **Design Date:** 2025-12-23
-**Designed By:** Claude Sonnet 4.5
 
 ---
 
@@ -447,23 +446,22 @@ sudo virt-sparsify --in-place test-audacious-vda.qcow2
 
 ---
 
-## Implementation Handoff to Codex
+## Implementation Steps
 
-**Codex should assist with:**
-1. Installing libvirt/QEMU packages on Audacious
-2. Setting up bridge networking (or NAT if preferred)
-3. Creating disk images for test-audacious and test-astute
-4. Defining VMs with virt-install commands
-5. Downloading Debian Trixie ISO
-6. Walking through first test installation
-7. Documenting any issues found during testing
-8. Setting up snapshots for quick rollback
+**Setup tasks:**
+1. Install libvirt/QEMU packages on Audacious
+2. Set up bridge networking (or NAT if preferred)
+3. Create disk images for test-audacious and test-astute
+4. Define VMs with virt-install commands
+5. Download Debian Trixie ISO
+6. Walk through first test installation
+7. Document any issues found during testing
+8. Set up snapshots for quick rollback
 
-**User will provide:**
-- Decisions on network mode (bridge vs NAT)
-- Confirmation of resource allocations
-- Feedback during test installations
-- Updates to documentation based on findings
+**Decisions required:**
+- Network mode (bridge vs NAT)
+- Resource allocation confirmation
+- Testing priorities and schedule
 
 ---
 
