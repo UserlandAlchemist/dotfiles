@@ -7,7 +7,7 @@ KEY="$HOME/.ssh/audacious-backup"
 PASSCMD="cat $HOME/.config/borg/passphrase"
 
 # Quick check if already reachable before sending WOL
-if ssh -o BatchMode=yes -o ConnectTimeout=2 -i "$KEY" "$HOST" true 2>/dev/null; then
+if ssh -o BatchMode=yes -o ConnectTimeout=2 -i "$KEY" "$HOST" true >/dev/null 2>&1; then
     logger -t borg-backup "astute already reachable, skipping WOL"
     exit 0
 fi
