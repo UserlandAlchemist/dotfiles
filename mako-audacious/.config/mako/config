@@ -1,32 +1,36 @@
-font=Topaz Plus NF Mono 14
+font=Topaz Plus NF Mono 16
 anchor=top-right
 outer-margin=18,8,8,8
-margin=8,8,8,8
-padding=8,8,8,8
-width=420
-border-size=2
+margin=12,12,12,12
+padding=16,16,16,16
+width=600
+height=300
+border-size=3
 border-radius=0
 layer=top
 icons=1
-max-icon-size=24
+max-icon-size=32
 max-visible=5
-default-timeout=5000
-format=<b>%a</b>\n%b
+default-timeout=10000
+format=<span weight="bold">%s</span>\n%b
 output=HDMI-A-1
 
-background-color=#242424EE
+background-color=#2A2A2AEE
 text-color=#E6E6E6
-border-color=#5078FF
+border-color=#808080
 progress-color=#40C8FF
 
 [urgency=low]
-border-color=#303030
-default-timeout=3000
+border-color=#808080
+format=<span weight="bold" foreground="#808080">%s</span>\n\n%b
+default-timeout=8000
 
 [urgency=normal]
 border-color=#5078FF
-default-timeout=5000
+format=<span weight="bold" foreground="#5078FF">%s</span>\n\n%b
+default-timeout=10000
 
 [urgency=high]
 border-color=#FFA040
+format=<span weight="bold" foreground="#FFA040">%s</span>\n\n%b
 default-timeout=0
