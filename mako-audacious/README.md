@@ -8,8 +8,8 @@ Notification daemon configuration using Workbench aesthetic.
 
 Audacious has a dual-monitor setup:
 
-- **HDMI-A-1**: LG ULTRAWIDE (secondary monitor, left)
-- **DP-1**: MSI MAG274UPF (main monitor, right)
+- **HDMI-A-1**: LG ULTRAWIDE (secondary monitor, right)
+- **DP-1**: MSI MAG274UPF (main monitor, left)
 
 Notifications are configured to appear on the secondary monitor (HDMI-A-1) via the `output=HDMI-A-1` setting in `config`.
 
