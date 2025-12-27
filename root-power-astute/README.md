@@ -31,12 +31,13 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 
 ### Idle Suspend Policy
 
-- `astute-idle-suspend.timer` - Triggers idle check every 5 minutes
+- `astute-idle-suspend.timer` - Triggers idle check every 3 minutes
 - `astute-idle-suspend.service` - Runs idle check script
-- `astute-idle-check.sh` - Suspends system if:
-  - No active SSH sessions
+- `astute-idle-check.sh` - Suspends system if all checks pass:
+  - No active SSH sessions (interactive terminals)
   - No systemd inhibitors present
-  - NAS not in use
+  - No recent NAS filesystem activity (10 minute window)
+  - No active Jellyfin clients (20 minute window)
 
 ### Power Optimization
 
@@ -63,12 +64,50 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 
 ### Idle Suspend Workflow
 
-1. Timer triggers every 5 minutes
+**Automatic (timer-based):**
+1. Timer triggers every 3 minutes
 2. `astute-idle-check.sh` runs checks:
-   - `who | grep -q pts` - Any SSH sessions?
-   - `systemd-inhibit --list --mode=block | grep -q sleep` - Any inhibitors?
+   - `w -h | grep 'pts/'` - Any interactive SSH sessions?
+   - `systemd-inhibit --list` - Any sleep inhibitors?
+   - `find /srv/nas -maxdepth 4 -mmin -10` - Recent NAS file activity?
+   - Jellyfin API - Any active clients in last 20 minutes?
 3. If all clear: `systemctl suspend`
 4. Wake-on-LAN from Audacious brings system back
+
+**Manual (Waybar click):**
+1. User clicks Astute status indicator in Waybar
+2. If Astute is down: Send WOL packet
+3. If Astute is up: Trigger `systemctl start astute-idle-suspend.service` via SSH
+4. Display mako notification with result:
+   - "Going to Sleep" - System was idle, now suspending
+   - "Staying Awake - [reason]" - System has active inhibitor/sessions/activity
+
+## Waybar Integration
+
+**Status indicator** (`bin-audacious/.local/bin/astute-status.sh`):
+- Displays Astute server status in Waybar
+- **SRV UP** (yellow) - Server is awake and responsive
+- **SRV WAKING** (white) - WOL packet sent, waiting for boot
+- **SRV ZZZ** (blue) - Server is asleep
+
+**Click behavior:**
+- When asleep: Send WOL packet to wake server
+- When awake: Trigger idle-check to test if server can sleep
+
+**Notifications** (via mako):
+- Low urgency (gray, 8s): Status updates
+  - "Idle Check - Checking if Astute can sleep..."
+  - "Wake on LAN - Sending magic packet to wake Astute..."
+- Normal urgency (blue, 10s): Results
+  - "Staying Awake - SSH session active"
+  - "Staying Awake - sleep inhibitor active"
+  - "Staying Awake - recent NAS activity"
+  - "Staying Awake - Jellyfin client active"
+  - "Going to Sleep - Astute is idle and suspending now"
+
+See `mako-audacious/README.md` for notification styling details.
+
+---
 
 ## Security Model
 
@@ -78,7 +117,10 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 - No shell access, no port forwarding, no agent forwarding
 
 **Sudo restriction** (on Astute):
-- User `alchemist` can only start/stop nas-inhibit.service
+- User `alchemist` can only:
+  - Start/stop nas-inhibit.service
+  - Trigger astute-idle-suspend.service
+  - Read astute-idle-suspend.service logs via journalctl
 - No other sudo privileges for NAS operations
 
 ## Edge Cases
