@@ -6,6 +6,8 @@ RequiresMountsFor=/home/alchemist /var/lib/borg /var/cache/borg
 
 [Service]
 Type=oneshot
+User=alchemist
+Group=alchemist
 StandardOutput=journal
 StandardError=journal
 WorkingDirectory=/home/alchemist

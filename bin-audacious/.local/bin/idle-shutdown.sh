@@ -53,6 +53,12 @@ shutdown_inhibited() {
   systemd-inhibit --list 2>/dev/null | grep -qi shutdown
 }
 
+borg_backup_running() {
+  systemctl is-active --quiet borg-backup.service || \
+  systemctl is-active --quiet borg-check.service || \
+  systemctl is-active --quiet borg-check-deep.service
+}
+
 mpris_playing() {
   command -v playerctl >/dev/null || return 1
   playerctl -a status 2>/dev/null | grep -qx Playing
@@ -104,6 +110,11 @@ phase_media_window() {
       exit 0
     fi
 
+    if borg_backup_running; then
+      decision "abort" "borg-backup-active"
+      exit 0
+    fi
+
     if mpris_playing; then
       decision "abort" "media:mpris"
       exit 0
@@ -130,6 +141,11 @@ phase_busy_window() {
   while (( elapsed < BUSY_WINDOW_SEC )); do
     if shutdown_inhibited; then
       decision "abort" "inhibitor"
+      exit 0
+    fi
+
+    if borg_backup_running; then
+      decision "abort" "borg-backup-active"
       exit 0
     fi
 

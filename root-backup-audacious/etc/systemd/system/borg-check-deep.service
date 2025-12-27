@@ -6,6 +6,8 @@ RequiresMountsFor=/home/alchemist
 
 [Service]
 Type=oneshot
+User=alchemist
+Group=alchemist
 WorkingDirectory=/home/alchemist
 
 Environment="HOME=/home/alchemist"
@@ -15,10 +17,8 @@ EnvironmentFile=/home/alchemist/.config/borg/env
 TimeoutStartSec=0
 Restart=no
 
-ExecStart=/usr/bin/systemd-inhibit \
-  --what=shutdown:sleep \
-  --why="Borg deep integrity check in progress" \
-  /usr/local/lib/borg/run-deep-check.sh
+# Protected from idle shutdown by idle-shutdown.sh checking service status
+ExecStart=/usr/local/lib/borg/run-deep-check.sh
 
 Nice=10
 IOSchedulingClass=best-effort
