@@ -14,11 +14,11 @@ Factual record of where Audacious diverges from stock Debian Trixie defaults. Fo
 ---
 
 ## Systemd units (user + system)
-**Location:** `~/.config/systemd/user/` and `/etc/systemd/system/` via stow packages (e.g., `nas-audacious`, `root-power-audacious`, `root-backup-audacious`)
+**Location:** `~/.config/systemd/user/` via stow and `/etc/systemd/system/` via install scripts (e.g., `nas-audacious`, `root-power-audacious`, `root-backup-audacious`)
 **Divergence:** Custom units override or extend default behavior (NAS wake/inhibit, power tuning, backup timers, EFI sync).
 **Reason:** Host-specific orchestration and power/backup policies.
 **Vanilla path:** Debian ships defaults in `/usr/lib/systemd/system/` with no host-specific units.
-**Recovery impact:** Requires re-stow and `systemctl daemon-reload`; missing units change NAS, power, and backup behavior.
+**Recovery impact:** Requires re-stow for user units and re-running install scripts for system units, then `systemctl daemon-reload`; missing units change NAS, power, and backup behavior.
 
 ---
 

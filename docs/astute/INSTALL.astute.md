@@ -380,7 +380,7 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now powertop.service astute-idle-suspend.timer nas-inhibit.service
 ```
 
-Expected result: dotfile symlinks point into `~/dotfiles`, and custom services are enabled.
+Expected result: user dotfile symlinks point into `~/dotfiles`, system configs are real files in `/etc`, and custom services are enabled.
 
 ---
 
