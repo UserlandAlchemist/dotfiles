@@ -28,13 +28,14 @@ case "$1" in
         if probe; then
           # Read the most recent idle-check log entry
           MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-            'journalctl -t astute-idle-check -n 1 --no-pager -o cat --since "10 seconds ago"' 2>/dev/null)
+            'journalctl -t astute-idle-check -n 1 --no-pager -o cat' 2>/dev/null)
           case "$MSG" in
-            *"Active login session"*) notify-send -a "Astute" "" "Astute staying awake - SSH session active" ;;
-            *"Active inhibitor"*) notify-send -a "Astute" "" "Astute staying awake - sleep inhibitor active" ;;
-            *"NAS filesystem activity"*) notify-send -a "Astute" "" "Astute staying awake - recent NAS activity" ;;
-            *"Jellyfin client active"*) notify-send -a "Astute" "" "Astute staying awake - Jellyfin client active" ;;
-            *) notify-send -a "Astute" "" "Astute stayed awake" ;;
+            *"login session"*) notify-send -a "Astute" "" "Astute staying awake - SSH session active" ;;
+            *"inhibitor"*) notify-send -a "Astute" "" "Astute staying awake - sleep inhibitor active" ;;
+            *"filesystem activity"*) notify-send -a "Astute" "" "Astute staying awake - recent NAS activity" ;;
+            *"Jellyfin"*) notify-send -a "Astute" "" "Astute staying awake - Jellyfin client active" ;;
+            *"idle"*) notify-send -a "Astute" "" "Astute went to sleep - idle" ;;
+            *) notify-send -a "Astute" "" "Astute stayed awake (unknown reason)" ;;
           esac
         else
           notify-send -a "Astute" "" "Astute went to sleep - idle"
