@@ -1,7 +1,8 @@
 [Unit]
 Description=BorgBackup: Integrity check (Audacious → Astute NAS)
 Wants=network-online.target
-After=network-online.target
+After=network-online.target home.mount zfs-mount.service
+RequiresMountsFor=/home/alchemist
 # Run only when Astute is awake / reachable.
 
 [Service]
