@@ -17,6 +17,12 @@ EnvironmentFile=/home/alchemist/.config/borg/env
 TimeoutStartSec=0
 Restart=no
 
+# Wake and wait for astute
+ExecStartPre=/usr/local/lib/borg/wait-for-astute.sh
+
+# Verify passphrase file exists
+ExecStartPre=/usr/bin/test -f /home/alchemist/.config/borg/passphrase
+
 # Protected from idle shutdown by idle-shutdown.sh checking service status
 ExecStart=/usr/local/lib/borg/run-deep-check.sh
 
