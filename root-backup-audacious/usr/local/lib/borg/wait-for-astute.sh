@@ -19,8 +19,9 @@ logger -t borg-backup "Sending WOL to astute"
 # Try for ~60 seconds (6 x 10s) with borg list check
 i=0
 while [ $i -lt 6 ]; do
-    BORG_RSH="ssh -i $KEY -T" \
+    BORG_RSH="ssh -i $KEY -T -o BatchMode=yes -o ConnectTimeout=5" \
     BORG_PASSCOMMAND="$PASSCMD" \
+    BORG_NONINTERACTIVE=1 \
     borg list "$REPO" >/dev/null 2>&1 && {
         logger -t borg-backup "astute responded after $((i * 10))s"
         exit 0
