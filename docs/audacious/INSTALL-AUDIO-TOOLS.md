@@ -671,8 +671,7 @@ These tools integrate with the broader Audacious pro audio stack:
 
 **Related documentation:**
 - `docs/audacious/INSTALL.audacious.md` — Full system installation
-- `docs/audacious/VANILLA-DIVERGENCE.md` — Documents /opt divergence
-- `docs/audacious/README.audacious.md` — Audacious system overview
+- `docs/audacious/INSTALL.audacious.md` — Audacious system overview + install steps
 - `ardour-audacious/` — Ardour DAW configuration package
 - `pipewire-audacious/` — PipeWire audio routing configuration
 

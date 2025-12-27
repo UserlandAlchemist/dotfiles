@@ -929,5 +929,5 @@ smartctl -a /dev/nvme1n1
 
 - `INSTALL.audacious.md` — Fresh installation from scratch
 - `RESTORE.audacious.md` — Borg backup restoration
-- `VANILLA-DIVERGENCE.md` — What differs from stock Debian
+- `INSTALL.audacious.md` — What differs from stock Debian
 - OpenZFS documentation: https://openzfs.github.io/openzfs-docs/

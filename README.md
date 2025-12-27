@@ -127,11 +127,11 @@ See: `docs/audacious/INSTALL.audacious.md`
 Each host has complete rebuild documentation:
 
 **Audacious:**
-- [`docs/audacious/README.audacious.md`](docs/audacious/README.audacious.md) — Overview
+- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Overview + full installation
 - [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Full installation from scratch
 - [`docs/audacious/RECOVERY.audacious.md`](docs/audacious/RECOVERY.audacious.md) — Boot and ZFS recovery
 - [`docs/audacious/RESTORE.audacious.md`](docs/audacious/RESTORE.audacious.md) — Borg data restoration
-- [`docs/audacious/VANILLA-DIVERGENCE.md`](docs/audacious/VANILLA-DIVERGENCE.md) — Divergence from stock Debian
+- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Divergence summary + install steps
 - [`docs/audacious/DRIFT-CHECK.md`](docs/audacious/DRIFT-CHECK.md) — Package drift detection procedure
 - [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
 
@@ -142,7 +142,6 @@ Each host has complete rebuild documentation:
 ### System Reference
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
-- [`docs/SUBSYSTEMS.md`](docs/SUBSYSTEMS.md) — Critical subsystems reference (for emergencies)
 
 ---
 
