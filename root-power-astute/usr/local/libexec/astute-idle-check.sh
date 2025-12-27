@@ -28,9 +28,16 @@ check_jellyfin_activity() {
     ' >/dev/null
 }
 
-# Session detection disabled - loginctl doesn't reliably distinguish interactive SSH
-# The manual click trigger now uses systemd (no user session created)
-# TODO: Find reliable way to detect interactive SSH sessions if needed
+# Check for active login sessions (interactive only)
+if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
+	# Use 'w' command which shows users with interactive terminals (pts/0, pts/1, etc.)
+	# Non-interactive SSH commands don't appear in 'w' output
+	if w -h | grep -q 'pts/'; then
+		echo "Astute staying awake - SSH session active"
+    		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
+    		exit 0
+	fi
+fi
 
 # Check for active inhibitors
 if systemd-inhibit --list --no-legend | grep -q .; then
