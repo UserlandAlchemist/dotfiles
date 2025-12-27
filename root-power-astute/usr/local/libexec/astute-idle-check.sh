@@ -9,12 +9,6 @@ NOW=$(date +%s)
 # Defaults for optional config
 : "${ASTUTE_IGNORE_LOGIN_SESSIONS:=0}"
 
-# If called from SSH, delay briefly to allow the triggering session to close
-# This prevents the idle-check from detecting its own SSH session
-if [ -n "${SSH_CONNECTION:-}" ]; then
-    sleep 3
-fi
-
 check_jellyfin_activity() {
     JELLYFIN_ACTIVE_WINDOW=1200
     JELLYFIN_API_KEY="$(cat /etc/jellyfin/api.key 2>/dev/null)" || return 0
