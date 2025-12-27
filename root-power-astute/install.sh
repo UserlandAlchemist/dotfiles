@@ -9,32 +9,12 @@ if [ "$(id -u)" -ne 0 ]; then
   exit 1
 fi
 
-backup_conflict() {
-  TARGET="$1"
-  SOURCE="$2"
-
-  if [ -e "$TARGET" ] || [ -L "$TARGET" ]; then
-    if [ -L "$TARGET" ]; then
-      RESOLVED="$(readlink -f "$TARGET" 2>/dev/null || true)"
-      if [ "$RESOLVED" = "$SOURCE" ]; then
-        return 0
-      fi
-    fi
-
-    TS="$(date +%Y%m%d-%H%M%S)"
-    BACKUP="${TARGET}.bak-${TS}"
-    echo "→ Backing up $TARGET to $BACKUP"
-    mv "$TARGET" "$BACKUP"
-  fi
-}
-
 install_unit() {
   UNIT="$1"
   SOURCE="$PKG_DIR/etc/systemd/system/$UNIT"
   TARGET="/etc/systemd/system/$UNIT"
 
   mkdir -p /etc/systemd/system
-  backup_conflict "$TARGET" "$SOURCE"
   install -m 0644 "$SOURCE" "$TARGET"
 }
 
@@ -44,7 +24,6 @@ install_modprobe() {
   TARGET="/etc/modprobe.d/$CONF"
 
   mkdir -p /etc/modprobe.d
-  backup_conflict "$TARGET" "$SOURCE"
   install -m 0644 "$SOURCE" "$TARGET"
 }
 
@@ -54,7 +33,6 @@ install_libexec() {
   TARGET="/usr/local/libexec/$SCRIPT"
 
   mkdir -p /usr/local/libexec
-  backup_conflict "$TARGET" "$SOURCE"
   install -m 0755 "$SOURCE" "$TARGET"
 }
 
@@ -72,8 +50,6 @@ install_libexec astute-idle-check.sh
 install_libexec astute-nas-inhibit.sh
 
 echo "→ Installing sudoers rule (nas-inhibit)"
-backup_conflict /etc/sudoers.d/nas-inhibit \
-  "$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers"
 install -o root -g root -m 0440 \
   "$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers" \
   /etc/sudoers.d/nas-inhibit
