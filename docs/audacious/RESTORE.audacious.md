@@ -251,15 +251,7 @@ sudo root-sudoers-audacious/install.sh
 
 3. Reload and enable services:
 
-```sh
-sudo systemctl daemon-reload
-sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
-sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer
-sudo systemctl enable --now zfs-trim-monthly@rpool.timer
-sudo systemctl enable --now zfs-scrub-monthly@rpool.timer
-sudo udevadm control --reload-rules && sudo udevadm trigger
-sudo sysctl --system
-```
+Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/INSTALL.audacious.md` §16 step 8.
 
 4. Confirm timers:
 

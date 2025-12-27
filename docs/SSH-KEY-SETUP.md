@@ -449,67 +449,7 @@ Expected result: All SSH keys backed up to encrypted USB.
 
 Restore SSH keys after system reinstall or hardware replacement.
 
-Steps:
-1. Mount Blue USB:
-
-```sh
-sudo cryptsetup luksOpen /dev/sdX1 keyusb
-sudo mount /dev/mapper/keyusb /mnt/keyusb
-```
-
-2. Copy private keys:
-
-```sh
-mkdir -p ~/.ssh
-cp /mnt/keyusb/ssh-keys/id_alchemist ~/.ssh/
-cp /mnt/keyusb/ssh-keys/audacious-backup ~/.ssh/
-cp /mnt/keyusb/ssh-keys/id_ed25519_astute_nas ~/.ssh/
-```
-
-3. Copy SSH config:
-
-```sh
-cp /mnt/keyusb/ssh-keys/config ~/.ssh/
-```
-
-4. Set correct permissions:
-
-```sh
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/id_*
-chmod 600 ~/.ssh/audacious-backup
-chmod 644 ~/.ssh/config
-```
-
-5. Verify keys:
-
-```sh
-ls -l ~/.ssh/
-```
-
-6. Test key passphrases:
-
-```sh
-ssh-keygen -y -f ~/.ssh/id_alchemist
-```
-
-Enter passphrase when prompted. Should output public key.
-
-7. Add to SSH agent:
-
-```sh
-eval "$(ssh-agent -s)"
-ssh-add ~/.ssh/id_alchemist
-```
-
-8. Unmount Blue USB:
-
-```sh
-sudo umount /mnt/keyusb
-sudo cryptsetup luksClose keyusb
-```
-
-Expected result: SSH keys restored and functional.
+Use `/home/alchemist/dotfiles/docs/SECRETS-RECOVERY.md` §4.2 for the full SSH-only recovery procedure.
 
 ---
 
