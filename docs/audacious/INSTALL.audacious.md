@@ -547,7 +547,7 @@ sudo root-sudoers-audacious/install.sh
 sudo root-proaudio-audacious/install.sh
 ```
 
-**Why install.sh:** System packages deploy boot-critical configs as real files (not symlinks to /home) to avoid boot-time mount dependencies, then stow remaining files.
+**Why install.sh:** System packages deploy boot-critical configs as real files (not symlinks to /home) to avoid boot-time mount dependencies, then stow any non-boot files if present.
 
 8. Enable services:
 
@@ -568,7 +568,7 @@ systemctl status powertop.service efi-sync.path
 systemctl list-timers | grep borg
 systemctl list-timers | grep zfs-trim
 systemctl list-timers | grep zfs-scrub
-sysctl vm.swappiness  # should return 60
+sysctl vm.swappiness  # should return 150
 ip link show enp7s0   # should be managed by networkd
 journalctl -b --system -o short-monotonic | head -n 20
 ```
@@ -738,7 +738,7 @@ mkswap /dev/zvol/rpool/swap
 echo "/dev/zvol/rpool/swap none swap defaults,pri=10 0 0" >> /etc/fstab
 ```
 
-**Note:** With 32GB RAM + zram, disk swap is rarely needed. Swappiness set to 60 in `root-cachyos-audacious`.
+**Note:** With 32GB RAM + zram, disk swap is rarely needed. Swappiness set to 150 in `root-cachyos-audacious`.
 
 Expected result: 8GB swap volume available for low-memory conditions.
 
