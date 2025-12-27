@@ -28,9 +28,17 @@ check_jellyfin_activity() {
     ' >/dev/null
 }
 
-# Check for active login sessions
+# Check for active login sessions (interactive only - with TTY)
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
-	if loginctl list-sessions --no-legend | grep -q .; then
+	# Only count sessions with a TTY (interactive shells)
+	# Non-interactive SSH commands don't get a TTY and shouldn't prevent sleep
+	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '{print $1}' | while read sid; do
+		if loginctl show-session "$sid" 2>/dev/null | grep -q "TTY=.*[^-]"; then
+			echo "$sid"
+		fi
+	done)
+
+	if [ -n "$INTERACTIVE_SESSIONS" ]; then
 		echo "Astute staying awake - SSH session active"
     		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
     		exit 0
