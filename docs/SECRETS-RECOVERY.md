@@ -272,7 +272,6 @@ mkdir -p /mnt/keyusb/docs
 
 # Key recovery procedures
 cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/INSTALL.audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/RECOVERY.audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/astute/INSTALL.astute.md /mnt/keyusb/docs/
@@ -418,7 +417,6 @@ cp ~/.config/jellyfin/api.token /mnt/keyusb/tokens/jellyfin/
 
 **Recovery docs updated:**
 ```sh
-cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
 # ... other docs as needed
 ```
