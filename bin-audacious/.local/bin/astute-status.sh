@@ -16,9 +16,15 @@ underline() {
 
 case "$1" in
   click)
-    # Send a single Wake-on-LAN packet and mark as waking
-    wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
-    touch "$STATE_FILE"
+    if probe; then
+      # Astute is up - trigger idle check (may suspend if idle)
+      ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+        'sudo /usr/local/libexec/astute-idle-check.sh' >/dev/null 2>&1 &
+    else
+      # Astute is down - send WOL
+      wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
+      touch "$STATE_FILE"
+    fi
     exit 0
     ;;
 esac
