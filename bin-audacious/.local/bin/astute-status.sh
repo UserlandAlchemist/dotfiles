@@ -22,13 +22,22 @@ case "$1" in
       ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
         'systemd-run --user --on-active=3s --unit=idle-check-manual sudo /usr/local/libexec/astute-idle-check.sh' >/dev/null 2>&1
 
-      # Check result after 5 seconds
+      # Check result after 5 seconds by reading journal (doesn't create login session)
       (
         sleep 5
         if probe; then
-          notify-send -a "Astute" "" "Astute stayed awake"
+          # Read the most recent idle-check log entry
+          MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+            'journalctl -t astute-idle-check -n 1 --no-pager -o cat --since "10 seconds ago"' 2>/dev/null)
+          case "$MSG" in
+            *"Active login session"*) notify-send -a "Astute" "" "Astute staying awake - SSH session active" ;;
+            *"Active inhibitor"*) notify-send -a "Astute" "" "Astute staying awake - sleep inhibitor active" ;;
+            *"NAS filesystem activity"*) notify-send -a "Astute" "" "Astute staying awake - recent NAS activity" ;;
+            *"Jellyfin client active"*) notify-send -a "Astute" "" "Astute staying awake - Jellyfin client active" ;;
+            *) notify-send -a "Astute" "" "Astute stayed awake" ;;
+          esac
         else
-          notify-send -a "Astute" "" "Astute went to sleep"
+          notify-send -a "Astute" "" "Astute went to sleep - idle"
         fi
       ) &
     else
