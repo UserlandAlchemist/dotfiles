@@ -17,30 +17,18 @@ underline() {
 case "$1" in
   click)
     if probe; then
-      # Astute is up - schedule idle check to run in 3 seconds via systemd-run
-      # This runs outside any SSH session context, avoiding false session detection
-      ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-        'systemd-run --user --on-active=3s --unit=idle-check-manual sudo /usr/local/libexec/astute-idle-check.sh' >/dev/null 2>&1
+      # Astute is up - run idle check immediately
+      # Non-interactive SSH doesn't create TTY session, won't interfere with check
+      MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
+        'sudo /usr/local/libexec/astute-idle-check.sh' 2>/dev/null)
 
-      # Check result after 5 seconds by reading journal (doesn't create login session)
-      (
-        sleep 5
-        if probe; then
-          # Read the most recent idle-check log entry
-          MSG=$(ssh -o BatchMode=yes -o ConnectTimeout=2 astute \
-            'journalctl -t astute-idle-check -n 1 --no-pager -o cat' 2>/dev/null)
-          case "$MSG" in
-            *"login session"*) notify-send -a "Astute" "" "Astute staying awake - SSH session active" ;;
-            *"inhibitor"*) notify-send -a "Astute" "" "Astute staying awake - sleep inhibitor active" ;;
-            *"filesystem activity"*) notify-send -a "Astute" "" "Astute staying awake - recent NAS activity" ;;
-            *"Jellyfin"*) notify-send -a "Astute" "" "Astute staying awake - Jellyfin client active" ;;
-            *"idle"*) notify-send -a "Astute" "" "Astute went to sleep - idle" ;;
-            *) notify-send -a "Astute" "" "Astute stayed awake (unknown reason)" ;;
-          esac
-        else
-          notify-send -a "Astute" "" "Astute went to sleep - idle"
-        fi
-      ) &
+      if [ -n "$MSG" ]; then
+        # Astute stayed awake - show the reason
+        notify-send -a "Astute" "" "$MSG"
+      else
+        # No output means it suspended
+        notify-send -a "Astute" "" "Astute going to sleep - idle"
+      fi
     else
       # Astute is down - send WOL
       wakeonlan "$ASTUTE_MAC" >/dev/null 2>&1
