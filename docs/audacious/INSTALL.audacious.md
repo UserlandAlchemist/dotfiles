@@ -547,7 +547,7 @@ sudo root-sudoers-audacious/install.sh
 sudo root-proaudio-audacious/install.sh
 ```
 
-**Why install.sh:** System packages deploy systemd configs as real files (not symlinks to /home) to avoid boot-time mount dependencies, then stow remaining files.
+**Why install.sh:** System packages deploy boot-critical configs as real files (not symlinks to /home) to avoid boot-time mount dependencies, then stow remaining files.
 
 8. Enable services:
 
