@@ -31,6 +31,7 @@ check_jellyfin_activity() {
 # Check for active login sessions
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
 	if loginctl list-sessions --no-legend | grep -q .; then
+		echo "Astute staying awake - SSH session active"
     		logger -t "$TAG" "Active login session(s) detected; skipping suspend"
     		exit 0
 	fi
@@ -38,6 +39,7 @@ fi
 
 # Check for active inhibitors
 if systemd-inhibit --list --no-legend | grep -q .; then
+	echo "Astute staying awake - sleep inhibitor active"
     logger -t "$TAG" "Active inhibitor(s) detected; skipping suspend"
     exit 0
 fi
@@ -52,16 +54,19 @@ LAST_ACTIVITY=$(find "$NAS_PATH" -maxdepth 4 \
 if [ -n "$LAST_ACTIVITY" ]; then
     LAST_ACTIVITY=${LAST_ACTIVITY%.*}
     if [ $((NOW - LAST_ACTIVITY)) -lt "$ACTIVITY_WINDOW" ]; then
+        echo "Astute staying awake - recent NAS activity"
         logger -t "$TAG" "Recent NAS filesystem activity detected; skipping suspend"
         exit 0
     fi
 fi
 
 if check_jellyfin_activity; then
+    echo "Astute staying awake - Jellyfin client active"
     logger -t astute-idle-check "Jellyfin client active within last 20 minutes; skipping suspend"
     exit 0
 fi
 
 # No sessions, no inhibitors — suspend
+echo "Astute going to sleep - idle"
 logger -t "$TAG" "System idle; suspending now"
 systemctl suspend
