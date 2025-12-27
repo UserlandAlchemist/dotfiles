@@ -88,7 +88,7 @@ root-sudoers-audacious/  → Passwordless sudo for NAS mount control
 root-system-audacious/   → System configuration fixes for minimal Debian (journald override)
 ```
 
-System-level packages (`root-*-audacious`) require `sudo stow --target=/` when deploying.
+System-level packages (`root-*-audacious`) are deployed via their `install.sh` scripts.
 
 ---
 

@@ -236,13 +236,16 @@ Steps:
 sudo rsync -aHAXv /restore/etc/ /etc/
 ```
 
-2. Restow system packages:
+2. Install system packages:
 
 ```sh
 cd ~/dotfiles
-sudo stow -t / root-power-audacious root-efisync-audacious \
-  root-cachyos-audacious root-network-audacious \
-  root-backup-audacious root-proaudio-audacious
+sudo root-power-audacious/install.sh
+sudo root-efisync-audacious/install.sh
+sudo root-cachyos-audacious/install.sh
+sudo root-network-audacious/install.sh
+sudo root-backup-audacious/install.sh
+sudo root-proaudio-audacious/install.sh
 sudo root-sudoers-audacious/install.sh
 ```
 
@@ -304,4 +307,3 @@ The blue USB key stores:
 - Borg passphrase
 - Borg repo key export (`audacious-borg-repokey-export.txt`)
 - Copies of recovery docs
-
