@@ -30,10 +30,10 @@ check_jellyfin_activity() {
 
 # Check for active login sessions (interactive only - with TTY)
 if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
-	# Only count sessions with a TTY (interactive shells)
-	# Non-interactive SSH commands don't get a TTY and shouldn't prevent sleep
+	# Only count sessions with Type=tty (interactive shells)
+	# Non-interactive SSH commands have Type=unspecified and shouldn't prevent sleep
 	INTERACTIVE_SESSIONS=$(loginctl list-sessions --no-legend | awk '{print $1}' | while read sid; do
-		if loginctl show-session "$sid" 2>/dev/null | grep -q "TTY=.*[^-]"; then
+		if loginctl show-session "$sid" 2>/dev/null | grep -q "^Type=tty"; then
 			echo "$sid"
 		fi
 	done)
