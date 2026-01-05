@@ -1,6 +1,8 @@
 # Hosts Overview
 
-This document lists all machines currently in the network, their hardware specs, roles, and operating systems.
+This document lists all machines in the Wolfpack, their hardware specs, roles, and operating systems.
+
+**The Wolfpack** is the fleet of machines managed by Project Shipshape (this dotfiles repository).
 
 ---
 

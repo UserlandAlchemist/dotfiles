@@ -8,7 +8,7 @@
 
 ## Overview
 
-Virtual machines for testing installation procedures documented in this repository, with faithful emulation of Audacious/Astute disk layouts.
+Virtual machines for testing Project Shipshape installation procedures, with faithful emulation of Wolfpack host disk layouts (Audacious/Astute).
 
 ---
 

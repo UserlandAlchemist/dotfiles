@@ -1,6 +1,8 @@
 # Network Overview
 
-This document describes the home network fabric, core devices, addressing, and WAN configuration. It supports fast recovery, clarity, and long-term maintainability within the Wolfpack architecture.
+This document describes the home network fabric, core devices, addressing, and WAN configuration for the Wolfpack.
+
+**The Wolfpack** is the fleet of machines managed by Project Shipshape (this dotfiles repository).
 
 ---
 
