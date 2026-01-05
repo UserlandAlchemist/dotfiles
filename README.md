@@ -161,6 +161,7 @@ Each host has complete rebuild documentation:
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
+- [`docs/THREAT-MODEL.md`](docs/THREAT-MODEL.md) — Security threat model and acceptable risks
 
 ---
 
