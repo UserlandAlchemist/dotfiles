@@ -162,6 +162,7 @@ Each host has complete rebuild documentation:
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
 - [`docs/THREAT-MODEL.md`](docs/THREAT-MODEL.md) — Security threat model and acceptable risks
+- [`docs/BACKUP-AUDIT.md`](docs/BACKUP-AUDIT.md) — Backup infrastructure audit and recommendations
 
 ---
 
