@@ -88,7 +88,7 @@ for passwords or manual input.
 - `borg-backup.service` runs `/usr/local/lib/borg/run-backup.sh` which performs:
   1. Wake-on-LAN to Astute
   2. `borg create` with progress and stats
-  3. `borg prune` to apply retention rules (keep last 2 backups)
+  3. `borg prune` to apply retention rules (keep 7 daily backups)
   4. `borg compact` to reclaim space
 
   The service runs as **root** under `systemd-inhibit --what=shutdown:sleep`

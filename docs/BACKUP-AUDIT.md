@@ -29,7 +29,7 @@ Comprehensive audit of backup infrastructure for Project Shipshape.
 1. Implement off-site backup (Hetzner Storage Box or equivalent)
 2. Add monitoring alerts for backup failures (Phase 3 task already queued)
 3. Schedule annual disaster recovery drill (Phase 2 task already queued)
-4. Consider extending Borg retention to 7 daily backups
+4. Extend Borg retention to 7 daily backups (implemented 2026-01-06)
 
 ---
 
@@ -45,7 +45,7 @@ Comprehensive audit of backup infrastructure for Project Shipshape.
 - Deep check: Monthly (1st Sunday 11:00) via `borg-check-deep.timer`
 
 **Retention Policy:**
-- Keep: Last 2 backups
+- Keep: 7 daily backups
 - Prune: Automatic after each backup
 - Compact: Automatic space reclamation
 
@@ -210,25 +210,16 @@ export BORG_CACHE_DIR="/tmp/borg-user/cache"
 
 **Recommendation:** Document workaround in user-facing docs, accept as operational quirk.
 
-### 2. Short Borg Retention
+### 2. Borg Retention (Updated)
 
-**Issue:** Only keeping last 2 backups (current: 2026-01-05 18:02, previous: 2026-01-04 18:02)
+**Status:** Updated to 7 daily backups (2026-01-06)
 
-**Rationale:** Conservative retention for limited NAS space (Astute 3.6TB, 10% used)
-
-**Risk:**
-- If current backup is corrupted and previous backup is also corrupted = data loss
-- No recovery window for files deleted 1+ days ago
-- Ransomware scenario: both backups could be encrypted before detection
-
-**Recommendation:** Extend to 7 daily backups (7-day recovery window)
+**Previous policy:** `--keep-last 2` (current: 2026-01-05 18:02, previous: 2026-01-04 18:02)
+**Current policy:** `--keep-daily 7`
 
 **Retention options:**
 ```bash
-# Current (2 backups)
-borg prune --keep-last 2
-
-# Recommended (7 daily backups, ~31 GB repository)
+# Current (7 daily backups)
 borg prune --keep-daily 7
 
 # Alternative (balance retention with space)
@@ -432,10 +423,10 @@ BORG_REPO=ssh://u123456@u123456.your-storagebox.de:23/backups/audacious-borg
 
 ### Priority 2: Important (Should Implement)
 
-**2.1 Extend Borg Retention to 7 Daily Backups**
+**2.1 Borg Retention (Implemented)**
 
-**Current:** `--keep-last 2`
-**Recommended:** `--keep-daily 7`
+**Current:** `--keep-daily 7`
+**Previous:** `--keep-last 2`
 
 **Rationale:**
 - 7-day recovery window for deleted files
@@ -443,7 +434,7 @@ BORG_REPO=ssh://u123456@u123456.your-storagebox.de:23/backups/audacious-borg
 - Ransomware detection window
 - Space impact minimal (4.44 GB → ~9 GB, well within capacity)
 
-**Implementation:**
+**Implementation (completed 2026-01-06):**
 Edit `root-backup-audacious/usr/local/lib/borg/run-backup.sh`:
 ```bash
 # Line 52-55: Change from
@@ -453,7 +444,7 @@ borg prune --list --keep-last 2 "$REPO"
 borg prune --list --keep-daily 7 "$REPO"
 ```
 
-**Timeline:** Week 2 (after confirming current setup stable)
+**Timeline:** Completed
 
 **2.2 Add Backup Monitoring Alerts**
 
@@ -554,16 +545,13 @@ borg prune --list --keep-daily 7 "$REPO"
 **Impact:** Files encrypted, backups potentially encrypted
 
 **Current Protection:**
-- 2 backups (last 6-24 hours)
-- If detection within 24 hours, restore from unaffected backup
-
-**With Extended Retention:**
-- 7 daily backups (detection within 7 days, restore from clean backup)
+- 7 daily backups (up to 7 days)
+- If detection within 7 days, restore from clean backup
 
 **With Off-Site:**
 - 30 daily off-site backups (very high confidence clean backup available)
 
-**Best Practice:** Extend Borg retention + implement off-site
+**Best Practice:** Implement off-site backup
 
 ---
 
@@ -573,6 +561,7 @@ borg prune --list --keep-daily 7 "$REPO"
 
 **Current State:**
 - ✓ Primary backups working (Borg to Astute)
+- ✓ Borg retention set to 7 daily backups
 - ✓ Integrity checks passing
 - ✓ Restore tested and verified
 - ✓ Cold storage infrastructure in place
@@ -581,9 +570,8 @@ borg prune --list --keep-daily 7 "$REPO"
 **Priority Actions:**
 1. Implement off-site backup (Hetzner Storage Box BX11)
 2. Test cold storage backup in production
-3. Extend Borg retention to 7 daily backups
-4. Add monitoring alerts (already queued in Phase 3)
-5. Schedule disaster recovery drill (already queued in Phase 2)
+3. Add monitoring alerts (already queued in Phase 3)
+4. Schedule disaster recovery drill (already queued in Phase 2)
 
 **Compliance with Principles:**
 - Principle 2 (Security): Strong encryption, offline recovery paths ✓
