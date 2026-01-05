@@ -123,6 +123,11 @@ Automated BorgBackup with systemd timers. Multiple daily backups, weekly integri
 
 See: `borg-user-audacious/README.md`, `root-backup-audacious/README.md`
 
+### Cold Storage Snapshots (Audacious)
+Monthly snapshots to the LUKS cold-storage drive with a reminder timer. Keeps 12 months of history.
+
+See: `cold-storage-audacious/README.md`
+
 ### Dual EFI Synchronization (Audacious)
 Automatic mirroring of primary ESP to backup ESP whenever kernel images update. Both NVMe drives can boot independently.
 

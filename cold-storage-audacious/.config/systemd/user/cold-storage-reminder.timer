@@ -1,0 +1,11 @@
+[Unit]
+Description=Monthly cold storage backup reminder
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+RandomizedDelaySec=1h
+Unit=cold-storage-reminder.service
+
+[Install]
+WantedBy=timers.target
