@@ -51,7 +51,7 @@ borg create \
 
 echo "Pruning old archives..."
 borg prune --list \
-  --keep-last 2 \
+  --keep-daily 7 \
   "$REPO"
 
 echo "Compacting repository..."
