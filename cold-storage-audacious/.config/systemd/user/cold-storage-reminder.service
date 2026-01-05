@@ -1,0 +1,6 @@
+[Unit]
+Description=Cold storage backup reminder
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/cold-storage-reminder.sh
