@@ -63,6 +63,38 @@ common hardware.
 
 ---
 
+## Current State & Pragmatic Decisions
+
+Project Shipshape balances principled self-hosting with practical constraints. The following reflects current implementation decisions:
+
+### Self-Hosted Services (Implemented)
+- Configuration management (this repository, version controlled)
+- NAS/file storage (Astute, 3.6TB ZFS mirror)
+- Encrypted backups (BorgBackup to Astute, cold storage snapshots)
+- APT package caching (apt-cacher-ng on Astute)
+- Development environment (local workstation)
+
+### External Services (Pragmatic Exceptions)
+
+**On-Prem AI:**
+Experimented with local LLM inference but current hardware (AMD GPU) and driver stack are not production-ready. Using ChatGPT Plus as optimal balance of cost, features, and usage limits. Monitoring progress in open-source AI tooling and AMD driver maturity. Will revisit when viable.
+
+**Email:**
+Self-hosting email is a long-term goal but currently too critical to operate without specialized expertise. Relying on external provider is risk management, not a failure of principles. May revisit as operational capability improves or UK legal landscape changes.
+
+**Code Hosting (GitHub):**
+GitHub provides significant community integration value (collaboration, discovery, issue tracking). Could self-host Gitea/Forgejo, but community presence outweighs autonomy concerns. Minimal lock-in risk (git is portable).
+
+**Password Management (Bitwarden):**
+Currently evaluating self-hosted alternatives (Vaultwarden). Under review.
+
+**DNS (Cloudflare):**
+Free tier for DNS/proxy with minimal vendor lock-in. DNS is portable across providers.
+
+These decisions reflect Principle 1's "pragmatic constraints" - balancing autonomy with operational reality, criticality, and resource constraints.
+
+---
+
 This document serves as a compass for technical and architectural choices,
 grounding each step in a coherent, sustainable philosophy of digital
 self-determination.
