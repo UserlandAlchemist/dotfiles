@@ -1,6 +1,6 @@
-# Userland Dotfiles
+# Project Shipshape
 
-Configuration management for "the Wolfpack" — a small ecosystem of independent Linux systems managed using GNU Stow. Designed for clarity, reproducibility, and fast recovery.
+Configuration management for "the Wolfpack" — a small ecosystem of independent Linux systems. User-level configs deployed with GNU Stow; system-level configs via install scripts. Designed for clarity, reproducibility, and fast recovery.
 
 ---
 
@@ -12,7 +12,7 @@ This repository contains all configuration for multiple Debian-based hosts:
 - **artful** — Cloud instance (Hetzner, currently inactive)
 - **steamdeck** — Portable system (limited dotfiles)
 
-Everything is plain text, version controlled, and deployable via GNU Stow. No configuration managers, no wrappers, no abstractions — just files that map directly to their target locations.
+Everything is plain text, version controlled, and deployed using two methods: GNU Stow for user configs, install scripts for system configs. No configuration managers, no complex abstractions — just files that map directly to their target locations.
 
 ---
 
@@ -28,11 +28,13 @@ Configuration is split into **per-host stow packages** using a consistent naming
 ```
 Examples: `bash-audacious/`, `sway-audacious/`, `emacs-audacious/`
 
-**System-level packages** (deploy to `/`):
+**System-level packages** (deploy to `/` via install scripts):
 ```
 root-<concern>-<hostname>/
 ```
 Examples: `root-power-audacious/`, `root-backup-audacious/`, `root-efisync-audacious/`
+
+System packages include `install.sh` scripts that copy files to /etc and other system locations as real files (not symlinks). This ensures configs are available before /home mounts during boot.
 
 **Shared configuration:**
 ```
@@ -51,7 +53,8 @@ Per-host install guides, recovery procedures, and restore documentation.
 - **Independent recovery:** Each host can be rebuilt from its own packages without touching others
 - **No shared config drift:** Changes to one host never affect another
 - **Clear ownership:** Every file belongs to exactly one host
-- **Fast deployment:** Stow only the packages needed for the current host
+- **Fast deployment:** Deploy only the packages needed for the current host
+- **Safe boot-time configs:** System packages use install scripts, not symlinks, so configs load before /home mounts
 
 ---
 
@@ -67,22 +70,33 @@ stow bash-audacious bin-audacious sway-audacious waybar-audacious
 ### Deploy system configuration
 
 ```bash
-sudo stow --target=/ root-power-audacious root-efisync-audacious
+cd ~/dotfiles
+sudo root-power-audacious/install.sh
+sudo root-efisync-audacious/install.sh
 sudo systemctl daemon-reload
 ```
 
-### Restow after edits
+**Note:** System packages (root-*) use install scripts that copy files to /etc and other system locations. This ensures configs are real files, not symlinks, so they're available before /home mounts at boot.
+
+### Restow user packages after edits
 
 ```bash
 stow --restow bash-audacious bin-audacious
-sudo stow --restow --target=/ root-power-audacious
+```
+
+### Update system packages after edits
+
+```bash
+sudo root-power-audacious/install.sh
 ```
 
 ### Remove packages
 
 ```bash
+# User packages
 stow -D sway-audacious waybar-audacious
-sudo stow -D --target=/ root-power-audacious
+
+# System packages (manual removal required - see package README)
 ```
 
 ---
@@ -168,11 +182,17 @@ Recovery location: Encrypted USB key (blue) contains all secrets.
 
 ---
 
-## The Wolfpack
+## Project Naming
+
+**Project Shipshape** refers to this dotfiles repository and configuration management implementation — everything in order, maintainable, and ready for deployment or disaster recovery.
+
+**The Wolfpack** refers to the fleet of machines managed by this repository:
+- **Audacious** — Main workstation (powerful, fast-booting, aggressively idle-shutdown)
+- **Astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
+- **Artful** — Cloud instance on Hetzner (currently inactive)
+- **Steam Deck** — Portable gaming companion
 
 Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling.
-
-**Audacious** is the central workstation — powerful, fast-booting, aggressively powered off when idle. **Astute** provides storage and backups while sleeping whenever possible. **Artful** offers lightweight cloud presence. The **Steam Deck** acts as a portable companion.
 
 Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
 
