@@ -12,7 +12,7 @@ This document lists all machines in the Wolfpack, their hardware specs, roles, a
 **OS:** Debian 13 (Trixie)
 **CPU:** Intel i5-7500
 **RAM:** 8 GB
-**GPU:** AMD Radeon RX 6600XT
+**GPU:** AMD Radeon RX 6600/6600 XT/6600M (Navi 23)
 **Storage:**
 - NVMe root on ext4
 - 2×3.6 TB IronWolf ZFS mirror at `/srv/nas` (encrypted)
@@ -108,3 +108,17 @@ This document lists all machines in the Wolfpack, their hardware specs, roles, a
 - 100W USB-C PD passthrough
 
 ---
+
+## Mobile Devices
+
+**Primary:** Samsung Galaxy A53 (Android)
+**Use cases:**
+- 2FA (Aegis)
+- Remote access to self-hosted services
+
+---
+
+## Planned Additions (subject to change)
+
+- Offsite backup storage (Hetzner BX11 Storage Box or equivalent)
+- Additional mobile device for 2FA backup redundancy
