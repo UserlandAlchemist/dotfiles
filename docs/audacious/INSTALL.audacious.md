@@ -555,6 +555,7 @@ sudo root-power-audacious/install.sh
 sudo root-efisync-audacious/install.sh
 sudo root-cachyos-audacious/install.sh
 sudo root-network-audacious/install.sh
+sudo root-firewall-audacious/install.sh
 sudo root-backup-audacious/install.sh
 sudo root-sudoers-audacious/install.sh
 sudo root-proaudio-audacious/install.sh
@@ -618,6 +619,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled, syst
 | `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
 | `root-network-audacious` | system | systemd-networkd wired ethernet config with MAC-based link naming |
+| `root-firewall-audacious` | system | nftables host firewall (default-deny inbound) |
 | `root-backup-audacious` | system | Borg systemd timers (backup daily, check weekly, deep-check monthly) |
 | `root-sudoers-audacious` | system | Passwordless sudo for srv-astute.mount control (NAS mounting) |
 | `root-proaudio-audacious` | system | Real-time audio kernel tuning (rtprio limits, threadirqs) |

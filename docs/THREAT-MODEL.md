@@ -597,7 +597,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Priority: P0-Critical (MUST FIX IMMEDIATELY)
 
 **Host Firewall:**
-- Status: Missing (nftables inactive)
+- Status: Implemented (packages ready, install pending)
 - Impact: Services exposed to LAN without filtering, no defense-in-depth
 - Priority: P0-Critical (MUST FIX IMMEDIATELY) - escalated from P1-High
 
@@ -636,8 +636,8 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - No DMZ
 - No inbound services currently (Artful inactive)
 
-**Layer 2: Host-Based Firewall (TO BE IMPLEMENTED)**
-- nftables on Audacious and Astute
+**Layer 2: Host-Based Firewall (IMPLEMENTED - deploy pending)**
+- nftables on Audacious and Astute (root-firewall-* packages)
 - Default-deny, explicit allows
 - Blocks lateral movement even on flat network
 
@@ -665,9 +665,13 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 ## Guidance for Implementation
 
-### Firewall Implementation (Task #10)
+### Firewall Implementation (Task #6)
 
 Based on this threat model:
+
+**Packages:**
+- `root-firewall-audacious`
+- `root-firewall-astute`
 
 **Default Policy:** DENY all inbound, DENY all forwarding, ALLOW outbound (with logging)
 
@@ -859,7 +863,7 @@ Prerequisites for deploying Artful as internet-facing VPS:
 **Remediation:**
 - Router firewall enabled (Default) - COMPLETE
 - SSH hardening (root-ssh-astute package) - IMPLEMENTED (install pending)
-- Host firewall (nftables) escalated to P0-Critical - PENDING
+- Host firewall (nftables) escalated to P0-Critical - IMPLEMENTED (install pending)
 - VPN + encrypted DNS added as P1-High task - PENDING
 - Artful security hardening prerequisites documented - PENDING
 
