@@ -697,13 +697,13 @@ Based on this threat model:
 
 Based on security audit findings:
 
-**Package:** ssh-server-astute
+**Package:** root-ssh-astute
 
 **Critical Changes:**
 - Restrict SSH to LAN IP: `ListenAddress 192.168.1.154`
 - Verify key-based auth only: `PasswordAuthentication no`
 - Disable root login: `PermitRootLogin no`
-- Additional hardening (X11Forwarding, agent forwarding, etc.)
+- Optional: additional hardening (X11Forwarding, AllowAgentForwarding, etc.)
 
 **Deploy:** Install script copies config to /etc/ssh/sshd_config.d/, validates, restarts sshd
 
@@ -858,7 +858,7 @@ Prerequisites for deploying Artful as internet-facing VPS:
 
 **Remediation:**
 - Router firewall enabled (Default) - COMPLETE
-- SSH hardening (ssh-server-astute package) - PENDING
+- SSH hardening (root-ssh-astute package) - IMPLEMENTED (install pending)
 - Host firewall (nftables) escalated to P0-Critical - PENDING
 - VPN + encrypted DNS added as P1-High task - PENDING
 - Artful security hardening prerequisites documented - PENDING
