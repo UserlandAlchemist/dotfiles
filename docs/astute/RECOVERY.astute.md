@@ -757,6 +757,7 @@ stow profile-common bash-astute bin-astute nas-astute
 
 ```sh
 sudo root-power-astute/install.sh
+sudo root-ssh-astute/install.sh
 ```
 
 4. Reload systemd and enable services:
