@@ -3,8 +3,8 @@
 Security assumptions, attack surfaces, acceptable risks, and defensive posture for Project Shipshape.
 
 **Scope:** The Wolfpack (Audacious, Astute, Artful, Steam Deck, mobile devices)
-**Last Updated:** 2026-01-05
-**Status:** Initial threat model for security architecture decisions
+**Last Updated:** 2026-01-06
+**Status:** Updated after security audit - router firewall disabled, SSH exposure found
 
 ---
 
@@ -23,12 +23,16 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 **Motivation:** Data theft, botnet recruitment, ransomware, cryptocurrency mining
 
 **Current Exposure:**
-- Router with UPnP enabled (potential automatic port forwarding)
-- Artful VPS when active (public-facing services)
+- **CRITICAL FINDING (2026-01-06):** Router firewall was completely disabled until audit
+- Router firewall now set to Default (block unsolicited inbound, allow outbound)
+- UPnP enabled (potential automatic port forwarding, Extended UPnP Security ON)
+- SSH on Astute listening on 0.0.0.0 (all interfaces), not restricted to LAN IP
+- No host-based firewall active (nftables installed but inactive)
+- Artful VPS when active (public-facing services, currently inactive)
 - Outbound connections from workstation (browser, applications)
 - Dynamic WAN IP with no inbound firewall rules currently configured
 
-**Risk Level:** Medium-High (increasing with any internet-facing services)
+**Risk Level:** Critical (recently mitigated to Medium-High) - router firewall disabled meant zero perimeter protection, SSH potentially exposed via UPnP
 
 ### 2. Local Network Attackers (LAN)
 
@@ -113,6 +117,36 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **Risk Level:** Medium (most likely threat to realize)
 
+### 6. State-Level Mass Surveillance (UK)
+
+**Profile:** UK government mass surveillance via ISP under legal frameworks (Investigatory Powers Act 2016, Online Safety Act 2023).
+
+**Capabilities:**
+- Full visibility of unencrypted traffic at ISP level
+- DNS query logging (what domains accessed, when)
+- Connection metadata collection (who, when, how much data, where)
+- Deep packet inspection on unencrypted traffic
+- Legal compulsion of service providers to retain data
+- Bulk interception warrants (mass, not targeted)
+
+**Motivation:** Mass surveillance for national security and law enforcement purposes, not targeted individual surveillance (at current threat level)
+
+**Current Exposure:**
+- ISP considered compromised (legal obligation to cooperate with surveillance)
+- All DNS queries visible to ISP (no encrypted DNS)
+- HTTPS metadata visible (destination IPs, timing, volume)
+- Unencrypted HTTP completely visible
+- No VPN currently deployed (all traffic routes through ISP)
+- External service usage traceable (GitHub, Bitwarden, ChatGPT)
+
+**Risk Level:** High (for privacy and metadata exposure), Low (for targeted action at current threat level)
+
+**Mitigations Needed:**
+- VPN for sensitive browsing (encrypts traffic from local → VPN endpoint)
+- Encrypted DNS (DNS-over-HTTPS or DNS-over-TLS)
+- HTTPS everywhere (already mostly in place)
+- Consider Tor for highest-sensitivity activities (if threat level escalates)
+
 ---
 
 ## Attack Surfaces
@@ -120,10 +154,14 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 ### Network Attack Surface
 
 **External (WAN):**
-- Router with UPnP enabled (risk: automatic port forwarding by malicious apps)
+- BT Smart Hub 2 router (firewall now on Default - was completely disabled until 2026-01-06)
+- UPnP enabled with Extended UPnP Security ON (risk: automatic port forwarding by malicious apps)
+- No manual port forwarding rules configured
+- DMZ disabled
 - Dynamic external IP (no current inbound services documented)
 - Artful VPS when active (SSH, web services - not currently deployed)
 - Outbound connections from workstation (browser, package updates, git)
+- ISP considered compromised (UK legal interception obligations)
 
 **Internal (LAN - 192.168.1.0/24):**
 - Audacious (192.168.1.147):
@@ -134,6 +172,9 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Astute (192.168.1.154):
   - NFSv4 server (port 2049, plaintext)
   - SSH server (port 22, key-based auth)
+    - **SECURITY GAP:** Listening on 0.0.0.0 (all interfaces), not restricted to LAN IP
+    - Should be: ListenAddress 192.168.1.154 (LAN-only)
+    - Current config: No ListenAddress restriction in sshd_config
   - apt-cacher-ng (port 3142, HTTP cache)
   - Wake-on-LAN (broadcasts on LAN)
 
@@ -214,6 +255,13 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - NFSv4 (Audacious ↔ Astute, LAN-only, no Kerberos)
 - apt-cacher-ng HTTP proxy (package content, LAN-only)
 - Local network discovery (Avahi, mDNS)
+
+**Visible to ISP (Mass Surveillance Risk):**
+- All DNS queries (plaintext to ISP DNS servers)
+- HTTPS connection metadata (destination IPs, timing, volume)
+- Unencrypted HTTP (full content visible)
+- No VPN currently deployed (all traffic routes through ISP)
+- External service connections traceable (GitHub, Bitwarden, ChatGPT, etc.)
 
 ---
 
@@ -351,17 +399,20 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **Current State:** nftables installed but inactive, no host-based firewall
 
+**CRITICAL FINDING (2026-01-06):** Router firewall was completely disabled (now fixed - set to Default). Combined with SSH on 0.0.0.0 and UPnP enabled, potential for SSH to be internet-exposed via UPnP port forward. Actual exposure unknown (no evidence of UPnP port 22 mapping, but can't rule out historical exposure).
+
 **Options:**
 1. **Accept Risk (Low effort):**
-   - NOT acceptable - this is a known critical gap
+   - NOT acceptable - this is a known critical gap, made worse by router firewall being disabled
 
 2. **Implement Host-Based Firewall (Medium effort):**
    - Configure nftables on both hosts
    - Default-deny, allow specific services (SSH, NFS, apt-cacher-ng)
+   - Astute: Only allow connections from Audacious (192.168.1.147)
    - Block unexpected outbound connections
    - Residual risk: Low
 
-**Decision:** **MUST IMPLEMENT** (Phase 3, priority P1-High already in queue). This is prerequisite security control. Not negotiable.
+**Decision:** **MUST IMPLEMENT IMMEDIATELY** (escalated to P0-Critical). Router firewall disabled + SSH on 0.0.0.0 + UPnP = potential internet exposure. Defense-in-depth requires host firewall regardless of router config.
 
 ### Risk: UPnP Enabled on Router
 
@@ -442,6 +493,53 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **Decision:** **MUST IMPLEMENT** (Phase 2, task #7 already in queue). Recovery documentation is only theoretical until tested. VM testing environment (task #5) is prerequisite. High priority for Principle 3 (Resilience).
 
+### Risk: SSH Listening on All Interfaces (Astute)
+
+**Scenario:** SSH bound to 0.0.0.0 instead of LAN IP, potentially exposed via UPnP or port forwarding.
+
+**Current State:** SSH listening on 0.0.0.0:22 (all interfaces), no ListenAddress restriction
+
+**FINDING (2026-01-06):** Combined with router firewall disabled + UPnP enabled, SSH could have been internet-exposed. Router firewall now enabled (Default), but SSH still not restricted to LAN IP.
+
+**Options:**
+1. **Accept Risk (Low effort):**
+   - NOT acceptable - SSH should be LAN-only, no need for WAN access
+
+2. **Restrict SSH to LAN IP (Low effort):**
+   - Add `ListenAddress 192.168.1.154` to sshd_config
+   - SSH only accessible from LAN, even if router port forwarding configured
+   - Version-control in dotfiles (ssh-server-astute package)
+   - Residual risk: Very Low
+
+**Decision:** **MUST IMPLEMENT IMMEDIATELY** (P0-Critical). Simple fix, critical security gap. Create ssh-server-astute package to version-control hardening.
+
+### Risk: ISP Mass Surveillance (No VPN/Encrypted DNS)
+
+**Scenario:** UK government bulk surveillance via ISP under IPA 2016 / Online Safety Act 2023. ISP logs DNS queries, connection metadata, and has DPI capability.
+
+**Current State:**
+- No VPN deployed (all traffic via ISP)
+- DNS queries plaintext to ISP DNS servers
+- HTTPS metadata visible (destination IPs, timing, volume)
+- External service usage fully traceable
+
+**Threat Assessment:** Mass surveillance (not targeted at individual). Privacy concern, not immediate security threat. Escalation to targeted surveillance requires changed threat model (activism, journalism, etc.).
+
+**Options:**
+1. **Accept Risk (Low effort):**
+   - Acceptable for general browsing
+   - HTTPS protects content (but not metadata)
+   - Residual risk: Medium (privacy), Low (security)
+
+2. **Implement VPN + Encrypted DNS (Medium effort):**
+   - VPN encrypts all traffic from local → VPN endpoint
+   - Encrypted DNS (DoH/DoT) hides DNS queries from ISP
+   - ISP sees: encrypted tunnel to VPN provider, volume/timing only
+   - VPN provider sees: actual traffic (trust shift from ISP to VPN)
+   - Residual risk: Low (privacy), Very Low (security)
+
+**Decision:** **IMPLEMENT VPN + ENCRYPTED DNS** (P1-High). UK political situation warrants privacy protection. Use case: on-demand for sensitive activities (not always-on for all traffic). VPN provider selection: prioritize privacy policy, jurisdiction, no-logs verification.
+
 ### Risk: No Monitoring or Alerting
 
 **Scenario:** Silent failures (backup failure, disk errors, service crashes) go unnoticed for days/weeks.
@@ -488,20 +586,35 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 ### Critical Gaps
 
+**Router Firewall (FIXED 2026-01-06):**
+- Status: Was completely disabled, now set to Default
+- Impact: Had zero perimeter protection, potential SSH internet exposure
+- Priority: MITIGATED (but highlights need for defense-in-depth)
+
+**SSH Hardening (Astute):**
+- Status: Listening on 0.0.0.0 (all interfaces), not restricted to LAN IP
+- Impact: Potential internet exposure via UPnP or port forwarding
+- Priority: P0-Critical (MUST FIX IMMEDIATELY)
+
 **Host Firewall:**
 - Status: Missing (nftables inactive)
-- Impact: Services exposed to LAN without filtering
-- Priority: P1-High (MUST FIX)
+- Impact: Services exposed to LAN without filtering, no defense-in-depth
+- Priority: P0-Critical (MUST FIX IMMEDIATELY) - escalated from P1-High
 
 **Network Segmentation:**
 - Status: Flat /24 network, IoT shares with workstation/NAS
 - Impact: Compromised IoT can pivot to sensitive systems
-- Priority: P2-Medium (ACCEPT RISK for now, future improvement)
+- Priority: P2-Medium (ACCEPT RISK for now, mitigate with host firewall + monitoring)
+
+**ISP Surveillance (VPN/Encrypted DNS):**
+- Status: No VPN, plaintext DNS, all traffic via ISP
+- Impact: Mass surveillance visibility, metadata collection
+- Priority: P1-High (privacy concern, UK political situation)
 
 **Monitoring:**
 - Status: No automated monitoring or alerting
-- Impact: Silent failures go undetected
-- Priority: P1-High (MUST FIX)
+- Impact: Silent failures go undetected, potential IoT compromise unnoticed
+- Priority: P1-High (MUST FIX) - critical for IoT compromise detection
 
 **Recovery Testing:**
 - Status: Documentation untested
@@ -510,9 +623,17 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 ### Defense-in-Depth Strategy
 
+**Layer 0: ISP/Network Privacy (TO BE IMPLEMENTED)**
+- VPN for sensitive traffic (on-demand, not always-on)
+- Encrypted DNS (DoH/DoT) to hide queries from ISP
+- Reduces mass surveillance visibility
+
 **Layer 1: Network Perimeter**
-- Router (BT Smart Hub 2) - basic NAT/firewall
-- UPnP enabled (accepted risk with mitigation)
+- Router (BT Smart Hub 2) - firewall on Default (fixed 2026-01-06, was disabled)
+- Blocks unsolicited inbound, allows outbound
+- UPnP enabled with Extended UPnP Security (accepted risk with host firewall mitigation)
+- No manual port forwarding rules
+- No DMZ
 - No inbound services currently (Artful inactive)
 
 **Layer 2: Host-Based Firewall (TO BE IMPLEMENTED)**
@@ -572,6 +693,22 @@ Based on this threat model:
 - Trusted Core ← IoT: DENY (IoT cannot initiate to core)
 - Trusted Core → IoT: ALLOW (core can manage IoT if needed)
 
+### SSH Hardening Implementation (Task - NEW P0-Critical)
+
+Based on security audit findings:
+
+**Package:** ssh-server-astute
+
+**Critical Changes:**
+- Restrict SSH to LAN IP: `ListenAddress 192.168.1.154`
+- Verify key-based auth only: `PasswordAuthentication no`
+- Disable root login: `PermitRootLogin no`
+- Additional hardening (X11Forwarding, agent forwarding, etc.)
+
+**Deploy:** Install script copies config to /etc/ssh/sshd_config.d/, validates, restarts sshd
+
+**Verify:** `ss -tlnp | grep :22` shows 192.168.1.154:22 (not 0.0.0.0:22)
+
 ### Monitoring Implementation (Task #9)
 
 Based on this threat model, monitor:
@@ -581,9 +718,11 @@ Based on this threat model, monitor:
 - ZFS scrub errors or pool degradation (weekly)
 - Systemd service failures for critical services
 - Disk SMART failures
+- **NEW:** Unexpected connections to Astute (IoT compromise detection)
+- **NEW:** Firewall dropped packets (attempted lateral movement)
 
 **Medium Priorities:**
-- Unusual network connections
+- Unusual network connections (non-LAN destinations from Astute)
 - Failed SSH attempts
 - Sudo usage (audit log)
 - Package installation/removal
@@ -591,6 +730,45 @@ Based on this threat model, monitor:
 **Low Priorities:**
 - System resource usage trends
 - Temperature monitoring (Astute headless)
+
+### VPN + Encrypted DNS Implementation (Task - NEW P1-High)
+
+Based on UK mass surveillance concerns and performance requirements:
+
+**Use Case:** On-demand VPN for sensitive activities (not always-on, not for gaming)
+
+**Design Constraints:**
+- Must NOT slow down general browsing (VPN off by default)
+- Must NOT interfere with gaming (direct connection for low latency)
+- Enable VPN manually for sensitive activities only
+
+**VPN Options:**
+1. **Commercial VPN (Recommended for simplicity):**
+   - Providers: Mullvad, IVPN, Proton VPN (privacy-focused, no-logs)
+   - Easy on-demand toggle (systemd service or NetworkManager integration)
+   - Exit node selection (choose low-latency endpoints)
+   - Split tunneling possible (route only specific apps through VPN)
+
+2. **Self-Hosted Wireguard on Artful (Future):**
+   - Full control, but limited to Artful's jurisdiction/provider
+   - Requires Artful deployment and hardening first
+   - Still shifts trust from ISP to VPS provider
+
+**Encrypted DNS:**
+- DNS-over-HTTPS (DoH) to Cloudflare (1.1.1.1) or Quad9 (9.9.9.9)
+- OR DNS-over-TLS (DoT) to same providers
+- Always-on (minimal performance impact)
+- Prevents ISP DNS query logging
+
+**Implementation Approach:**
+- Encrypted DNS: Always-on (systemd-resolved or stubby)
+- VPN: Manual activation via script/systemd (e.g., `vpn-on`, `vpn-off` commands)
+- Browser profile: "Sensitive browsing" profile activates VPN automatically
+- Gaming: Never use VPN (direct connection, UPnP works)
+
+**Decision Needed:**
+- VPN provider selection (commercial vs future self-hosted)
+- Encrypted DNS method (DoH vs DoT)
 
 ### Network Segmentation (Future)
 
@@ -604,6 +782,41 @@ If threat model changes (e.g., untrusted guests, increased IoT attack frequency)
    - VLAN 99: Guest (if needed)
 3. Implement firewall rules between VLANs
 4. Test thoroughly before production deployment
+
+### Artful VPS Security Hardening (Task - NEW P1-High)
+
+Prerequisites for deploying Artful as internet-facing VPS:
+
+**SSH Hardening:**
+- Key-based auth only (no password auth)
+- Non-standard SSH port (reduce automated scans)
+- fail2ban for brute-force protection
+- Rate limiting on SSH connections
+
+**Host Firewall:**
+- Default-deny on all interfaces
+- Minimal services exposed (SSH, HTTP/HTTPS if needed)
+- Explicit allow rules only
+- Log all dropped packets
+
+**Automated Updates:**
+- Unattended security updates enabled
+- Kernel/critical package updates tested before production
+- Email/monitoring alerts for failed updates
+
+**Monitoring:**
+- Intrusion detection (fail2ban logs, unusual connections)
+- Service health monitoring
+- Disk space and resource usage
+- Security update status
+
+**Hardening:**
+- Disable unnecessary services
+- Remove unused packages
+- Kernel hardening (sysctl tuning)
+- AppArmor or SELinux if supported by VPS
+
+**Dependencies:** Artful not currently deployed - hardening must be completed before any internet-facing deployment
 
 ---
 
@@ -620,14 +833,46 @@ If threat model changes (e.g., untrusted guests, increased IoT attack frequency)
 - Living situation changes (shared housing, guests)
 - New attack vectors discovered in infrastructure
 - External service compromises (GitHub, Bitwarden, etc.)
-- UK legal landscape changes affecting email hosting
+- UK legal landscape changes (Online Safety Act enforcement, new surveillance powers)
+- Escalation from mass surveillance to targeted surveillance
 
 **Document Updates:**
 - Keep aligned with actual implementation (not aspirational)
 - Update acceptable risk decisions as mitigations are implemented
 - Track residual risk over time
+- Document security audit findings and remediation
 
 ---
 
-**Last Updated:** 2026-01-05
-**Next Review:** 2027-01-05 or upon triggering event
+## Audit History
+
+### 2026-01-06: Security Audit - Router Firewall + SSH Exposure
+
+**Findings:**
+1. Router firewall completely disabled (CRITICAL) - now fixed (set to Default)
+2. SSH on Astute listening on 0.0.0.0, not restricted to LAN IP (CRITICAL)
+3. UPnP enabled with Extended UPnP Security ON (acceptable with mitigation)
+4. No manual port forwarding rules (good)
+5. DMZ disabled (good)
+6. Audacious has no SSH server (correct - client-only)
+
+**Remediation:**
+- Router firewall enabled (Default) - COMPLETE
+- SSH hardening (ssh-server-astute package) - PENDING
+- Host firewall (nftables) escalated to P0-Critical - PENDING
+- VPN + encrypted DNS added as P1-High task - PENDING
+- Artful security hardening prerequisites documented - PENDING
+
+**Impact:**
+- Potential historical SSH internet exposure (unknown duration, no evidence of compromise)
+- Zero perimeter protection until router firewall enabled
+- Defense-in-depth insufficient (no host firewall)
+
+**Risk Level Change:**
+- External Network Attackers: Critical → Medium-High (after router fix, pending host firewall)
+- New threat actor added: UK State-Level Mass Surveillance (High privacy risk)
+
+---
+
+**Last Updated:** 2026-01-06
+**Next Review:** 2027-01-06 or upon triggering event
