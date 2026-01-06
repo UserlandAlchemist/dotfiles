@@ -314,6 +314,7 @@ root-power-audacious/install.sh
 root-efisync-audacious/install.sh
 root-cachyos-audacious/install.sh
 root-network-audacious/install.sh
+root-firewall-audacious/install.sh
 root-backup-audacious/install.sh
 root-proaudio-audacious/install.sh
 root-sudoers-audacious/install.sh
