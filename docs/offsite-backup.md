@@ -110,26 +110,32 @@ sudo borg extract \
 
 ## Health checks
 
-1. Timers:
+1. **Verify append-only mode (astute-critical):**
+
+   BorgBase web UI → astute-critical repo (y7pc8k07) → Settings → Append-only mode: **ENABLED**
+
+   **CRITICAL:** Without append-only, ransomware can delete off-site backups.
+
+2. Timers:
 
 ```bash
 systemctl list-timers | grep borg-offsite
 ```
 
-2. Recent logs:
+3. Recent logs:
 
 ```bash
 journalctl -u borg-offsite-audacious.service --since "1 week ago"
 journalctl -u borg-offsite-astute-critical.service --since "1 week ago"
 ```
 
-3. Monthly checks:
+4. Monthly checks:
 
 ```bash
 journalctl -u borg-offsite-check.service --since "2 months ago"
 ```
 
-4. List archives (force root SSH key):
+5. List archives (force root SSH key):
 
 ```bash
 sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
