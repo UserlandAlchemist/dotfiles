@@ -1906,3 +1906,75 @@ Risks/unknowns:
 - Off-site audacious-home is a backup of the local Borg repo directory (two-step restore)
 
 Status: Off-site backup implementation complete. BorgBase repositories configured and initial backups run successfully. Daily timers enabled.
+
+## Session: 2026-01-07 22:00
+
+**Disaster Recovery Infrastructure & Secrets Management**
+
+Files changed:
+- scripts/verify-secrets-usb.sh — renamed from verify-blue-usb-recovery.sh, added SHA256 checksum verification
+- scripts/clone-secrets-usb.sh — renamed from clone-blue-usb.sh, creates verified encrypted copies
+- scripts/create-gdrive-recovery-bundle.sh — creates GPG-encrypted recovery bundle for Google Drive
+- scripts/audit-secrets.sh — comprehensive secrets security auditing for both hosts
+- docs/disaster-recovery.md — complete disaster recovery strategy and procedures
+- docs/secrets-recovery.md — renamed "Blue USB" → "Secrets USB" throughout
+- .gitignore — added protection against committing recovery bundles and credentials
+- All documentation — renamed "Blue USB" → "Secrets USB" for future-proofing
+
+Work completed:
+- Fixed critical disaster recovery gap: Secrets USB was missing BorgBase SSH key and passphrases
+- Created three disaster recovery scripts with SHA256 verification
+- Implemented three-tier recovery strategy: Secrets USB (on-site) + Trusted Copy (off-site) + Google Drive (cloud)
+- Added checksum verification to Secrets USB (--save-checksums option)
+- Created comprehensive disaster recovery documentation with RTO/RPO estimates
+- Audited both hosts for leftover temporary secrets (all clean)
+- Verified all secret file permissions (SSH keys 600, passphrases 600)
+- Enhanced .gitignore to prevent accidental commit of recovery bundles and credentials
+- Documented current hardware (blue SanDisk 32GB) for future device changes
+
+Commits:
+- 5d560cd — docs: add disaster recovery kit procedures
+- 4da5fa6 — fix: add BorgBase SSH key and passphrases to Secrets USB
+- 8938021 — fix: create recovery-bundle subdirectory in tar script
+- 6e399dc — repo: move disaster recovery scripts to scripts/ directory
+- da71619 — scripts: add Blue USB cloning with checksum verification
+- 6a27cf5 — repo: rename 'Blue USB' to 'Secrets USB' throughout
+- 90b1495 — scripts: add SHA256 checksum verification to verify-secrets-usb.sh
+- 703fd50 — security: add secrets audit script and enhance .gitignore
+
+Disaster recovery status:
+- ✓ Secrets USB complete with all BorgBase credentials
+- ✓ Google Drive recovery bundle created and uploaded
+- ✓ No leftover temporary secrets on either host
+- ✓ All permissions verified correct (600 on all secrets)
+- ✓ Git protection in place (.gitignore updated)
+- ⏳ Trusted Copy pending (awaits trusted person visit)
+
+Recovery capabilities:
+- Scenario 1 (Fire/Flood): RTO 1-3 days, RPO 24 hours — Google Drive + BorgBase
+- Scenario 2 (Single system): RTO 4-8 hours, RPO 6 hours — Secrets USB + local backups
+- Scenario 3 (Ransomware): RTO 4-8 hours, RPO 24 hours — BorgBase append-only + offline backups
+
+Scripts usage:
+```bash
+# Verify Secrets USB completeness and integrity
+sudo scripts/verify-secrets-usb.sh
+sudo scripts/verify-secrets-usb.sh --save-checksums  # After updates
+
+# Create Google Drive recovery bundle
+scripts/create-gdrive-recovery-bundle.sh
+
+# Clone Secrets USB for trusted person
+sudo scripts/clone-secrets-usb.sh
+
+# Audit secrets security on both hosts
+scripts/audit-secrets.sh
+```
+
+Assumptions:
+- Secrets USB mounted at /mnt/keyusb
+- Google Drive recovery bundle encrypted with memorable GPG passphrase
+- Trusted Copy uses same LUKS passphrase as Secrets USB
+- All SHA256 checksums verified during cloning
+
+Status: Disaster recovery infrastructure complete. Three-tier recovery strategy implemented with cryptographic verification. All systems audited and clean.
