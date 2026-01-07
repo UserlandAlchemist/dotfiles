@@ -672,6 +672,39 @@ Expected result: All secrets restored, ready to deploy dotfiles and restore data
 
 ---
 
+### §4.1.1 Hardware Replacement (Audacious)
+
+Use this when rebuilding Audacious from scratch on new hardware.
+
+References:
+1. Base install and verification: `docs/audacious/install.audacious.md`
+2. Secrets restore: §4.1 in this document
+3. Dotfiles stow + system install: `README.md` (Quick Start)
+4. Data restore: `docs/audacious/restore.audacious.md`
+5. Recovery checks: `docs/audacious/recovery.audacious.md`
+6. Service verification: package READMEs (for example `root-backup-audacious/README.md`,
+   `root-network-audacious/README.md`)
+
+Expected result: Audacious fully rebuilt with secrets and data restored.
+
+---
+
+### §4.1.2 Hardware Replacement (Astute)
+
+Use this when rebuilding Astute from scratch on new hardware.
+
+References:
+1. Base install and verification: `docs/astute/install.astute.md`
+2. Secrets restore: §4.1 in this document
+3. Dotfiles stow + system install: `README.md` (Quick Start)
+4. Storage import/recovery: `docs/astute/recovery.astute.md`
+5. Service verification: package READMEs (for example `root-power-astute/README.md`,
+   `root-backup-audacious/README.md`)
+
+Expected result: Astute fully rebuilt with secrets and storage restored.
+
+---
+
 ### §4.2 Partial Recovery (SSH Keys Only)
 
 Restore just SSH keys after home directory corruption.
