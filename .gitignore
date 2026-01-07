@@ -10,8 +10,6 @@
 
 # LLM collaboration task files (ephemeral state, not permanent docs)
 CODEX-TODO.txt
-CODEX-INSTRUCTIONS.txt
-AGENTS-TODO.txt
 AGENTS.md
 AGENTS-IDENTITY-POLICY.md
 
