@@ -56,11 +56,17 @@ check_file "$BLUE_USB/ssh-backup/audacious-backup" "Borg backup SSH private key"
 check_file "$BLUE_USB/ssh-backup/audacious-backup.pub" "Borg backup SSH public key"
 check_file "$BLUE_USB/ssh-backup/id_ed25519_astute_nas" "NAS control SSH private key"
 check_file "$BLUE_USB/ssh-backup/id_ed25519_astute_nas.pub" "NAS control SSH public key"
+check_file "$BLUE_USB/ssh-backup/borgbase_offsite" "BorgBase SSH private key"
 echo
 
 echo "--- BorgBase Off-Site Keys ---"
 check_file "$BLUE_USB/borg/audacious-home-key.txt" "BorgBase audacious-home repository key"
 check_file "$BLUE_USB/borg/astute-critical-key.txt" "BorgBase astute-critical repository key"
+echo
+
+echo "--- BorgBase Passphrases ---"
+check_file "$BLUE_USB/borg/audacious-home.passphrase" "BorgBase audacious-home passphrase"
+check_file "$BLUE_USB/borg/astute-critical.passphrase" "BorgBase astute-critical passphrase"
 echo
 
 echo "--- Borg Local Backup Keys ---"
