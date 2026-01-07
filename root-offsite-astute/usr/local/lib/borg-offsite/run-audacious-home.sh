@@ -49,4 +49,5 @@ borg prune --list \
   --keep-daily 30 \
   "$REPO"
 
-borg compact "$REPO"
+# Note: BorgBase handles compaction server-side; client compact not supported
+# borg compact "$REPO"

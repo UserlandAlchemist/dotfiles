@@ -38,3 +38,5 @@ borg create \
   --patterns-from "$PATTERNS" \
   "$REPO"::"astute-critical-{now}" \
   /
+
+# Note: No prune/compact for append-only repo (BorgBase manages compaction)
