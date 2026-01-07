@@ -68,7 +68,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **Current Exposure:**
 - Home environment (limited to household members and guests)
-- Blue USB key with secrets (physical security critical)
+- Secrets USB key with secrets (physical security critical)
 - Cold storage LUKS drive (physical security critical)
 - No BIOS passwords documented
 - Physical console access possible (keyboard/monitor)
@@ -111,7 +111,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 **Current Exposure:**
 - Single-user environment (no segregation of duties)
 - Sudo access for system changes
-- Manual secret management (Blue USB, not automated)
+- Manual secret management (Secrets USB, not automated)
 - No automated configuration drift detection (manual drift-check.md)
 - Untested recovery procedures (disaster recovery drill pending)
 
@@ -203,7 +203,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Mobile phone: Personal device (high loss/theft risk)
 
 **Removable Media:**
-- Blue USB key (secrets: SSH keys, Borg passphrases)
+- Secrets USB key (secrets: SSH keys, Borg passphrases)
 - Cold storage LUKS drive (monthly backup snapshots)
 - SD cards (Steam Deck storage)
 
@@ -215,7 +215,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **SSH:**
 - Key-based authentication (good)
-- SSH keys stored on Blue USB and deployed systems
+- SSH keys stored on Secrets USB and deployed systems
 - Forced commands for nas-inhibit (good - restricted)
 - No 2FA on SSH (acceptable for home LAN)
 
@@ -296,7 +296,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - ZFS snapshots (read-only, cannot be encrypted by unprivileged malware)
 - Disk encryption (LUKS) protects data at rest
 - Cold storage offline backups (monthly, physically disconnected)
-- Blue USB offline key backup (LUKS encrypted)
+- Secrets USB offline key backup (LUKS encrypted)
 
 ✗ **Gaps:**
 - No real-time backup monitoring/alerting (Task #9, P1-High)
@@ -310,7 +310,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 **Residual Risk After All Protections:** Low-Medium
 - Local backups provide 6-hour RPO (Recovery Point Objective)
 - Off-site append-only backups survive root compromise
-- Offline backups (cold storage, Blue USB) provide last resort
+- Offline backups (cold storage, Secrets USB) provide last resort
 - Multiple backup layers make complete data loss unlikely
 
 **Likelihood:** Medium (browser exploits, supply chain attacks possible)
@@ -535,11 +535,11 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
    - Residual risk: Very Low
 
 2. **Keep Key-Only Auth (Current):**
-   - Keys stored securely (Blue USB for offline, deployed for convenience)
+   - Keys stored securely (Secrets USB for offline, deployed for convenience)
    - LAN-only SSH access (not internet-facing)
    - Residual risk: Low (requires key compromise + LAN access)
 
-**Decision:** **Keep key-only auth** (current). SSH is LAN-only, not internet-facing. Key compromise requires either physical access (Blue USB theft) or system compromise (in which case 2FA wouldn't help). Re-evaluate if SSH becomes internet-facing or if keys stored on less-secure devices.
+**Decision:** **Keep key-only auth** (current). SSH is LAN-only, not internet-facing. Key compromise requires either physical access (Secrets USB theft) or system compromise (in which case 2FA wouldn't help). Re-evaluate if SSH becomes internet-facing or if keys stored on less-secure devices.
 
 ### Risk: Untested Disaster Recovery
 
@@ -554,7 +554,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 2. **Execute Disaster Recovery Drill (High effort):**
    - Test install.audacious.md in VM
    - Test Borg restore procedures
-   - Verify Blue USB secret recovery
+   - Verify Secrets USB secret recovery
    - Identify gaps and fix documentation
    - Residual risk: Very Low
 
@@ -640,7 +640,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 **Authentication:**
 - SSH key-based auth (better than passwords)
 - Forced commands for restricted operations
-- Secrets stored offline (Blue USB)
+- Secrets stored offline (Secrets USB)
 
 **Resilience:**
 - Multiple backup layers (Borg, cold storage)
@@ -724,7 +724,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Backup validation
 
 **Layer 6: Recovery**
-- Offline backups (Blue USB, cold storage)
+- Offline backups (Secrets USB, cold storage)
 - Comprehensive documentation
 - Testing (to be executed)
 

@@ -1,14 +1,16 @@
 # Secrets Recovery Guide
 
-Complete procedures for creating, maintaining, and recovering from the Blue USB encrypted backup.
+Complete procedures for creating, maintaining, and recovering from the Secrets USB encrypted backup.
 
-**Purpose:** The Blue USB contains all secrets needed to recover the Wolfpack after catastrophic failure: SSH keys, Borg passphrases, API tokens, and recovery documentation.
+**Purpose:** The Secrets USB contains all secrets needed to recover the Wolfpack after catastrophic failure: SSH keys, Borg passphrases, API tokens, and recovery documentation.
+
+**Current Hardware:** The Secrets USB is currently a blue SanDisk 32GB USB drive.
 
 ---
 
 ## Overview
 
-**What is the Blue USB:**
+**What is the Secrets USB:**
 - LUKS-encrypted USB flash drive
 - Contains all secrets not committed to git
 - Required for complete system recovery
@@ -30,7 +32,7 @@ Complete procedures for creating, maintaining, and recovering from the Blue USB 
 
 ## §1 Create Encrypted USB
 
-Initial setup of Blue USB with LUKS encryption.
+Initial setup of Secrets USB with LUKS encryption.
 
 Prerequisites:
 - USB flash drive (8GB minimum, 16GB+ recommended)
@@ -114,7 +116,7 @@ sudo chown -R $(id -u):$(id -g) /mnt/keyusb
 11. Test write access:
 
 ```sh
-echo "Blue USB Recovery - Created $(date)" > /mnt/keyusb/README.txt
+echo "Secrets USB Recovery - Created $(date)" > /mnt/keyusb/README.txt
 cat /mnt/keyusb/README.txt
 ```
 
@@ -124,10 +126,10 @@ Expected result: Encrypted USB ready for secrets storage.
 
 ## §2 Initial Population
 
-Populate Blue USB with all secrets and recovery documentation.
+Populate Secrets USB with all secrets and recovery documentation.
 
 Prerequisites:
-- Blue USB created and mounted at /mnt/keyusb (§1)
+- Secrets USB created and mounted at /mnt/keyusb (§1)
 - All SSH keys generated (§2.0)
 - Borg repository initialized with passphrase
 
@@ -215,7 +217,7 @@ Export repository key:
 borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-key-export.txt
 ```
 
-Off-site BorgBase repo keys (export on Astute, then copy to Blue USB):
+Off-site BorgBase repo keys (export on Astute, then copy to Secrets USB):
 
 ```sh
 # On Astute (as root)
@@ -236,7 +238,7 @@ BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase" \
 # Copy to Audacious (from Astute)
 scp /root/tmp-borg-keys/*.txt alchemist@audacious:~/
 
-# On Audacious: Copy to Blue USB
+# On Audacious: Copy to Secrets USB
 cp ~/audacious-home-key.txt /mnt/keyusb/borg/
 cp ~/astute-critical-key.txt /mnt/keyusb/borg/
 rm ~/audacious-home-key.txt ~/astute-critical-key.txt
@@ -245,9 +247,9 @@ rm ~/audacious-home-key.txt ~/astute-critical-key.txt
 rm -rf /root/tmp-borg-keys
 ```
 
-**IMPORTANT:** These keys must be exported and stored on Blue USB. Without them, off-site backups are unrecoverable if passphrases are lost.
+**IMPORTANT:** These keys must be exported and stored on Secrets USB. Without them, off-site backups are unrecoverable if passphrases are lost.
 
-BorgBase SSH key and passphrases (copy from Astute to Blue USB):
+BorgBase SSH key and passphrases (copy from Astute to Secrets USB):
 
 ```sh
 # On Astute (as root), copy BorgBase credentials to tmp
@@ -260,7 +262,7 @@ chmod 600 /root/tmp-borgbase-creds/*
 # Transfer to Audacious
 scp /root/tmp-borgbase-creds/* alchemist@audacious:~/
 
-# On Audacious: Copy to Blue USB
+# On Audacious: Copy to Secrets USB
 cp ~/borgbase_offsite /mnt/keyusb/ssh-backup/
 cp ~/audacious-home.passphrase /mnt/keyusb/borg/
 cp ~/astute-critical.passphrase /mnt/keyusb/borg/
@@ -272,7 +274,7 @@ rm ~/borgbase_offsite ~/audacious-home.passphrase ~/astute-critical.passphrase
 rm -rf /root/tmp-borgbase-creds
 ```
 
-**CRITICAL:** Without the BorgBase SSH key and passphrases on Blue USB, you cannot access off-site backups if Astute is destroyed.
+**CRITICAL:** Without the BorgBase SSH key and passphrases on Secrets USB, you cannot access off-site backups if Astute is destroyed.
 
 Document repository details:
 
@@ -417,7 +419,7 @@ PASSPHRASES:
 SSH key (id_alchemist): See ssh-backup/PASSPHRASES.txt
 Borg repository: See borg/passphrase file (patterns in borg/patterns)
 PGP keys: See pgp/ (public, private, revocation)
-Blue USB encryption: [You know this - it unlocked this USB]
+Secrets USB encryption: [You know this - it unlocked this USB]
 
 IMPORTANT:
 ==========
@@ -452,17 +454,17 @@ Sync to ensure all data is written:
 sync
 ```
 
-Expected result: Blue USB fully populated with all secrets and recovery docs.
+Expected result: Secrets USB fully populated with all secrets and recovery docs.
 
 ---
 
 ## §3 Maintenance
 
-Update Blue USB when secrets change.
+Update Secrets USB when secrets change.
 
 ### §3.1 When to Update
 
-Update Blue USB whenever:
+Update Secrets USB whenever:
 - SSH keys rotated or added
 - Borg repository passphrase changed
 - PGP keys rotated
@@ -477,7 +479,7 @@ Update Blue USB whenever:
 ### §3.2 Update Procedure
 
 Steps:
-1. Mount Blue USB:
+1. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -539,18 +541,18 @@ sudo umount /mnt/keyusb
 sudo cryptsetup luksClose keyusb
 ```
 
-Expected result: Blue USB contains latest secrets.
+Expected result: Secrets USB contains latest secrets.
 
 ---
 
 ### §3.3 Verification Testing
 
-Periodically verify Blue USB is readable and complete.
+Periodically verify Secrets USB is readable and complete.
 
 **Quarterly verification procedure:**
 
 Steps:
-1. Mount Blue USB:
+1. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -620,13 +622,13 @@ sudo umount /mnt/keyusb
 sudo cryptsetup luksClose keyusb
 ```
 
-Expected result: Confidence that Blue USB will work in recovery scenario.
+Expected result: Confidence that Secrets USB will work in recovery scenario.
 
 ---
 
 ## §4 Recovery Procedures
 
-Use Blue USB to restore secrets after system reinstall or failure.
+Use Secrets USB to restore secrets after system reinstall or failure.
 
 ### §4.1 Full System Recovery
 
@@ -634,7 +636,7 @@ After clean install of Audacious or Astute.
 
 Prerequisites:
 - Fresh Debian install with sudo access
-- Blue USB and encryption passphrase
+- Secrets USB and encryption passphrase
 - Network access
 
 Steps:
@@ -645,7 +647,7 @@ sudo apt update
 sudo apt install -y cryptsetup git
 ```
 
-2. Mount Blue USB:
+2. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -711,7 +713,7 @@ mkdir -p ~/.config/jellyfin
 cp /mnt/keyusb/tokens/jellyfin/api.token ~/.config/jellyfin/ 2>/dev/null || true
 ```
 
-10. Unmount Blue USB:
+10. Unmount Secrets USB:
 
 ```sh
 sync
@@ -769,7 +771,7 @@ Expected result: Astute fully rebuilt with secrets and storage restored.
 Restore just SSH keys after home directory corruption.
 
 Steps:
-1. Mount Blue USB:
+1. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -802,7 +804,7 @@ ssh -T git@github.com
 ssh astute 'echo "SSH to Astute works"'
 ```
 
-5. Unmount Blue USB:
+5. Unmount Secrets USB:
 
 ```sh
 sudo umount /mnt/keyusb
@@ -818,7 +820,7 @@ Expected result: SSH keys restored and functional.
 Restore Borg access after losing passphrase or repository key.
 
 Steps:
-1. Mount Blue USB:
+1. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -847,7 +849,7 @@ borg key import borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-ke
 borg list borg@astute:/srv/backups/audacious-borg
 ```
 
-5. Unmount Blue USB:
+5. Unmount Secrets USB:
 
 ```sh
 sudo umount /mnt/keyusb
@@ -863,7 +865,7 @@ Expected result: Borg repository accessible again.
 Restore PGP keys after system loss or migration.
 
 Steps:
-1. Mount Blue USB:
+1. Mount Secrets USB:
 
 ```sh
 sudo cryptsetup luksOpen /dev/sdX1 keyusb
@@ -899,7 +901,7 @@ gpg> quit
 gpg --list-secret-keys --keyid-format long
 ```
 
-5. Unmount Blue USB:
+5. Unmount Secrets USB:
 
 ```sh
 sudo umount /mnt/keyusb
@@ -929,10 +931,10 @@ Expected result: PGP keys restored and trusted locally.
    sudo cryptsetup luksDump /dev/sdX1
    ```
 
-4. If Blue USB lost/corrupted: **THIS IS A DISASTER SCENARIO**
+4. If Secrets USB lost/corrupted: **THIS IS A DISASTER SCENARIO**
    - SSH keys may be in ~/.ssh (if still have access to old system)
    - Borg passphrase may be in ~/.config/borg/passphrase
-   - Create new Blue USB immediately after recovery
+   - Create new Secrets USB immediately after recovery
 
 ---
 
@@ -958,7 +960,7 @@ Expected result: PGP keys restored and trusted locally.
 
 ---
 
-### Blue USB read-only or permission errors
+### Secrets USB read-only or permission errors
 
 **Cause:** Filesystem corruption or wrong permissions.
 
@@ -977,7 +979,7 @@ Expected result: PGP keys restored and trusted locally.
 
 ---
 
-### Forgot Blue USB encryption passphrase
+### Forgot Secrets USB encryption passphrase
 
 **Cause:** Passphrase not in password manager or password manager lost.
 
@@ -990,7 +992,7 @@ Expected result: PGP keys restored and trusted locally.
   - Generate new SSH keys (see §2.0)
    - Re-deploy to GitHub and Astute
    - Reset Borg repository (lose all backups) or recover passphrase from ~/.config/borg/passphrase if still have access
-   - Create new Blue USB with new secrets
+   - Create new Secrets USB with new secrets
 
 ---
 
@@ -998,12 +1000,12 @@ Expected result: PGP keys restored and trusted locally.
 
 ### Storage Location
 
-**Where to keep Blue USB:**
+**Where to keep Secrets USB:**
 - Secure physical location (safe, locked drawer)
 - Not with laptop (defeats purpose if both stolen together)
 - Consider offsite backup (second encrypted USB at different location)
 
-**Where NOT to keep Blue USB:**
+**Where NOT to keep Secrets USB:**
 - Attached to computer daily (defeats encryption purpose)
 - Cloud storage (encrypted, but adds attack surface)
 - Shared locations
@@ -1012,7 +1014,7 @@ Expected result: PGP keys restored and trusted locally.
 
 ### Passphrase Management
 
-**Blue USB passphrase should be:**
+**Secrets USB passphrase should be:**
 - Stored in password manager
 - Different from login passwords
 - 25+ characters (or 6+ word diceware)
@@ -1042,7 +1044,7 @@ Expected result: PGP keys restored and trusted locally.
 
 ### Offsite Backup
 
-**Consider creating second Blue USB:**
+**Consider creating second Secrets USB:**
 
 ```sh
 # After creating and populating first USB
@@ -1066,9 +1068,9 @@ sudo cryptsetup luksClose keyusb2
 
 ---
 
-## Appendix A: Blue USB File Structure
+## Appendix A: Secrets USB File Structure
 
-Complete directory tree of Blue USB:
+Complete directory tree of Secrets USB:
 
 ```
 /mnt/keyusb/
@@ -1136,19 +1138,19 @@ Complete directory tree of Blue USB:
 
 **In case of emergency (user incapacitated):**
 
-The Blue USB passphrase should be documented in password manager along with:
+The Secrets USB passphrase should be documented in password manager along with:
 - GitHub credentials
 - Hetzner credentials (for Artful)
 - This dotfiles repository location
 
 **Trusted person should:**
-1. Use Blue USB passphrase to unlock USB
+1. Use Secrets USB passphrase to unlock USB
 2. Read QUICK-START.txt for recovery overview
 3. Follow docs/audacious/recovery.audacious.md and docs/astute/recovery.astute.md for disaster recovery procedures
 4. Access GitHub repository for latest dotfiles
 
 **Consider documenting:**
-- Location of Blue USB
+- Location of Secrets USB
 - Password manager master password (in will/safe deposit box)
 - Contact for technical assistance if needed
 

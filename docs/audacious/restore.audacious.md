@@ -291,7 +291,7 @@ Expected result: ZFS is healthy and a manual backup completes.
 
 ---
 
-## Appendix A: Blue USB contents
+## Appendix A: Secrets USB contents
 
 The blue USB key stores:
 - SSH keys (`audacious-backup`, `id_alchemist`)

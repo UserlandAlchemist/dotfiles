@@ -4,25 +4,27 @@ Complete procedures for recovering from catastrophic loss scenarios.
 
 **Last Updated:** 2026-01-07
 
+**Current Hardware:** The Secrets USB is currently a blue SanDisk 32GB USB drive. The Trusted Copy is maintained by a trusted person off-site.
+
 ---
 
 ## Threat Scenarios
 
 ### Scenario 1: House Fire / Flood
-- **Lost:** Audacious, Astute, Blue USB, cold storage HDD
+- **Lost:** Audacious, Astute, Secrets USB, cold storage HDD
 - **Survives:** BorgBase off-site, trusted person's USB copy, Google Drive bundle
 - **RTO:** 1-3 days
 - **RPO:** 24 hours (last BorgBase backup)
 
 ### Scenario 2: Single System Failure
 - **Lost:** Audacious OR Astute (hardware failure, theft)
-- **Survives:** Other system, local Borg backups, Blue USB
+- **Survives:** Other system, local Borg backups, Secrets USB
 - **RTO:** 4-8 hours
 - **RPO:** 6 hours (last local Borg backup)
 
 ### Scenario 3: Ransomware
 - **Encrypted:** Audacious and/or Astute filesystems
-- **Survives:** BorgBase off-site (append-only), Blue USB (offline), cold storage (offline)
+- **Survives:** BorgBase off-site (append-only), Secrets USB (offline), cold storage (offline)
 - **RTO:** 4-8 hours (restore from BorgBase)
 - **RPO:** 24 hours (last BorgBase backup)
 
@@ -30,7 +32,7 @@ Complete procedures for recovering from catastrophic loss scenarios.
 
 ## Recovery Kit Locations
 
-### Primary: Blue USB (On-Site, Encrypted)
+### Primary: Secrets USB (On-Site, Encrypted)
 - **Location:** Home, with cold storage drive
 - **Encryption:** LUKS (AES256)
 - **Update Frequency:** As secrets change
@@ -39,7 +41,7 @@ Complete procedures for recovering from catastrophic loss scenarios.
 
 ### Secondary: Trusted Person USB (Off-Site, Encrypted)
 - **Location:** Trusted person, visits every ~6 months
-- **Content:** Full copy of Blue USB
+- **Content:** Full copy of Secrets USB
 - **Update Frequency:** Every 6 months during visit
 - **Risk:** 6-month staleness, relies on trusted person
 
@@ -60,11 +62,11 @@ Complete procedures for recovering from catastrophic loss scenarios.
 
 ## Recovery Kit Maintenance
 
-### Verify Blue USB (Monthly)
+### Verify Secrets USB (Monthly)
 
 ```bash
 cd ~/dotfiles
-sudo scripts/verify-blue-usb-recovery.sh
+sudo scripts/verify-secrets-usb.sh
 ```
 
 If verification fails, populate missing files per docs/secrets-recovery.md §2.
@@ -91,25 +93,25 @@ Upload to Google Drive → Disaster Recovery folder, then delete local copy.
 
 When trusted person visits (~6 months):
 
-1. Verify Blue USB is current:
+1. Verify Secrets USB is current:
    ```bash
    cd ~/dotfiles
-   sudo scripts/verify-blue-usb-recovery.sh
+   sudo scripts/verify-secrets-usb.sh
    ```
 
 2. Create/update encrypted clone:
    ```bash
    cd ~/dotfiles
-   sudo scripts/clone-blue-usb.sh
+   sudo scripts/clone-secrets-usb.sh
    ```
 
    This script will:
-   - Wipe and encrypt the target USB (LUKS with same passphrase as Blue USB)
-   - Copy all files from Blue USB
+   - Wipe and encrypt the target USB (LUKS with same passphrase as Secrets USB)
+   - Copy all files from Secrets USB
    - Verify copy with SHA256 checksums
    - Report success/failure
 
-3. Label the USB: "Blue USB Backup - Updated YYYY-MM-DD"
+3. Label the USB: "Secrets USB Backup - Updated YYYY-MM-DD"
 4. Hand off to trusted person for off-site storage
 5. Document handoff date in maintenance log
 
@@ -149,7 +151,7 @@ When trusted person visits (~6 months):
    cd /mnt/keyusb
    ```
 
-4. **Follow RECOVERY-INSTRUCTIONS.md** in the bundle (or Blue USB)
+4. **Follow RECOVERY-INSTRUCTIONS.md** in the bundle (or Secrets USB)
 
 5. **Restore critical data first:**
    - Bitwarden exports (from astute-critical)
@@ -203,7 +205,7 @@ When trusted person visits (~6 months):
 
 4. **Restore from clean backup:**
    - BorgBase (append-only, ransomware cannot delete)
-   - Blue USB (offline, cannot be encrypted remotely)
+   - Secrets USB (offline, cannot be encrypted remotely)
    - Cold storage (offline, 30-day old but guaranteed clean)
 
 5. **Rebuild from known-good state:**
@@ -252,7 +254,7 @@ Test recovery capabilities without actual disaster:
 
 ### Quarterly Verification (Minimal)
 
-1. Run `scripts/verify-blue-usb-recovery.sh`
+1. Run `scripts/verify-secrets-usb.sh`
 2. List BorgBase archives (verify append-only backups running)
 3. Verify Google Drive bundle exists and is recent
 4. Verify GPG passphrase still remembered
@@ -271,7 +273,7 @@ Test recovery capabilities without actual disaster:
 **Storage:**
 - **Primary:** Memorized
 - **Backup:** Written on paper in wallet (kept on person, not in house)
-- **DO NOT:** Store in Bitwarden, Blue USB, or any on-premises location
+- **DO NOT:** Store in Bitwarden, Secrets USB, or any on-premises location
 
 **Recommendation:** Use diceware to generate 6-8 word passphrase:
 ```bash
@@ -279,7 +281,7 @@ Test recovery capabilities without actual disaster:
 correct-horse-battery-staple-purple-monkey-dishwasher
 ```
 
-### LUKS Passphrase (Blue USB)
+### LUKS Passphrase (Secrets USB)
 
 **Requirements:**
 - Strong enough to protect all secrets
@@ -293,7 +295,7 @@ correct-horse-battery-staple-purple-monkey-dishwasher
 
 ## Recovery Kit Contents Reference
 
-### Blue USB (Complete Backup)
+### Secrets USB (Complete Backup)
 
 ```
 /mnt/keyusb/
@@ -361,7 +363,7 @@ Maximum acceptable data loss:
 ## Maintenance Schedule
 
 - **Weekly:** Verify Borg backups running (automatic timers)
-- **Monthly:** Verify Blue USB complete
+- **Monthly:** Verify Secrets USB complete
 - **Quarterly:** Update Google Drive bundle
 - **Semi-annually:** Update trusted person USB
 - **Annually:** Full recovery drill

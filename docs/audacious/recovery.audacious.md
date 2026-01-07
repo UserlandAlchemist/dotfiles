@@ -752,7 +752,7 @@ If both NVMe drives failed or pool cannot be recovered, restore from Borg backup
 
 **Prerequisites:**
 - Astute (Borg repository server) must be accessible
-- Blue USB key with SSH keys and Borg passphrase
+- Secrets USB key with SSH keys and Borg passphrase
 - Or: Bitwarden access to retrieve passphrase
 
 **Note:** This is a full rebuild. Expect 4-6 hours for complete recovery.
@@ -909,7 +909,7 @@ Expected: No critical errors related to ZFS or boot.
 ## Maintenance After Recovery
 
 1. **Update recovery documentation** if you discovered gaps during recovery
-2. **Test recovery USB/Blue USB** to ensure keys and passphrases are current
+2. **Test recovery USB/Secrets USB** to ensure keys and passphrases are current
 3. **Schedule ZFS scrub** if not done during recovery:
 
 ```sh

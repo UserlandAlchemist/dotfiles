@@ -39,7 +39,7 @@
 
 **Scoping:** Appropriate - main identity key for interactive work
 **Status:** ✓ Active, properly configured
-**Backup coverage:** Borg to Astute, should be on Blue USB
+**Backup coverage:** Borg to Astute, should be on Secrets USB
 
 ---
 
@@ -68,7 +68,7 @@
 - Cannot allocate PTY
 
 **Status:** ✓ Active, properly restricted
-**Backup coverage:** Borg to Astute, should be on Blue USB
+**Backup coverage:** Borg to Astute, should be on Secrets USB
 
 ---
 
@@ -102,7 +102,7 @@
 - No access to agent (IdentityAgent none)
 
 **Status:** ✓ Active, properly restricted
-**Backup coverage:** Borg to Astute, should be on Blue USB
+**Backup coverage:** Borg to Astute, should be on Secrets USB
 
 ---
 
@@ -158,14 +158,14 @@ Since this key was never added to any authorized_keys files or SSH config, it wa
 **Keys backed up to Astute (Borg):** All (full /home/alchemist including ~/.ssh/)
 - Last backup: Check `borg list ssh://borg@astute/srv/backups`
 
-**Keys should be on Blue USB:**
+**Keys should be on Secrets USB:**
 - id_alchemist (private + public)
 - audacious-backup (private + public)
 - id_ed25519_astute_nas (private + public)
 
-**Verify Blue USB coverage:** (when available)
+**Verify Secrets USB coverage:** (when available)
 ```bash
-# Mount Blue USB first (see secrets-recovery.md §3)
+# Mount Secrets USB first (see secrets-recovery.md §3)
 ls -la /mnt/keyusb/ssh-backup/
 ```
 
@@ -183,9 +183,9 @@ Unused duplicate key successfully deleted with no impact.
 
 ### P2 - Medium Priority
 
-**2. Verify Blue USB backup coverage**
+**2. Verify Secrets USB backup coverage**
 
-When Blue USB is available, verify all active keys are backed up:
+When Secrets USB is available, verify all active keys are backed up:
 - [ ] id_alchemist (private + public)
 - [ ] audacious-backup (private + public)
 - [ ] id_ed25519_astute_nas (private + public)
@@ -196,7 +196,7 @@ Create procedure for rotating keys if compromised:
 - How to generate new keys
 - How to deploy to Astute authorized_keys
 - How to update SSH config
-- How to update Blue USB backup
+- How to update Secrets USB backup
 - How to verify new keys work before removing old
 
 ---

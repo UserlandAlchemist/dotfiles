@@ -31,7 +31,7 @@ Both repositories are accessed via an append-only SSH key for ransomware protect
 3. Root-only passphrase files on Astute:
    - `/root/.config/borg-offsite/audacious-home.passphrase`
    - `/root/.config/borg-offsite/astute-critical.passphrase`
-4. Blue USB key exports (stored on Audacious):
+4. Secrets USB key exports (stored on Audacious):
    - `/mnt/keyusb/borg/audacious-home-key.txt`
    - `/mnt/keyusb/borg/astute-critical-key.txt`
 
