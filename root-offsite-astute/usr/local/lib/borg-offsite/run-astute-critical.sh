@@ -34,7 +34,7 @@ mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
 borg create \
   --verbose --stats --compression lz4 \
-  --lock-wait 60 --one-file-system \
+  --lock-wait 60 \
   --patterns-from "$PATTERNS" \
   "$REPO"::"astute-critical-{now}" \
   /
