@@ -1270,6 +1270,16 @@ READY TO START (grouped by theme, tagged by priority)
         - Review network segmentation decisions (accept flat network vs VLAN)
         - Check for unexpected devices on network
 
+    16. Ransomware-Specific Protections:
+        - Verify off-site backups are append-only (both BorgBase repos)
+        - Confirm offline backups exist (cold storage, Blue USB)
+        - Verify ZFS snapshots are read-only and regular
+        - Check backup restoration procedures are documented and tested
+        - Review backup monitoring and alerting status
+        - Verify no backup credentials stored on backed-up systems
+        - Check recovery plan exists and is actionable
+        - Document RPO/RTO for each backup tier
+
     Explicitly Out of Scope (Document in Audit):
     - TCP wrappers (obsolete, superseded by nftables)
     - Services not in use (FTP, Squid, printing, BIND, Apache)
@@ -1277,7 +1287,7 @@ READY TO START (grouped by theme, tagged by priority)
 
     Success Criteria:
     - Comprehensive audit document in docs/security-audit.md (replace current)
-    - All 15 domains covered with explicit findings
+    - All 16 domains covered with explicit findings
     - Each finding: status (compliant/non-compliant/accepted risk)
     - Remediation tasks created for non-compliant findings
     - Accepted risks documented with rationale

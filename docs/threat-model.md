@@ -265,6 +265,73 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 ---
 
+## Specific Attack Scenarios
+
+### Ransomware Attack
+
+**Threat Profile:** Opportunistic or targeted ransomware that encrypts data and demands payment for decryption keys.
+
+**Attack Vectors:**
+- Browser exploit (compromised website, malicious ad)
+- Supply chain compromise (malicious package update)
+- Phishing/social engineering (malicious download)
+- Vulnerability exploitation in internet-facing service
+- Lateral movement from compromised IoT device
+
+**Capabilities if Successful:**
+- File encryption across accessible filesystems
+- Backup deletion to prevent recovery
+- Data exfiltration before encryption (double extortion)
+- Persistence mechanisms for re-infection
+- Network propagation to other systems
+
+**Current Protections:**
+
+✓ **Implemented:**
+- Router firewall blocks unsolicited inbound (prevents direct exploitation)
+- Host firewalls on Audacious and Astute (limits lateral movement)
+- SSH hardened to LAN-only (prevents remote access path)
+- Borg backups with encryption (6-hourly to Astute, 7-day retention)
+- Off-site backups to BorgBase (append-only, daily)
+- ZFS snapshots (read-only, cannot be encrypted by unprivileged malware)
+- Disk encryption (LUKS) protects data at rest
+- Cold storage offline backups (monthly, physically disconnected)
+- Blue USB offline key backup (LUKS encrypted)
+
+✗ **Gaps:**
+- No real-time backup monitoring/alerting (Task #9, P1-High)
+- Recovery procedures untested (Task #8, P1-High)
+- No application sandboxing (AppArmor disabled)
+- Browser runs with full user privileges (no isolation)
+- No automated integrity checking (AIDE/Tripwire not deployed)
+
+**Risk Level:** Medium
+
+**Residual Risk After All Protections:** Low-Medium
+- Local backups provide 6-hour RPO (Recovery Point Objective)
+- Off-site append-only backups survive root compromise
+- Offline backups (cold storage, Blue USB) provide last resort
+- Multiple backup layers make complete data loss unlikely
+
+**Likelihood:** Medium (browser exploits, supply chain attacks possible)
+**Impact if No Backups:** Critical (total data loss, productivity loss)
+**Impact with Current Backups:** Low (restore from off-site, <24hr data loss)
+
+**Recovery Plan:**
+1. Disconnect infected system from network immediately
+2. Identify infection extent and affected systems
+3. Do NOT pay ransom (backups eliminate need)
+4. Restore from most recent clean backup:
+   - Primary: Borg backup from Astute (6-hour RPO)
+   - Secondary: Off-site BorgBase (24-hour RPO)
+   - Tertiary: Cold storage (30-day RPO)
+5. Analyze infection vector and patch vulnerability
+6. Monitor for re-infection
+
+**Decision:** **Accept residual risk** with strong backup strategy. Defense-in-depth backup approach (local + off-site append-only + offline) makes ransomware ineffective. Focus on backup integrity and tested recovery over prevention-only strategies.
+
+---
+
 ## Trust Zones and Security Boundaries
 
 ### Zone 1: Trusted Core (High Trust)
