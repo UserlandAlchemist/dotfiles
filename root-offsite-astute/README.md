@@ -79,8 +79,10 @@ sudo systemctl enable --now \
 ## Schedules
 
 - `borg-offsite-audacious.timer` — daily at 14:00 (Persistent + WakeSystem)
-- `borg-offsite-astute-critical.timer` — daily at 14:00 (Persistent + WakeSystem)
+- `borg-offsite-astute-critical.timer` — daily at 15:00 (Persistent + WakeSystem)
 - `borg-offsite-check.timer` — monthly (Persistent + WakeSystem)
+
+Timers are staggered to avoid simultaneous uploads and network contention.
 
 ---
 

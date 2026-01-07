@@ -2,7 +2,7 @@
 Description=Daily Borg off-site push (astute-critical)
 
 [Timer]
-OnCalendar=*-*-* 14:00:00
+OnCalendar=*-*-* 15:00:00
 Persistent=true
 WakeSystem=true
 AccuracySec=5min
