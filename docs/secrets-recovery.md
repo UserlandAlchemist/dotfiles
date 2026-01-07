@@ -662,7 +662,11 @@ sudo cryptsetup luksClose keyusb
 
 11. Continue with installation:
 
-Follow `docs/audacious/install.audacious.md` or `docs/astute/install.astute.md`
+Follow `docs/audacious/install.audacious.md` or `docs/astute/install.astute.md`.
+Stow and system install steps are in `README.md` (Quick Start).
+Service verification steps are in the relevant package READMEs (for example:
+`root-backup-audacious/README.md`, `root-network-audacious/README.md`,
+`root-power-astute/README.md`) and the per-host install docs.
 
 Expected result: All secrets restored, ready to deploy dotfiles and restore data.
 
