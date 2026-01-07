@@ -3,18 +3,22 @@
 Off-site BorgBackup push from Astute to BorgBase.
 
 This package backs up specific directories directly:
-- Audacious Borg repo: `/srv/backups/audacious-borg` → `audacious-home` repo
-- Critical data: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo
+- Audacious Borg repo: `/srv/backups/audacious-borg` → `audacious-home` repo (append-only)
+- Critical data: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo (append-only)
 
-The `astute-critical` repository must be **append-only** in BorgBase to protect against ransomware.
+**CRITICAL: Both repositories must be append-only for ransomware protection.**
 
-**CRITICAL: Verify append-only mode is enabled:**
+**Verify append-only mode is enabled for BOTH repos:**
 1. Log in to BorgBase web UI
-2. Navigate to the `astute-critical` repository (y7pc8k07)
-3. Settings → Repository Settings → Append-only mode: **ENABLED**
-4. If not enabled, enable it immediately
+2. Navigate to `audacious-home` repository (j6i5cke1)
+   - Settings → Repository Settings → Append-only mode: **ENABLED**
+3. Navigate to `astute-critical` repository (y7pc8k07)
+   - Settings → Repository Settings → Append-only mode: **ENABLED**
+4. If either is not enabled, enable it immediately
 
-Without append-only mode, ransomware can delete off-site backups, defeating the entire purpose of off-site storage.
+Without append-only mode, ransomware with root access can delete off-site backups, defeating the entire purpose of off-site storage.
+
+**Retention management:** Append-only repos cannot be pruned by client. Manage retention manually via BorgBase web UI when approaching storage quota.
 
 Note: Patterns files in `etc/borg-offsite/` are unused (legacy). Backups target specific directories directly.
 
