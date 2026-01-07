@@ -1,6 +1,6 @@
 PROJECT SHIPSHAPE - WORK QUEUE
 ======================================
-Updated: 2026-01-07 21:00
+Updated: 2026-01-07 21:15
 
 Project Shipshape: Dotfiles and configuration management for the Wolfpack.
 The Wolfpack: Audacious (workstation), Astute (NAS/server), Artful (cloud), Steam Deck (portable).
@@ -1147,37 +1147,148 @@ READY TO START (grouped by theme, tagged by priority)
     - Preferred Audacious workflow for magnet submission
     - Preferred TUI for monitoring
 
-[P1-High] COMPLETE SECURITY AUDIT - NEW PHASE 2, TASK #7
+[P1-High] COMPREHENSIVE SECURITY AUDIT (REDO) - PHASE 2, TASK #7
     Dependencies: SSH Hardening (task #5) and Host Firewall (task #6) complete
     Blocks: None (but informs further security work)
-    Status: Phase 2 - scheduled after critical fixes
+    Status: Initial audit incomplete - needs comprehensive redo
 
-    Goal: Comprehensive security audit of both hosts, network, and policies.
+    Goal: Systematic security audit of both hosts, network, edge, and policies.
 
-    Context: Partial audit 2026-01-06 found critical issues (router firewall disabled,
-             SSH on 0.0.0.0). After critical fixes deployed, need full systematic audit.
+    Context: Initial audit 2026-01-07 covered basic services and fixed critical issues
+             (SSH hardening, host firewall). However, the audit was not comprehensive.
+             Need systematic review across all security domains per Securing Debian Manual
+             and threat model requirements.
 
-    High-level plan:
-    - Complete service inventory (listening ports, running services)
-    - Review all authentication configs (SSH, sudoers, PAM)
-    - Check update/patch status and unattended-upgrades
-    - IoT device inventory and security assessment
-    - Review logs for suspicious activity
-    - Network topology documentation
-    - Document findings and create remediation tasks
+    Comprehensive audit plan:
 
-    Success: Comprehensive security posture documented, all issues addressed or accepted
+    1. Permissions & Access Control:
+       - Audit sensitive file permissions: ~/.ssh, ~/.config/borg, /etc/ssh, /etc/sudoers.d,
+         /etc/systemd/system, /root
+       - Check for unexpected ACLs on /home, /etc, /srv, ZFS datasets
+       - Verify no world-readable secrets or credentials
+       - Review umask settings (system and user)
 
-    Partial findings from 2026-01-06 threat model review:
-    - Router firewall disabled (FIXED - set to Default)
-    - SSH on 0.0.0.0 (PENDING - task #5)
-    - No host firewall (PENDING - task #6)
-    - UPnP enabled with Extended Security (ACCEPTED)
-    - No SSH server on Audacious (CORRECT)
-    - No port forwarding rules (GOOD)
-    - DMZ disabled (GOOD)
+    2. Network Edge & Router:
+       - Document complete router configuration
+       - Verify firewall mode, UPnP settings, port forwards, DMZ status
+       - Check IPv6 exposure (enabled/disabled, firewall coverage)
+       - Review DNS policy (ISP vs custom)
+       - Verify admin password strength and access restrictions
 
-    See: docs/threat-model.md - Audit History section
+    3. Authentication & Password Policy:
+       - Review PAM configuration (length/complexity requirements, lockout policy)
+       - Check sudo timeout settings
+       - Verify no shared credentials across users/hosts
+       - Review /etc/login.defs password aging settings
+       - Check for password-based SSH auth (should be disabled)
+
+    4. Boot & Firmware Security:
+       - Check BIOS/UEFI password status (Audacious & Astute)
+       - Review Secure Boot status and decision rationale
+       - Verify boot order locked (no auto USB boot)
+       - Check bootloader password protection
+       - Review initramfs unlock restrictions
+
+    5. Account Security:
+       - Audit all local users and groups (both hosts)
+       - Identify and lock/remove unused accounts
+       - Verify sudo group membership (only authorized users)
+       - Check for accounts with empty passwords
+       - Review /etc/shadow for weak hashes
+
+    6. Service Hardening (Deep Dive):
+       - Jellyfin: binding, authentication, access controls
+       - MPD: binding, password protection (if applicable)
+       - NFS: export restrictions, auth method, client validation
+       - apt-cacher-ng: binding, access controls
+       - systemd services: Review for least privilege, DynamicUser, PrivateTmp, etc.
+
+    7. IPv6 Security:
+       - Determine IPv6 enabled/disabled status on both hosts
+       - If enabled: verify nftables rules cover IPv6
+       - Check router IPv6 firewall configuration
+       - Document IPv6 exposure decisions
+
+    8. Updates & Supply Chain:
+       - Review unattended-upgrades configuration (both hosts)
+       - Document third-party repositories and trust decisions
+       - Check apt sources.list for unexpected entries
+       - Verify SecureApt (signed packages only)
+       - Review package hold policies
+
+    9. Logging & Monitoring:
+       - Check log retention settings (journald, auth.log)
+       - Verify auth logs retained beyond 7 days
+       - Explicit decision on auditd (install or accept omission)
+       - Review syslog forwarding/aggregation needs
+       - Check for log rotation issues
+
+    10. Backup Integrity & Freshness:
+        - Verify Borg check schedule (currently weekly)
+        - Check retention policy implementation (7 daily archives)
+        - Verify cold storage freshness (last backup date)
+        - Check Blue USB backup timestamps
+        - Document backup testing cadence
+
+    11. Recovery Validation:
+        - Validate full hardware replacement flow (not just docs review)
+        - Test recovery procedures in VM environment
+        - Verify all recovery docs are current and accurate
+        - Check for missing prerequisites in recovery procedures
+
+    12. Mandatory Access Control:
+        - Review AppArmor status (enabled/disabled)
+        - If disabled: document rationale
+        - If enabled: audit profiles for critical services
+        - Evaluate minimal enforcement set vs complexity tradeoff
+        - Consider profiles for: SSH, NFS, web services
+
+    13. Kernel Security (sysctl):
+        - kernel.kptr_restrict (should be 1 or 2)
+        - kernel.dmesg_restrict (should be 1)
+        - kernel.perf_event_paranoid (should be 2+)
+        - kernel.unprivileged_bpf_disabled (should be 1)
+        - fs.protected_hardlinks (should be 1)
+        - fs.protected_symlinks (should be 1)
+        - kernel.yama.ptrace_scope (evaluate: 0-3)
+        - net.ipv4.conf.all.rp_filter (evaluate: 0-2)
+
+    14. Debian Hardening Manual Items:
+        - Console login restrictions (if applicable)
+        - Console reboot restrictions (Ctrl+Alt+Del)
+        - Magic SysRq key policy
+        - Mount options: /tmp with noexec/nodev/nosuid
+        - PAM hardening (limits, login restrictions)
+        - LKM (kernel module) loading restrictions
+        - TCP syncookies enabled
+        - ARP protection (rp_filter, arp_ignore)
+        - Periodic integrity checks (consider AIDE/Tripwire or accept omission)
+
+    15. IoT & Network Segmentation:
+        - Complete IoT device inventory
+        - Document trust level for each device
+        - Review network segmentation decisions (accept flat network vs VLAN)
+        - Check for unexpected devices on network
+
+    Explicitly Out of Scope (Document in Audit):
+    - TCP wrappers (obsolete, superseded by nftables)
+    - Services not in use (FTP, Squid, printing, BIND, Apache)
+    - Full IDS/honeypot deployment (too heavy per principles)
+
+    Success Criteria:
+    - Comprehensive audit document in docs/security-audit.md (replace current)
+    - All 15 domains covered with explicit findings
+    - Each finding: status (compliant/non-compliant/accepted risk)
+    - Remediation tasks created for non-compliant findings
+    - Accepted risks documented with rationale
+    - Audit completion date and next audit scheduled (annual)
+
+    Output:
+    - Updated docs/security-audit.md (comprehensive, ~100-200 lines minimum)
+    - New remediation tasks added to TODO.md (if needed)
+    - Threat model updated with audit findings
+
+    Estimated effort: 4-6 hours of systematic review and documentation
 
 [ ] BACKUP AUDIT: BORG + RESTORE TESTS + COLD STORAGE + OFF-SITE
     Goal: Audit the end-to-end backup solution, validate restores, and expand
