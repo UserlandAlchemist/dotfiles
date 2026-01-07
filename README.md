@@ -168,6 +168,7 @@ Each host has complete rebuild documentation:
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
 - [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery steps
+- [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
 
 ---
 
