@@ -1,8 +1,8 @@
 [Unit]
-Description=Daily Borg off-site push (astute-critical)
+Description=Weekly Borg off-site push (astute-critical)
 
 [Timer]
-OnCalendar=*-*-* 15:00:00
+OnCalendar=Sun *-*-* 15:00:00
 Persistent=true
 WakeSystem=true
 AccuracySec=5min
