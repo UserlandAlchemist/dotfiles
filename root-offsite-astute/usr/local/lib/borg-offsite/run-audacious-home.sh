@@ -45,9 +45,13 @@ borg create \
   "$REPO"::"audacious-home-{now}" \
   /
 
-borg prune --list \
-  --keep-daily 30 \
-  "$REPO"
+# Prune old archives (non-fatal - BorgBase may restrict or handle retention themselves)
+echo "Attempting to prune old archives..."
+borg prune --list --keep-daily 30 "$REPO" || {
+  echo "WARNING: Prune operation failed or not supported by BorgBase" >&2
+  echo "Archive created successfully, but client-side retention not enforced" >&2
+  true  # Don't fail the backup
+}
 
 # Note: BorgBase handles compaction server-side; client compact not supported
 # borg compact "$REPO"
