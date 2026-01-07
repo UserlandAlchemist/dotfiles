@@ -1,3 +1,8 @@
 R /
+- /proc
+- /sys
+- /dev
+- /run
+- /tmp
 + /srv/backups/audacious-borg/**
 - **

@@ -1,4 +1,9 @@
 R /
+- /proc
+- /sys
+- /dev
+- /run
+- /tmp
 + /srv/nas/lucii/**
 + /srv/nas/bitwarden-exports/**
 - **
