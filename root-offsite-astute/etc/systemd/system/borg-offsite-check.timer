@@ -1,0 +1,12 @@
+[Unit]
+Description=Monthly Borg off-site checks
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+WakeSystem=true
+AccuracySec=1h
+RandomizedDelaySec=30min
+
+[Install]
+WantedBy=timers.target

@@ -123,6 +123,11 @@ Automated BorgBackup with systemd timers. Multiple daily backups, weekly integri
 
 See: `borg-user-audacious/README.md`, `root-backup-audacious/README.md`
 
+### Off-site Backups (Astute → BorgBase)
+Daily off-site snapshots pushed from Astute to BorgBase. `audacious-home` stores the local Borg repo directory; `astute-critical` stores lucii and Bitwarden exports. Monthly repo checks.
+
+See: `root-offsite-astute/README.md`, `docs/offsite-backup.md`
+
 ### Cold Storage Snapshots (Audacious)
 Monthly snapshots to the LUKS cold-storage drive with a reminder timer. Keeps 12 months of history.
 
@@ -162,6 +167,7 @@ Each host has complete rebuild documentation:
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
+- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery steps
 
 ---
 

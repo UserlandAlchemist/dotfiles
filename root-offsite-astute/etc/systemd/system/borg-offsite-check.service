@@ -1,0 +1,19 @@
+[Unit]
+Description=Borg off-site: monthly repository checks
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+StandardOutput=journal
+StandardError=journal
+
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+TimeoutStartSec=0
+
+ExecStart=/usr/bin/systemd-inhibit --what=sleep --mode=block /usr/local/lib/borg-offsite/run-check.sh
