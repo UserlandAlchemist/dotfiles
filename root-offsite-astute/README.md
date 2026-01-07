@@ -2,11 +2,13 @@
 
 Off-site BorgBackup push from Astute to BorgBase.
 
-This package backs up:
-- Audacious Borg repo directory: `/srv/backups/audacious-borg` → `audacious-home` repo
-- Critical datasets: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo
+This package backs up specific directories directly:
+- Audacious Borg repo: `/srv/backups/audacious-borg` → `audacious-home` repo
+- Critical data: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo
 
 The `astute-critical` repository must be **append-only** in BorgBase.
+
+Note: Patterns files in `etc/borg-offsite/` are unused (legacy). Backups target specific directories directly.
 
 ---
 
