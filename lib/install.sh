@@ -94,6 +94,57 @@ install_udev_rule() {
   echo "  → $RULE"
 }
 
+# Install modprobe configuration
+# Usage: install_modprobe mymodule.conf
+install_modprobe() {
+  CONF="$1"
+  SOURCE="$PKG_DIR/etc/modprobe.d/$CONF"
+  TARGET="/etc/modprobe.d/$CONF"
+
+  if [ ! -f "$SOURCE" ]; then
+    echo "ERROR: modprobe config not found: $SOURCE" >&2
+    return 1
+  fi
+
+  mkdir -p /etc/modprobe.d
+  install -m 0644 "$SOURCE" "$TARGET"
+  echo "  → $CONF"
+}
+
+# Install libexec script
+# Usage: install_libexec myscript.sh
+install_libexec() {
+  SCRIPT="$1"
+  SOURCE="$PKG_DIR/usr/local/libexec/$SCRIPT"
+  TARGET="/usr/local/libexec/$SCRIPT"
+
+  if [ ! -f "$SOURCE" ]; then
+    echo "ERROR: libexec script not found: $SOURCE" >&2
+    return 1
+  fi
+
+  mkdir -p /usr/local/libexec
+  install -m 0755 "$SOURCE" "$TARGET"
+  echo "  → $SCRIPT"
+}
+
+# Install sshd drop-in configuration
+# Usage: install_sshd_dropin 10-myconfig.conf
+install_sshd_dropin() {
+  CONF="$1"
+  SOURCE="$PKG_DIR/etc/ssh/sshd_config.d/$CONF"
+  TARGET="/etc/ssh/sshd_config.d/$CONF"
+
+  if [ ! -f "$SOURCE" ]; then
+    echo "ERROR: sshd config not found: $SOURCE" >&2
+    return 1
+  fi
+
+  mkdir -p /etc/ssh/sshd_config.d
+  install -m 0644 "$SOURCE" "$TARGET"
+  echo "  → $CONF"
+}
+
 # Reload systemd manager configuration
 reload_systemd() {
   echo "→ Reloading systemd"
