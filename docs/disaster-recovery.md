@@ -91,15 +91,27 @@ Upload to Google Drive → Disaster Recovery folder, then delete local copy.
 
 When trusted person visits (~6 months):
 
-1. Verify Blue USB is current (see above)
-2. Create fresh copy:
+1. Verify Blue USB is current:
    ```bash
-   # Insert both USBs
-   sudo dd if=/dev/sdX of=/dev/sdY bs=4M status=progress
-   # Where sdX = Blue USB, sdY = trusted person USB
+   cd ~/dotfiles
+   sudo scripts/verify-blue-usb-recovery.sh
    ```
-3. Hand off to trusted person
-4. Document handoff date in maintenance log
+
+2. Create/update encrypted clone:
+   ```bash
+   cd ~/dotfiles
+   sudo scripts/clone-blue-usb.sh
+   ```
+
+   This script will:
+   - Wipe and encrypt the target USB (LUKS with same passphrase as Blue USB)
+   - Copy all files from Blue USB
+   - Verify copy with SHA256 checksums
+   - Report success/failure
+
+3. Label the USB: "Blue USB Backup - Updated YYYY-MM-DD"
+4. Hand off to trusted person for off-site storage
+5. Document handoff date in maintenance log
 
 ---
 
