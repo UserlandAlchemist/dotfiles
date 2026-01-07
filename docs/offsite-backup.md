@@ -15,8 +15,10 @@ Document the BorgBase offsite backup flow and recovery steps.
 
 ## Repositories
 
-- `audacious-home` — contains the **Audacious Borg repository directory** from Astute
-- `astute-critical` — append-only; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
+- `audacious-home` (j6i5cke1) — **append-only**; contains the Audacious Borg repository directory from Astute
+- `astute-critical` (y7pc8k07) — **append-only**; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
+
+Both repositories use append-only mode for ransomware protection. Retention must be managed manually via BorgBase web UI.
 
 ---
 
@@ -110,11 +112,12 @@ sudo borg extract \
 
 ## Health checks
 
-1. **Verify append-only mode (astute-critical):**
+1. **Verify append-only mode (BOTH repos):**
 
-   BorgBase web UI → astute-critical repo (y7pc8k07) → Settings → Append-only mode: **ENABLED**
+   - audacious-home (j6i5cke1): Settings → Append-only mode: **ENABLED**
+   - astute-critical (y7pc8k07): Settings → Append-only mode: **ENABLED**
 
-   **CRITICAL:** Without append-only, ransomware can delete off-site backups.
+   **CRITICAL:** Without append-only on both repos, ransomware can delete off-site backups, defeating the entire purpose.
 
 2. Timers:
 

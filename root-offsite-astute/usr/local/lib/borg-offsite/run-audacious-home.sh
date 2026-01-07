@@ -38,13 +38,8 @@ borg create \
   "$REPO"::"audacious-home-{now}" \
   "$SRC"
 
-# Prune old archives (non-fatal - BorgBase may restrict or handle retention themselves)
-echo "Attempting to prune old archives..."
-borg prune --list --keep-daily 30 "$REPO" || {
-  echo "WARNING: Prune operation failed or not supported by BorgBase" >&2
-  echo "Archive created successfully, but client-side retention not enforced" >&2
-  true  # Don't fail the backup
-}
+# Note: This repo should be append-only in BorgBase for ransomware protection.
+# Prune operations are disabled - manage retention manually via BorgBase web UI.
+# Compaction is handled server-side by BorgBase.
 
-# Note: BorgBase handles compaction server-side; client compact not supported
-# borg compact "$REPO"
+echo "Backup completed successfully"
