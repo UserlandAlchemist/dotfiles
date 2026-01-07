@@ -362,7 +362,7 @@ Located in `/home/alchemist/.ssh/`:
 - Baseline for future audits
 
 **6. Backup Key Coverage Verification**
-- Location: Blue USB secret recovery
+- Location: Secrets USB secret recovery
 - Verify: All active SSH keys backed up
 - Verify: authorized_keys file backed up
 - Update: secrets-recovery.md with current key paths

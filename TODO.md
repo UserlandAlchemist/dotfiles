@@ -79,7 +79,7 @@ Crypto Audit:
 - Inventoried all SSH keys on both hosts (4 pairs → 3 active)
 - Analyzed key scoping and restrictions
 - Documented authorized_keys configurations
-- Verified backup coverage (Borg, Blue USB)
+- Verified backup coverage (Borg, Secrets USB)
 - Identified and deleted unused key (id_astute_nas)
 
 Cold Storage:
@@ -972,7 +972,7 @@ READY TO START (grouped by theme, tagged by priority)
     2. Test data restore procedures:
        - Follow restore.audacious.md for home directory restore
        - Test Borg restore (file-level and full-path)
-       - Verify Blue USB secret recovery works
+       - Verify Secrets USB secret recovery works
        - Test dotfiles deployment
 
     3. Validate recovery time:
@@ -1227,7 +1227,7 @@ READY TO START (grouped by theme, tagged by priority)
         - Verify Borg check schedule (currently weekly)
         - Check retention policy implementation (7 daily archives)
         - Verify cold storage freshness (last backup date)
-        - Check Blue USB backup timestamps
+        - Check Secrets USB backup timestamps
         - Document backup testing cadence
 
     11. Recovery Validation:
@@ -1272,7 +1272,7 @@ READY TO START (grouped by theme, tagged by priority)
 
     16. Ransomware-Specific Protections:
         - Verify off-site backups are append-only (both BorgBase repos)
-        - Confirm offline backups exist (cold storage, Blue USB)
+        - Confirm offline backups exist (cold storage, Secrets USB)
         - Verify ZFS snapshots are read-only and regular
         - Check backup restoration procedures are documented and tested
         - Review backup monitoring and alerting status
@@ -1327,7 +1327,7 @@ READY TO START (grouped by theme, tagged by priority)
     Plan:
     1. Inventory SSH keys on both hosts (paths, fingerprints, usage).
     2. Inventory GPG keys (public/secret, usage, expirations).
-    3. Verify backup coverage (Blue USB, Borg, other stores).
+    3. Verify backup coverage (Secrets USB, Borg, other stores).
     4. Identify unused/obsolete keys and remove them.
     5. Document current key usage and storage locations.
 
@@ -1802,16 +1802,16 @@ rg -n "SECRETS-RECOVERY|SECURITY-AUDIT|THREAT-MODEL|VM-ARCHITECTURE|INSTALL\\.au
 
 ## Handoff: Codex → Next Agent
 **Date:** 2026-01-07 17:51
-**Goal:** Document Blue USB updates and identify security audit gaps.
+**Goal:** Document Secrets USB updates and identify security audit gaps.
 
 ### Scope
 Files changed:
 - docs/secrets-recovery.md — PGP export/import guidance, hardware replacement references, recovery doc links
-- docs/key-inventory.md — Blue USB directory name update
+- docs/key-inventory.md — Secrets USB directory name update
 - AGENTS-IDENTITY-POLICY.md — updated PGP fingerprints (gitignored)
 
 ### Work Completed
-- [x] Added PGP export/import + revocation steps to Blue USB recovery doc.
+- [x] Added PGP export/import + revocation steps to Secrets USB recovery doc.
 - [x] Added hardware replacement reference sections for Audacious/Astute.
 - [x] Linked recovery steps to stow/system install and service verification docs.
 - [x] Generated new local PGP keys (Ed25519 + Curve25519 subkeys, 5-year expiry) for alchemist@userlandlab.org and private@example.invalid.
@@ -1819,7 +1819,7 @@ Files changed:
 - [x] Added GPG key to GitHub (alchemist key).
 
 ### Assumptions Made
-- Blue USB is the authoritative offline store for secrets.
+- Secrets USB is the authoritative offline store for secrets.
 
 ### Commands Run (if any)
 ```bash
@@ -1847,7 +1847,7 @@ The previous security audit was not comprehensive. Codex detected the following 
 - IPv6: enabled status, firewall coverage, router exposure.
 - Updates & supply chain: unattended-upgrades config on both hosts; third-party repos and trust decisions.
 - Logs & monitoring: retention settings, auth logs beyond 7 days, explicit auditd decision.
-- Backup integrity: Borg check/retention schedule; cold storage + Blue USB freshness with timestamps.
+- Backup integrity: Borg check/retention schedule; cold storage + Secrets USB freshness with timestamps.
 - Recovery drill: validate full hardware replacement flow, not just docs.
 - AppArmor: evaluate current state and tradeoffs; consider minimal enforcement set.
 - Kernel sysctl baseline: check `kernel.kptr_restrict`, `kernel.dmesg_restrict`, `kernel.perf_event_paranoid`,
@@ -1869,7 +1869,7 @@ The previous security audit was not comprehensive. Codex detected the following 
 Files changed:
 - root-offsite-astute/ — new off-site backup package (systemd units, scripts, patterns)
 - docs/offsite-backup.md — off-site design + recovery steps
-- docs/secrets-recovery.md — Blue USB key exports and off-site key handling
+- docs/secrets-recovery.md — Secrets USB key exports and off-site key handling
 - README.md — off-site backup subsystem entry
 - docs/hosts-overview.md — off-site backup status update
 
@@ -1879,7 +1879,7 @@ Work completed:
 - Enabled daily timers with WakeSystem and monthly borg check
 - Removed --one-file-system to include /srv/backups and /srv/nas
 - Added progress output for long-running Borg jobs
-- Documented Blue USB key export workflow
+- Documented Secrets USB key export workflow
 
 Assumptions:
 - BorgBase repos use repokey-blake2 encryption

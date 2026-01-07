@@ -4,7 +4,7 @@
 
 set -e
 
-BLUE_USB="/mnt/keyusb"
+SECRETS_USB="/mnt/keyusb"
 WORK_DIR="/tmp/recovery-bundle-$$"
 OUTPUT_FILE="$HOME/borgbase-recovery-bundle-$(date +%Y%m%d).tar.gz.gpg"
 
@@ -14,23 +14,23 @@ echo "This creates an encrypted bundle with all secrets needed to access"
 echo "BorgBase off-site backups after total on-premises loss."
 echo
 
-# Check Blue USB is mounted
-if [ ! -d "$BLUE_USB" ]; then
-  echo "ERROR: Blue USB not mounted at $BLUE_USB"
+# Check Secrets USB is mounted
+if [ ! -d "$SECRETS_USB" ]; then
+  echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
   echo "Mount first: cryptsetup luksOpen /dev/sdX keyusb && mount /dev/mapper/keyusb /mnt/keyusb"
   exit 1
 fi
 
-# Verify Blue USB has required files
-echo "Verifying Blue USB contents..."
+# Verify Secrets USB has required files
+echo "Verifying Secrets USB contents..."
 MISSING=0
 for file in \
-  "$BLUE_USB/borg/audacious-home-key.txt" \
-  "$BLUE_USB/borg/astute-critical-key.txt" \
-  "$BLUE_USB/borg/passphrase" \
-  "$BLUE_USB/borg/audacious-home.passphrase" \
-  "$BLUE_USB/borg/astute-critical.passphrase" \
-  "$BLUE_USB/ssh-backup/borgbase_offsite"; do
+  "$SECRETS_USB/borg/audacious-home-key.txt" \
+  "$SECRETS_USB/borg/astute-critical-key.txt" \
+  "$SECRETS_USB/borg/passphrase" \
+  "$SECRETS_USB/borg/audacious-home.passphrase" \
+  "$SECRETS_USB/borg/astute-critical.passphrase" \
+  "$SECRETS_USB/ssh-backup/borgbase_offsite"; do
   if [ ! -f "$file" ]; then
     echo "ERROR: Missing $file"
     MISSING=$((MISSING + 1))
@@ -38,34 +38,34 @@ for file in \
 done
 
 if [ $MISSING -gt 0 ]; then
-  echo "ERROR: Blue USB incomplete. Run verify-blue-usb-recovery.sh first."
+  echo "ERROR: Secrets USB incomplete. Run verify-blue-usb-recovery.sh first."
   echo "See docs/secrets-recovery.md for BorgBase credential backup procedure."
   exit 1
 fi
 
-echo "✓ Blue USB verified"
+echo "✓ Secrets USB verified"
 echo
 
 # Create working directory
 mkdir -p "$WORK_DIR/recovery-bundle"
 cd "$WORK_DIR/recovery-bundle"
 
-echo "Gathering secrets from Blue USB..."
+echo "Gathering secrets from Secrets USB..."
 
-# Copy from Blue USB
-cp "$BLUE_USB/borg/audacious-home-key.txt" .
-cp "$BLUE_USB/borg/astute-critical-key.txt" .
-cp "$BLUE_USB/borg/passphrase" local-borg-passphrase.txt
-cp "$BLUE_USB/borg/audacious-home.passphrase" .
-cp "$BLUE_USB/borg/astute-critical.passphrase" .
-cp "$BLUE_USB/ssh-backup/borgbase_offsite" .
+# Copy from Secrets USB
+cp "$SECRETS_USB/borg/audacious-home-key.txt" .
+cp "$SECRETS_USB/borg/astute-critical-key.txt" .
+cp "$SECRETS_USB/borg/passphrase" local-borg-passphrase.txt
+cp "$SECRETS_USB/borg/audacious-home.passphrase" .
+cp "$SECRETS_USB/borg/astute-critical.passphrase" .
+cp "$SECRETS_USB/ssh-backup/borgbase_offsite" .
 chmod 600 borgbase_offsite
 
 # Create recovery instructions
 cat > RECOVERY-INSTRUCTIONS.md << 'EOF'
 # BorgBase Disaster Recovery
 
-This bundle contains all secrets needed to access BorgBase off-site backups after total on-premises loss (Audacious + Astute + Blue USB destroyed).
+This bundle contains all secrets needed to access BorgBase off-site backups after total on-premises loss (Audacious + Astute + Secrets USB destroyed).
 
 ## What's In This Bundle
 
@@ -218,7 +218,7 @@ echo "  - Memorable (you'll need it post-disaster without password manager)"
 echo "  - Strong (6-8 random words recommended)"
 echo "  - Written down ONCE and stored in wallet (separate from house)"
 echo
-echo "DO NOT store this passphrase in Bitwarden or on Blue USB."
+echo "DO NOT store this passphrase in Bitwarden or on Secrets USB."
 echo "It protects everything if those are lost."
 echo
 

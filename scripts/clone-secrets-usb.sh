@@ -1,29 +1,29 @@
 #!/bin/bash
-# Clone Blue USB to trusted person's USB with verification
+# Clone Secrets USB to trusted person's USB with verification
 # This script creates/updates an encrypted backup USB with identical contents
 
 set -e
 
-BLUE_USB="/mnt/keyusb"
+SECRETS_USB="/mnt/keyusb"
 TRUSTED_USB="/mnt/keyusb-trusted"
 
-echo "=== Blue USB Clone Utility ==="
+echo "=== Secrets USB Clone Utility ==="
 echo
-echo "This creates an encrypted clone of Blue USB for off-site storage."
+echo "This creates an encrypted clone of Secrets USB for off-site storage."
 echo "The clone will have:"
-echo "  - Same LUKS passphrase as Blue USB"
+echo "  - Same LUKS passphrase as Secrets USB"
 echo "  - Identical file contents (verified with checksums)"
 echo "  - Independent UUID (safe to have both plugged in)"
 echo
 
-# Check Blue USB is mounted
-if [ ! -d "$BLUE_USB" ]; then
-  echo "ERROR: Blue USB not mounted at $BLUE_USB"
+# Check Secrets USB is mounted
+if [ ! -d "$SECRETS_USB" ]; then
+  echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
   echo "Mount first: sudo cryptsetup luksOpen /dev/sdX keyusb && sudo mount /dev/mapper/keyusb /mnt/keyusb"
   exit 1
 fi
 
-echo "✓ Blue USB mounted at $BLUE_USB"
+echo "✓ Secrets USB mounted at $SECRETS_USB"
 echo
 
 # Identify target device
@@ -90,7 +90,7 @@ echo "✓ Created partition: $PARTITION"
 # Create LUKS container
 echo
 echo "Creating LUKS encryption..."
-echo "Use the SAME passphrase as Blue USB so both can be unlocked with one passphrase."
+echo "Use the SAME passphrase as Secrets USB so both can be unlocked with one passphrase."
 echo
 
 sudo cryptsetup luksFormat --type luks2 "$PARTITION"
@@ -116,7 +116,7 @@ echo "=== Copying Data ==="
 echo "This may take a few minutes..."
 echo
 
-sudo rsync -aAX --info=progress2 "$BLUE_USB/" "$TRUSTED_USB/"
+sudo rsync -aAX --info=progress2 "$SECRETS_USB/" "$TRUSTED_USB/"
 
 echo
 echo "✓ Copy complete"
@@ -127,27 +127,27 @@ echo "=== Verification ==="
 echo "Computing checksums (this may take a minute)..."
 echo
 
-BLUE_CHECKSUMS="/tmp/blue-checksums-$$.txt"
+SECRETS_CHECKSUMS="/tmp/secrets-checksums-$$.txt"
 TRUSTED_CHECKSUMS="/tmp/trusted-checksums-$$.txt"
 
-echo "Computing Blue USB checksums..."
-(cd "$BLUE_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) > "$BLUE_CHECKSUMS"
+echo "Computing Secrets USB checksums..."
+(cd "$SECRETS_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) > "$SECRETS_CHECKSUMS"
 
 echo "Computing trusted USB checksums..."
 (cd "$TRUSTED_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) > "$TRUSTED_CHECKSUMS"
 
-if diff -q "$BLUE_CHECKSUMS" "$TRUSTED_CHECKSUMS" > /dev/null; then
+if diff -q "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" > /dev/null; then
   echo "✓ Verification PASSED - all files match"
   VERIFIED=1
 else
   echo "✗ Verification FAILED - files differ"
   echo
   echo "Differences:"
-  diff "$BLUE_CHECKSUMS" "$TRUSTED_CHECKSUMS" || true
+  diff "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" || true
   VERIFIED=0
 fi
 
-rm "$BLUE_CHECKSUMS" "$TRUSTED_CHECKSUMS"
+rm "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS"
 echo
 
 # Unmount
@@ -159,11 +159,11 @@ sudo rmdir "$TRUSTED_USB"
 echo
 if [ $VERIFIED -eq 1 ]; then
   echo "=== Success ==="
-  echo "Trusted person USB created and verified."
+  echo "Trusted Copy created and verified."
   echo
   echo "Next steps:"
   echo "1. Document handoff date in maintenance log"
-  echo "2. Label USB: 'Blue USB Backup - Updated $(date +%Y-%m-%d)'"
+  echo "2. Label USB: 'Secrets USB - Trusted Copy - Updated $(date +%Y-%m-%d)'"
   echo "3. Hand off to trusted person"
   echo "4. Store off-site (different physical location)"
   echo
