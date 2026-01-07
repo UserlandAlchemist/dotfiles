@@ -77,13 +77,15 @@ sudo borg extract \
 
 ```bash
 export BORG_REPO=/srv/backups/audacious-borg
-export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+export BORG_PASSCOMMAND="cat /root/.config/borg/passphrase"
 
 borg list "$BORG_REPO"
 
 borg extract "$BORG_REPO"::audacious-YYYY-MM-DD \
   home/alchemist
 ```
+
+**Note:** Step 2 uses the LOCAL Borg repo passphrase (`/root/.config/borg/passphrase`), NOT the off-site passphrase. The off-site passphrase is only for accessing BorgBase repositories.
 
 ---
 
