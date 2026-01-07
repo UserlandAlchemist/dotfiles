@@ -52,16 +52,8 @@ install_script usr/local/lib/borg-offsite/run-check.sh
 install_config etc/borg-offsite/audacious-home.patterns
 install_config etc/borg-offsite/astute-critical.patterns
 
-echo "→ Stowing package (excluding systemd units and scripts)"
-cd "$DOTFILES_DIR"
-stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^README\.md$' \
-  --ignore='^etc/systemd/system' \
-  --ignore='^etc/borg-offsite' \
-  --ignore='^usr/local/lib/borg-offsite' \
-  root-offsite-astute
+# Note: stow not used - all files installed directly above
+# Patterns files are legacy/unused but kept for potential future use
 
 echo "→ Reloading systemd"
 systemctl daemon-reload
