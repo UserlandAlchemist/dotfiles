@@ -12,7 +12,7 @@ check_repo() {
   BORG_SECURITY_DIR="$BASE/security"
   BORG_CACHE_DIR="/var/cache/borg-offsite/$(basename "$BASE")"
 
-  export BORG_RSH="ssh -i $KEY -T -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3"
+  export BORG_RSH="ssh -i $KEY -T -o IdentitiesOnly=yes -o BatchMode=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3"
   export BORG_PASSCOMMAND="cat $PASSFILE"
   export BORG_BASE_DIR BORG_CONFIG_DIR BORG_SECURITY_DIR BORG_CACHE_DIR
 
