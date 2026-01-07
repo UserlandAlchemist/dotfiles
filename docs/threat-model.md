@@ -112,7 +112,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Single-user environment (no segregation of duties)
 - Sudo access for system changes
 - Manual secret management (Blue USB, not automated)
-- No automated configuration drift detection (manual DRIFT-CHECK.md)
+- No automated configuration drift detection (manual drift-check.md)
 - Untested recovery procedures (disaster recovery drill pending)
 
 **Risk Level:** Medium (most likely threat to realize)
@@ -485,7 +485,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
    - NOT acceptable - recovery is critical
 
 2. **Execute Disaster Recovery Drill (High effort):**
-   - Test INSTALL.audacious.md in VM
+   - Test install.audacious.md in VM
    - Test Borg restore procedures
    - Verify Blue USB secret recovery
    - Identify gaps and fix documentation

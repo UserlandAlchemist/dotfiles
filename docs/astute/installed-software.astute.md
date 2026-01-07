@@ -6,7 +6,7 @@ Last drift check: 2025-12-22
 
 ---
 
-## Base System (via INSTALL.astute.md §1-7)
+## Base System (via install.astute.md §1-7)
 
 ### Crypto & storage
 - cryptsetup — LUKS tooling for the admin USB (optional)
@@ -43,7 +43,7 @@ Last drift check: 2025-12-22
 
 ---
 
-## Media Services (optional, via INSTALL.astute.md §13)
+## Media Services (optional, via install.astute.md §13)
 
 - jellyfin — media server
 - jellyfin-ffmpeg7 — Jellyfin ffmpeg build

@@ -38,7 +38,7 @@ Virtual machines for testing Project Shipshape installation procedures, with fai
 ## VM Inventory
 
 ### 1. test-audacious
-**Purpose:** Test INSTALL.audacious.md installation procedures
+**Purpose:** Test install.audacious.md installation procedures
 
 **Specifications:**
 - RAM: 4GB (ZFS needs memory)
@@ -64,7 +64,7 @@ Virtual machines for testing Project Shipshape installation procedures, with fai
 ---
 
 ### 2. test-astute
-**Purpose:** Test INSTALL.astute.md installation procedures
+**Purpose:** Test install.astute.md installation procedures
 
 **Specifications:**
 - RAM: 2GB (lighter than Audacious)
@@ -314,27 +314,27 @@ virsh console test-astute
 
 ### Test Scenario 1: Fresh Audacious Install
 1. Boot test-audacious from Debian ISO
-2. Follow INSTALL.audacious.md step-by-step
+2. Follow install.audacious.md step-by-step
 3. Note any deviations or unclear instructions
 4. Test ZFS mirror creation, encryption, dual ESP
 5. Verify systemd-boot UKI boots correctly
 6. Deploy dotfiles from git
-7. Test recovery procedures in RECOVERY.audacious.md
+7. Test recovery procedures in recovery.audacious.md
 8. Document time taken (~2-3 hours expected)
 
 ### Test Scenario 2: Fresh Astute Install
 1. Boot test-astute from Debian ISO
-2. Follow INSTALL.astute.md step-by-step
+2. Follow install.astute.md step-by-step
 3. Test ZFS data pool creation
 4. Configure NFS exports
 5. Test NFS mount from test-audacious
 6. Deploy dotfiles
-7. Test recovery procedures in RECOVERY.astute.md
+7. Test recovery procedures in recovery.astute.md
 8. Document time taken (~1-2 hours expected)
 
 ### Test Scenario 3: Drive Replacement
 1. Simulate drive failure (detach vdb from test-audacious)
-2. Follow RECOVERY.audacious.md §9.2.2 (drive replacement)
+2. Follow recovery.audacious.md §9.2.2 (drive replacement)
 3. Verify resilver completes successfully
 4. Test all systems operational after replacement
 

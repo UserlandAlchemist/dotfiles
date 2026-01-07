@@ -4,7 +4,7 @@
 
 **Scope:** Boot recovery, ZFS repair, drive replacement, bootloader repair, service restoration.
 
-**Not covered:** Borg data recovery (see `RESTORE.audacious.md`).
+**Not covered:** Borg data recovery (see `restore.audacious.md`).
 
 ---
 
@@ -15,14 +15,14 @@ This guide covers:
 1. **Boot failures** — System won't boot, need to repair initramfs/UKI/bootloader (§1-§8)
 2. **Single drive failed** — One NVMe in mirror is dead/failing (§9.2)
 3. **Pool degraded** — ZFS reports DEGRADED status (§9.2)
-4. **Both drives failed** — Complete data loss, restore from Borg (§9.3 → RESTORE.audacious.md)
+4. **Both drives failed** — Complete data loss, restore from Borg (§9.3 → restore.audacious.md)
 5. **Pool import issues** — Can't import pool normally (§9.4)
 
 **Quick decision tree:**
 - System won't boot → Follow §1-§8 (standard recovery)
 - `zpool status` shows DEGRADED → See §9.1 (diagnose) then §9.2 (repair/replace)
 - Pool won't import → See §9.4 (import troubleshooting)
-- Both drives dead → See §9.3 (links to RESTORE.audacious.md)
+- Both drives dead → See §9.3 (links to restore.audacious.md)
 
 ---
 
@@ -304,7 +304,7 @@ Steps:
 ls -la /home/alchemist/dotfiles
 ```
 
-**If missing:** Clone from GitHub or restore from Borg (see RESTORE.audacious.md).
+**If missing:** Clone from GitHub or restore from Borg (see restore.audacious.md).
 
 2. Install system packages:
 
@@ -322,7 +322,7 @@ root-sudoers-audacious/install.sh
 
 3. Reload systemd and enable services:
 
-Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/INSTALL.audacious.md` §16 step 8.
+Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/install.audacious.md` §16 step 8.
 
 4. Verify services:
 
@@ -747,8 +747,8 @@ rm /boot/efi/EFI/Linux/test-sync /boot/efi-backup/EFI/Linux/test-sync
 If both NVMe drives failed or pool cannot be recovered, restore from Borg backup.
 
 **Procedure:**
-1. Follow `INSTALL.audacious.md` to create fresh ZFS-on-root installation
-2. Follow `RESTORE.audacious.md` to recover data from Borg backup
+1. Follow `install.audacious.md` to create fresh ZFS-on-root installation
+2. Follow `restore.audacious.md` to recover data from Borg backup
 
 **Prerequisites:**
 - Astute (Borg repository server) must be accessible
@@ -928,7 +928,7 @@ smartctl -a /dev/nvme1n1
 
 ## References
 
-- `INSTALL.audacious.md` — Fresh installation from scratch
-- `RESTORE.audacious.md` — Borg backup restoration
-- `INSTALL.audacious.md` — What differs from stock Debian
+- `install.audacious.md` — Fresh installation from scratch
+- `restore.audacious.md` — Borg backup restoration
+- `install.audacious.md` — What differs from stock Debian
 - OpenZFS documentation: https://openzfs.github.io/openzfs-docs/

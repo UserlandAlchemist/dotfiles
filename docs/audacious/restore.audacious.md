@@ -1,7 +1,7 @@
 # Debian 13 (Trixie) on ZFS - Borg Restore Guide
 
 **Purpose:** Restore audacious user data and services from Borg backups on astute.
-**Prereqs:** System boots (see `RECOVERY.audacious.md`) and network is up.
+**Prereqs:** System boots (see `recovery.audacious.md`) and network is up.
 **Secrets:** Blue encrypted USB key contains SSH keys and Borg material.
 
 ---
@@ -251,7 +251,7 @@ sudo root-sudoers-audacious/install.sh
 
 3. Reload and enable services:
 
-Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/INSTALL.audacious.md` §16 step 8.
+Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/install.audacious.md` §16 step 8.
 
 4. Confirm timers:
 

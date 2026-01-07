@@ -24,7 +24,7 @@
 - systemd-boot with UKIs (not GRUB + initrd)
 - Dual ESP sync via `root-efisync-audacious`
 - Custom systemd units for power, backup, NAS, and EFI sync
-- Manual /opt and /usr/local audio installs (see INSTALL-AUDIO-TOOLS.md)
+- Manual /opt and /usr/local audio installs (see install-audio-tools.md)
 - Journald syslog forwarding override (`ForwardToSyslog=no`)
 - Gaming/perf tuning via sysctl/udev/systemd drop-ins
 - Third-party apt repos for Prism Launcher and Jellyfin
@@ -814,7 +814,7 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 ## Troubleshooting
 
 **Boot fails to find pool:**
-- See [RECOVERY.audacious.md](RECOVERY.audacious.md) for ZFS import and chroot procedures
+- See [recovery.audacious.md](recovery.audacious.md) for ZFS import and chroot procedures
 
 **EFI sync not working:**
 - `systemctl status efi-sync.path efi-sync.service`
@@ -834,7 +834,7 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 
 ## References
 
-- [RECOVERY.audacious.md](RECOVERY.audacious.md) - Boot and ZFS recovery procedures
-- [RESTORE.audacious.md](RESTORE.audacious.md) - Full system restore from Borg backups
+- [recovery.audacious.md](recovery.audacious.md) - Boot and ZFS recovery procedures
+- [restore.audacious.md](restore.audacious.md) - Full system restore from Borg backups
 - [installed-software.audacious.md](installed-software.audacious.md) - Complete package list
 - [Debian ZFS documentation](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/)
