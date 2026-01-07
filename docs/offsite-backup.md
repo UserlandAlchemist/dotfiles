@@ -15,10 +15,10 @@ Document the BorgBase offsite backup flow and recovery steps.
 
 ## Repositories
 
-- `audacious-home` (j6i5cke1) — **append-only**; contains the Audacious Borg repository directory from Astute
-- `astute-critical` (y7pc8k07) — **append-only**; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
+- `audacious-home` (j6i5cke1) — **append-only access**; contains the Audacious Borg repository directory from Astute
+- `astute-critical` (y7pc8k07) — **append-only access**; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
 
-Both repositories use append-only mode for ransomware protection. Retention must be managed manually via BorgBase web UI.
+Both repositories are accessed via an append-only SSH key for ransomware protection (key assigned as "Append-Only Access" in BorgBase). Retention must be managed manually via BorgBase web UI or offline full-access key.
 
 ---
 
@@ -112,12 +112,13 @@ sudo borg extract \
 
 ## Health checks
 
-1. **Verify append-only mode (BOTH repos):**
+1. **Verify append-only access (BOTH repos):**
 
-   - audacious-home (j6i5cke1): Settings → Append-only mode: **ENABLED**
-   - astute-critical (y7pc8k07): Settings → Append-only mode: **ENABLED**
+   For each repository in BorgBase web UI:
+   - audacious-home (j6i5cke1): Edit Repository → ACCESS → SSH key under "Append-Only Access"
+   - astute-critical (y7pc8k07): Edit Repository → ACCESS → SSH key under "Append-Only Access"
 
-   **CRITICAL:** Without append-only on both repos, ransomware can delete off-site backups, defeating the entire purpose.
+   **CRITICAL:** BorgBase implements append-only via SSH key assignment (not repo-level setting). The `astute-borgbase` key must be assigned as "Append-Only Access" to both repos. Without this, ransomware can delete off-site backups.
 
 2. Timers:
 
