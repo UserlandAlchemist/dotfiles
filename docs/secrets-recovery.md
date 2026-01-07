@@ -102,7 +102,7 @@ sudo mkfs.ext4 -L "BLUE_USB_RECOVERY" /dev/mapper/keyusb
 ```sh
 sudo mkdir -p /mnt/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
-sudo mkdir -p /mnt/keyusb/{ssh-keys,borg,docs,tokens}
+sudo mkdir -p /mnt/keyusb/{ssh-backup,borg,docs,tokens}
 ```
 
 10. Set ownership to your user:
@@ -165,19 +165,20 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519_astute_nas -C "audacious-nas" -N ""
 Copy all private SSH keys and config:
 
 ```sh
-cp ~/.ssh/id_alchemist /mnt/keyusb/ssh-keys/
-cp ~/.ssh/id_alchemist.pub /mnt/keyusb/ssh-keys/
-cp ~/.ssh/audacious-backup /mnt/keyusb/ssh-keys/
-cp ~/.ssh/audacious-backup.pub /mnt/keyusb/ssh-keys/
-cp ~/.ssh/id_ed25519_astute_nas /mnt/keyusb/ssh-keys/
-cp ~/.ssh/id_ed25519_astute_nas.pub /mnt/keyusb/ssh-keys/
-cp ~/.ssh/config /mnt/keyusb/ssh-keys/
+cp ~/.ssh/id_alchemist /mnt/keyusb/ssh-backup/
+cp ~/.ssh/id_alchemist.pub /mnt/keyusb/ssh-backup/
+cp ~/.ssh/audacious-backup /mnt/keyusb/ssh-backup/
+cp ~/.ssh/audacious-backup.pub /mnt/keyusb/ssh-backup/
+cp ~/.ssh/id_ed25519_astute_nas /mnt/keyusb/ssh-backup/
+cp ~/.ssh/id_ed25519_astute_nas.pub /mnt/keyusb/ssh-backup/
+# Use -L to dereference symlinked config.
+cp -L ~/.ssh/config /mnt/keyusb/ssh-backup/
 ```
 
 Document passphrases:
 
 ```sh
-cat > /mnt/keyusb/ssh-keys/PASSPHRASES.txt <<EOF
+cat > /mnt/keyusb/ssh-backup/PASSPHRASES.txt <<EOF
 id_alchemist passphrase: [ENTER MAIN SSH KEY PASSPHRASE HERE]
 
 Date created: $(date +%Y-%m-%d)
@@ -194,7 +195,7 @@ EOF
 Edit the file and fill in the passphrase:
 
 ```sh
-nano /mnt/keyusb/ssh-keys/PASSPHRASES.txt
+nano /mnt/keyusb/ssh-backup/PASSPHRASES.txt
 ```
 
 ---
@@ -205,6 +206,7 @@ Copy Borg passphrase and repository keys:
 
 ```sh
 cp ~/.config/borg/passphrase /mnt/keyusb/borg/
+cp -L ~/.config/borg/patterns /mnt/keyusb/borg/patterns
 ```
 
 Export repository key:
@@ -300,10 +302,10 @@ RECOVERY PROCEDURE:
 
 2. RESTORE SSH KEYS:
    mkdir -p ~/.ssh
-   cp /mnt/keyusb/ssh-keys/id_alchemist ~/.ssh/
-   cp /mnt/keyusb/ssh-keys/audacious-backup ~/.ssh/
-   cp /mnt/keyusb/ssh-keys/id_ed25519_astute_nas ~/.ssh/
-   cp /mnt/keyusb/ssh-keys/config ~/.ssh/
+   cp /mnt/keyusb/ssh-backup/id_alchemist ~/.ssh/
+   cp /mnt/keyusb/ssh-backup/audacious-backup ~/.ssh/
+   cp /mnt/keyusb/ssh-backup/id_ed25519_astute_nas ~/.ssh/
+   cp /mnt/keyusb/ssh-backup/config ~/.ssh/
    chmod 700 ~/.ssh
    chmod 600 ~/.ssh/id_* ~/.ssh/audacious-backup
    chmod 644 ~/.ssh/config
@@ -311,7 +313,9 @@ RECOVERY PROCEDURE:
 3. RESTORE BORG PASSPHRASE:
    mkdir -p ~/.config/borg
    cp /mnt/keyusb/borg/passphrase ~/.config/borg/
+   cp /mnt/keyusb/borg/patterns ~/.config/borg/
    chmod 600 ~/.config/borg/passphrase
+   chmod 600 ~/.config/borg/patterns
 
 4. RESTORE API TOKENS:
    mkdir -p ~/.config/jellyfin
@@ -322,14 +326,14 @@ RECOVERY PROCEDURE:
    git clone git@github.com:UserlandAlchemist/dotfiles.git
 
 6. FOLLOW INSTALL DOCS:
-   See /mnt/keyusb/docs/INSTALL.*.md for full install procedures
-   See /mnt/keyusb/docs/RECOVERY.*.md for recovery scenarios
+   See /mnt/keyusb/docs/install.audacious.md and /mnt/keyusb/docs/install.astute.md
+   See /mnt/keyusb/docs/recovery.audacious.md and /mnt/keyusb/docs/recovery.astute.md
 
 PASSPHRASES:
 ============
 
-SSH key (id_alchemist): See ssh-keys/PASSPHRASES.txt
-Borg repository: See borg/passphrase file
+SSH key (id_alchemist): See ssh-backup/PASSPHRASES.txt
+Borg repository: See borg/passphrase file (patterns in borg/patterns)
 Blue USB encryption: [You know this - it unlocked this USB]
 
 IMPORTANT:
@@ -350,7 +354,7 @@ EOF
 Protect all secrets with restrictive permissions:
 
 ```sh
-chmod 600 /mnt/keyusb/ssh-keys/*
+chmod 600 /mnt/keyusb/ssh-backup/*
 chmod 600 /mnt/keyusb/borg/*
 chmod 600 /mnt/keyusb/tokens/* 2>/dev/null || true
 chmod 644 /mnt/keyusb/README.txt
@@ -398,15 +402,18 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 
 **SSH keys changed:**
 ```sh
-cp ~/.ssh/id_alchemist /mnt/keyusb/ssh-keys/
-cp ~/.ssh/id_alchemist.pub /mnt/keyusb/ssh-keys/
+cp ~/.ssh/id_alchemist /mnt/keyusb/ssh-backup/
+cp ~/.ssh/id_alchemist.pub /mnt/keyusb/ssh-backup/
+# Update SSH client config if changed.
+cp -L ~/.ssh/config /mnt/keyusb/ssh-backup/
 # Update PASSPHRASES.txt if passphrase changed
-nano /mnt/keyusb/ssh-keys/PASSPHRASES.txt
+nano /mnt/keyusb/ssh-backup/PASSPHRASES.txt
 ```
 
 **Borg passphrase changed:**
 ```sh
 cp ~/.config/borg/passphrase /mnt/keyusb/borg/
+cp -L ~/.config/borg/patterns /mnt/keyusb/borg/patterns
 borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-key-export.txt
 ```
 
@@ -459,28 +466,28 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 ls -la /mnt/keyusb
 ```
 
-Should see: `ssh-keys/`, `borg/`, `docs/`, `tokens/`, `README.txt`, `QUICK-START.txt`
+Should see: `ssh-backup/`, `borg/`, `docs/`, `tokens/`, `README.txt`, `QUICK-START.txt`
 
 3. Verify SSH keys present:
 
 ```sh
-ls -l /mnt/keyusb/ssh-keys/
+ls -l /mnt/keyusb/ssh-backup/
 ```
 
 Should see all private keys, public keys, config, PASSPHRASES.txt
 
-4. Verify Borg passphrase:
+4. Verify Borg materials:
 
 ```sh
-cat /mnt/keyusb/borg/passphrase
+ls -l /mnt/keyusb/borg/
 ```
 
-Should contain passphrase (don't print to terminal in production)
+Should include `passphrase`, `patterns`, and `repo-key-export.txt`.
 
 5. Verify fingerprints match:
 
 ```sh
-ssh-keygen -lf /mnt/keyusb/ssh-keys/id_alchemist.pub
+ssh-keygen -lf /mnt/keyusb/ssh-backup/id_alchemist.pub
 ssh-keygen -lf ~/.ssh/id_alchemist.pub
 ```
 
@@ -551,10 +558,10 @@ cat /mnt/keyusb/QUICK-START.txt
 
 ```sh
 mkdir -p ~/.ssh
-cp /mnt/keyusb/ssh-keys/id_alchemist ~/.ssh/
-cp /mnt/keyusb/ssh-keys/audacious-backup ~/.ssh/
-cp /mnt/keyusb/ssh-keys/id_ed25519_astute_nas ~/.ssh/
-cp /mnt/keyusb/ssh-keys/config ~/.ssh/
+cp /mnt/keyusb/ssh-backup/id_alchemist ~/.ssh/
+cp /mnt/keyusb/ssh-backup/audacious-backup ~/.ssh/
+cp /mnt/keyusb/ssh-backup/id_ed25519_astute_nas ~/.ssh/
+cp /mnt/keyusb/ssh-backup/config ~/.ssh/
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_* ~/.ssh/audacious-backup
 chmod 644 ~/.ssh/config
@@ -566,7 +573,7 @@ chmod 644 ~/.ssh/config
 ssh-keygen -y -f ~/.ssh/id_alchemist
 ```
 
-Enter passphrase from `/mnt/keyusb/ssh-keys/PASSPHRASES.txt`
+Enter passphrase from `/mnt/keyusb/ssh-backup/PASSPHRASES.txt`
 
 6. Start SSH agent and add key:
 
@@ -588,6 +595,8 @@ git clone git@github.com:UserlandAlchemist/dotfiles.git
 mkdir -p ~/.config/borg
 cp /mnt/keyusb/borg/passphrase ~/.config/borg/
 chmod 600 ~/.config/borg/passphrase
+cp /mnt/keyusb/borg/patterns ~/.config/borg/
+chmod 600 ~/.config/borg/patterns
 ```
 
 9. Restore API tokens (if applicable):
@@ -635,10 +644,10 @@ mv ~/.ssh ~/.ssh.backup.$(date +%Y%m%d)
 
 ```sh
 mkdir -p ~/.ssh
-cp /mnt/keyusb/ssh-keys/id_alchemist ~/.ssh/
-cp /mnt/keyusb/ssh-keys/audacious-backup ~/.ssh/
-cp /mnt/keyusb/ssh-keys/id_ed25519_astute_nas ~/.ssh/
-cp /mnt/keyusb/ssh-keys/config ~/.ssh/
+cp /mnt/keyusb/ssh-backup/id_alchemist ~/.ssh/
+cp /mnt/keyusb/ssh-backup/audacious-backup ~/.ssh/
+cp /mnt/keyusb/ssh-backup/id_ed25519_astute_nas ~/.ssh/
+cp /mnt/keyusb/ssh-backup/config ~/.ssh/
 chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_* ~/.ssh/audacious-backup
 chmod 644 ~/.ssh/config
@@ -680,6 +689,8 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 mkdir -p ~/.config/borg
 cp /mnt/keyusb/borg/passphrase ~/.config/borg/
 chmod 600 ~/.config/borg/passphrase
+cp /mnt/keyusb/borg/patterns ~/.config/borg/
+chmod 600 ~/.config/borg/patterns
 ```
 
 3. Import repository key (if needed):
@@ -869,7 +880,7 @@ Complete directory tree of Blue USB:
 /mnt/keyusb/
 ├── README.txt                          # Creation date and update log
 ├── QUICK-START.txt                     # Emergency recovery quick-start
-├── ssh-keys/
+├── ssh-backup/
 │   ├── id_alchemist                    # Main SSH private key
 │   ├── id_alchemist.pub                # Main SSH public key
 │   ├── audacious-backup                # Borg SSH private key
@@ -880,6 +891,7 @@ Complete directory tree of Blue USB:
 │   └── PASSPHRASES.txt                 # SSH key passphrases and fingerprints
 ├── borg/
 │   ├── passphrase                      # Borg repository passphrase
+│   ├── patterns                        # Borg include/exclude patterns
 │   ├── repo-key-export.txt             # Borg repository key export
 │   └── REPOSITORY-INFO.txt             # Repository location and details
 ├── tokens/
@@ -926,7 +938,7 @@ The Blue USB passphrase should be documented in password manager along with:
 **Trusted person should:**
 1. Use Blue USB passphrase to unlock USB
 2. Read QUICK-START.txt for recovery overview
-3. Follow docs/RECOVERY.*.md for disaster recovery procedures
+3. Follow docs/audacious/recovery.audacious.md and docs/astute/recovery.astute.md for disaster recovery procedures
 4. Access GitHub repository for latest dotfiles
 
 **Consider documenting:**
