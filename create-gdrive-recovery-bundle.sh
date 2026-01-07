@@ -47,8 +47,8 @@ echo "✓ Blue USB verified"
 echo
 
 # Create working directory
-mkdir -p "$WORK_DIR"
-cd "$WORK_DIR"
+mkdir -p "$WORK_DIR/recovery-bundle"
+cd "$WORK_DIR/recovery-bundle"
 
 echo "Gathering secrets from Blue USB..."
 
