@@ -108,3 +108,4 @@ borg-user-*/.config/borg/security/
 
 # Lock files (may contain absolute paths)
 **/*.lock
+OFFSITE-BACKUP-REVIEW.md
