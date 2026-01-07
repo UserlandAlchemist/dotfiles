@@ -3,7 +3,14 @@
 set -e
 
 SECRETS_USB="/mnt/keyusb"
+CHECKSUMS_FILE="$SECRETS_USB/.checksums.txt"
 ERRORS=0
+SAVE_CHECKSUMS=0
+
+# Parse arguments
+if [ "$1" = "--save-checksums" ]; then
+  SAVE_CHECKSUMS=1
+fi
 
 echo "=== Secrets USB Recovery Verification ==="
 echo
@@ -83,16 +90,73 @@ echo "--- PGP Keys ---"
 check_dir "$SECRETS_USB/pgp" "PGP key exports directory"
 echo
 
-echo "=== Summary ==="
-if [ $ERRORS -eq 0 ]; then
-  echo "✓ Secrets USB has all required recovery files"
-  echo
-  echo "Safe to create copy for off-site trusted person storage."
-  exit 0
-else
+# If errors in file existence, stop here
+if [ $ERRORS -gt 0 ]; then
+  echo "=== Summary ==="
   echo "✗ Secrets USB is INCOMPLETE - $ERRORS files/directories missing"
   echo
   echo "Run the Secrets USB population procedure from docs/secrets-recovery.md"
   echo "before creating off-site copies or Google Drive bundle."
+  exit 1
+fi
+
+# Checksum verification/saving
+if [ $SAVE_CHECKSUMS -eq 1 ]; then
+  echo "--- Saving Checksums ---"
+  echo "Computing SHA256 checksums (this may take a minute)..."
+
+  TEMP_CHECKSUMS="/tmp/checksums-$$.txt"
+  (cd "$SECRETS_USB" && find . -type f -not -name '.checksums.txt' -exec sha256sum {} \; | sort -k2) > "$TEMP_CHECKSUMS"
+
+  mv "$TEMP_CHECKSUMS" "$CHECKSUMS_FILE"
+  chmod 600 "$CHECKSUMS_FILE"
+
+  FILE_COUNT=$(wc -l < "$CHECKSUMS_FILE")
+  echo "✓ Saved checksums for $FILE_COUNT files to $CHECKSUMS_FILE"
+  echo
+elif [ -f "$CHECKSUMS_FILE" ]; then
+  echo "--- Verifying Checksums ---"
+  echo "Verifying file integrity against saved checksums..."
+  echo
+
+  TEMP_CHECKSUMS="/tmp/checksums-$$.txt"
+  (cd "$SECRETS_USB" && find . -type f -not -name '.checksums.txt' -exec sha256sum {} \; | sort -k2) > "$TEMP_CHECKSUMS"
+
+  if diff -q "$CHECKSUMS_FILE" "$TEMP_CHECKSUMS" > /dev/null 2>&1; then
+    echo "✓ All checksums MATCH - files are intact"
+    FILE_COUNT=$(wc -l < "$CHECKSUMS_FILE")
+    echo "  Verified $FILE_COUNT files"
+  else
+    echo "✗ Checksum verification FAILED - files have been modified or corrupted"
+    echo
+    echo "Differences:"
+    diff "$CHECKSUMS_FILE" "$TEMP_CHECKSUMS" || true
+    echo
+    echo "To accept current state as correct:"
+    echo "  sudo $0 --save-checksums"
+    ERRORS=$((ERRORS + 1))
+  fi
+
+  rm "$TEMP_CHECKSUMS"
+  echo
+else
+  echo "--- Checksums ---"
+  echo "No checksums file found. To enable integrity verification:"
+  echo "  sudo $0 --save-checksums"
+  echo
+fi
+
+echo "=== Summary ==="
+if [ $ERRORS -eq 0 ]; then
+  echo "✓ Secrets USB has all required recovery files"
+  if [ -f "$CHECKSUMS_FILE" ] && [ $SAVE_CHECKSUMS -eq 0 ]; then
+    echo "✓ All file checksums verified"
+  fi
+  echo
+  echo "Safe to create copy for off-site trusted person storage."
+  exit 0
+else
+  echo "✗ Verification FAILED - $ERRORS errors found"
+  echo
   exit 1
 fi
