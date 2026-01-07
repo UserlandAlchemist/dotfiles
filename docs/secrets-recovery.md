@@ -102,7 +102,7 @@ sudo mkfs.ext4 -L "BLUE_USB_RECOVERY" /dev/mapper/keyusb
 ```sh
 sudo mkdir -p /mnt/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
-sudo mkdir -p /mnt/keyusb/{ssh-backup,borg,docs,tokens}
+sudo mkdir -p /mnt/keyusb/{ssh-backup,borg,pgp,docs,tokens}
 ```
 
 10. Set ownership to your user:
@@ -242,7 +242,30 @@ EOF
 
 ---
 
-### §2.3 API Tokens
+### §2.3 PGP Keys (Identity Recovery)
+
+Export PGP keys, including revocation certificates, for both identities:
+
+```sh
+gpg --armor --export alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_public.asc
+gpg --armor --export-secret-keys alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_private.asc
+gpg --output /mnt/keyusb/pgp/alchemist_revocation.asc --gen-revoke alchemist@userlandlab.org
+
+gpg --armor --export private@example.invalid > /mnt/keyusb/pgp/private_public.asc
+gpg --armor --export-secret-keys private@example.invalid > /mnt/keyusb/pgp/private_private.asc
+gpg --output /mnt/keyusb/pgp/private_revocation.asc --gen-revoke private@example.invalid
+```
+
+Lock down permissions:
+
+```sh
+chmod 600 /mnt/keyusb/pgp/*_private.asc /mnt/keyusb/pgp/*_revocation.asc
+chmod 644 /mnt/keyusb/pgp/*_public.asc
+```
+
+---
+
+### §2.4 API Tokens
 
 Copy any API tokens or service credentials:
 
@@ -265,7 +288,7 @@ EOF
 
 ---
 
-### §2.4 Recovery Documentation
+### §2.5 Recovery Documentation
 
 Copy essential recovery docs (optional but recommended):
 
@@ -282,7 +305,7 @@ cp ~/dotfiles/docs/astute/recovery.astute.md /mnt/keyusb/docs/
 
 ---
 
-### §2.5 Recovery Quick-Start
+### §2.6 Recovery Quick-Start
 
 Create quick-start guide for disaster recovery:
 
@@ -334,6 +357,7 @@ PASSPHRASES:
 
 SSH key (id_alchemist): See ssh-backup/PASSPHRASES.txt
 Borg repository: See borg/passphrase file (patterns in borg/patterns)
+PGP keys: See pgp/ (public, private, revocation)
 Blue USB encryption: [You know this - it unlocked this USB]
 
 IMPORTANT:
@@ -349,13 +373,15 @@ EOF
 
 ---
 
-### §2.6 Set Permissions and Sync
+### §2.7 Set Permissions and Sync
 
 Protect all secrets with restrictive permissions:
 
 ```sh
 chmod 600 /mnt/keyusb/ssh-backup/*
 chmod 600 /mnt/keyusb/borg/*
+chmod 600 /mnt/keyusb/pgp/*_private.asc /mnt/keyusb/pgp/*_revocation.asc
+chmod 644 /mnt/keyusb/pgp/*_public.asc
 chmod 600 /mnt/keyusb/tokens/* 2>/dev/null || true
 chmod 644 /mnt/keyusb/README.txt
 chmod 644 /mnt/keyusb/QUICK-START.txt
@@ -380,6 +406,7 @@ Update Blue USB when secrets change.
 Update Blue USB whenever:
 - SSH keys rotated or added
 - Borg repository passphrase changed
+- PGP keys rotated
 - New API tokens created
 - Recovery procedures updated
 - After major system changes
@@ -428,6 +455,17 @@ cp ~/dotfiles/docs/secrets-recovery.md /mnt/keyusb/docs/
 # ... other docs as needed
 ```
 
+**PGP keys rotated:**
+```sh
+gpg --armor --export alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_public.asc
+gpg --armor --export-secret-keys alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_private.asc
+gpg --output /mnt/keyusb/pgp/alchemist_revocation.asc --gen-revoke alchemist@userlandlab.org
+
+gpg --armor --export private@example.invalid > /mnt/keyusb/pgp/private_public.asc
+gpg --armor --export-secret-keys private@example.invalid > /mnt/keyusb/pgp/private_private.asc
+gpg --output /mnt/keyusb/pgp/private_revocation.asc --gen-revoke private@example.invalid
+```
+
 3. Update timestamp:
 
 ```sh
@@ -466,7 +504,7 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 ls -la /mnt/keyusb
 ```
 
-Should see: `ssh-backup/`, `borg/`, `docs/`, `tokens/`, `README.txt`, `QUICK-START.txt`
+Should see: `ssh-backup/`, `borg/`, `pgp/`, `docs/`, `tokens/`, `README.txt`, `QUICK-START.txt`
 
 3. Verify SSH keys present:
 
@@ -484,7 +522,15 @@ ls -l /mnt/keyusb/borg/
 
 Should include `passphrase`, `patterns`, and `repo-key-export.txt`.
 
-5. Verify fingerprints match:
+5. Verify PGP materials:
+
+```sh
+ls -l /mnt/keyusb/pgp/
+```
+
+Should include public, private, and revocation files for each identity.
+
+6. Verify fingerprints match:
 
 ```sh
 ssh-keygen -lf /mnt/keyusb/ssh-backup/id_alchemist.pub
@@ -493,7 +539,7 @@ ssh-keygen -lf ~/.ssh/id_alchemist.pub
 
 Should match exactly.
 
-6. Test read random file:
+7. Test read random file:
 
 ```sh
 cat /mnt/keyusb/QUICK-START.txt
@@ -501,14 +547,14 @@ cat /mnt/keyusb/QUICK-START.txt
 
 Should display without errors.
 
-7. Record verification:
+8. Record verification:
 
 ```sh
 echo "Verified: $(date) - All secrets present and readable" >> /mnt/keyusb/README.txt
 sync
 ```
 
-8. Unmount:
+9. Unmount:
 
 ```sh
 sudo umount /mnt/keyusb
@@ -716,6 +762,58 @@ Expected result: Borg repository accessible again.
 
 ---
 
+### §4.4 PGP Key Import (Identity Recovery)
+
+Restore PGP keys after system loss or migration.
+
+Steps:
+1. Mount Blue USB:
+
+```sh
+sudo cryptsetup luksOpen /dev/sdX1 keyusb
+sudo mount /dev/mapper/keyusb /mnt/keyusb
+```
+
+2. Import keys:
+
+```sh
+gpg --import /mnt/keyusb/pgp/alchemist_public.asc
+gpg --import /mnt/keyusb/pgp/alchemist_private.asc
+gpg --import /mnt/keyusb/pgp/private_public.asc
+gpg --import /mnt/keyusb/pgp/private_private.asc
+```
+
+3. Trust the keys locally (set ultimate trust if this is the primary keyring):
+
+```sh
+gpg --edit-key alchemist@userlandlab.org
+gpg> trust
+# select 5 = ultimate, confirm, then:
+gpg> quit
+
+gpg --edit-key private@example.invalid
+gpg> trust
+# select 5 = ultimate, confirm, then:
+gpg> quit
+```
+
+4. Verify:
+
+```sh
+gpg --list-secret-keys --keyid-format long
+```
+
+5. Unmount Blue USB:
+
+```sh
+sudo umount /mnt/keyusb
+sudo cryptsetup luksClose keyusb
+```
+
+Expected result: PGP keys restored and trusted locally.
+
+---
+
 ## §5 Troubleshooting
 
 ### "No key available with this passphrase"
@@ -894,6 +992,13 @@ Complete directory tree of Blue USB:
 │   ├── patterns                        # Borg include/exclude patterns
 │   ├── repo-key-export.txt             # Borg repository key export
 │   └── REPOSITORY-INFO.txt             # Repository location and details
+├── pgp/
+│   ├── alchemist_public.asc            # Public PGP key (alchemist)
+│   ├── alchemist_private.asc           # Private PGP key (alchemist)
+│   ├── alchemist_revocation.asc        # Revocation cert (alchemist)
+│   ├── private_public.asc                # Public PGP key (PRIVATE_NAME)
+│   ├── private_private.asc               # Private PGP key (PRIVATE_NAME)
+│   └── private_revocation.asc            # Revocation cert (PRIVATE_NAME)
 ├── tokens/
 │   ├── jellyfin/
 │   │   └── api.token                   # Jellyfin API token
