@@ -126,3 +126,13 @@ journalctl -u borg-offsite-astute-critical.service --since "1 week ago"
 ```bash
 journalctl -u borg-offsite-check.service --since "2 months ago"
 ```
+
+4. List archives (force root SSH key):
+
+```bash
+sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg list ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
+
+sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
+```

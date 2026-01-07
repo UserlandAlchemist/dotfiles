@@ -75,8 +75,11 @@ sudo systemctl enable --now \
 List off-site archives:
 
 ```bash
-sudo borg list ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
-sudo borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
+sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg list ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
+
+sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
 ```
 
 Check service status:
