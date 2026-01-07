@@ -6,7 +6,7 @@ Last drift check: 2025-12-24
 
 ---
 
-## Base System (via INSTALL.audacious.md §1-13)
+## Base System (via install.audacious.md §1-13)
 
 ### Boot & filesystem
 - cryptsetup — LUKS encryption for ZFS unlock
@@ -37,7 +37,7 @@ Last drift check: 2025-12-24
 
 ---
 
-## Desktop Infrastructure (via INSTALL.audacious.md §14)
+## Desktop Infrastructure (via install.audacious.md §14)
 
 ### Compositor & session
 - sway — Wayland compositor
@@ -173,7 +173,7 @@ Last drift check: 2025-12-24
 **Rationale:** Software installed outside Debian package management for specific development workflows or unavailability in repositories.
 
 ### Audio production tools
-**Documentation:** See `docs/audacious/INSTALL-AUDIO-TOOLS.md` for complete installation procedures.
+**Documentation:** See `docs/audacious/install-audio-tools.md` for complete installation procedures.
 
 **Installed:**
 - sfizz → `/usr/local/lib/lv2/sfizz.lv2` — SFZ sample-based synthesizer

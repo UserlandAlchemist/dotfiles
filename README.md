@@ -136,7 +136,7 @@ See: `root-efisync-audacious/README.md`
 ### Boot Stack (Audacious)
 systemd-boot with Unified Kernel Images (UKI) instead of GRUB. ZFS root filesystem on encrypted RAID1.
 
-See: `docs/audacious/INSTALL.audacious.md`
+See: `docs/audacious/install.audacious.md`
 
 ---
 
@@ -146,23 +146,22 @@ See: `docs/audacious/INSTALL.audacious.md`
 Each host has complete rebuild documentation:
 
 **Audacious:**
-- [`docs/audacious/INSTALL.audacious.md`](docs/audacious/INSTALL.audacious.md) — Full installation from scratch
-- [`docs/audacious/RECOVERY.audacious.md`](docs/audacious/RECOVERY.audacious.md) — Boot and ZFS recovery
-- [`docs/audacious/RESTORE.audacious.md`](docs/audacious/RESTORE.audacious.md) — Borg data restoration
-- [`docs/audacious/DRIFT-CHECK.md`](docs/audacious/DRIFT-CHECK.md) — Package drift detection procedure
+- [`docs/audacious/install.audacious.md`](docs/audacious/install.audacious.md) — Full installation from scratch
+- [`docs/audacious/recovery.audacious.md`](docs/audacious/recovery.audacious.md) — Boot and ZFS recovery
+- [`docs/audacious/restore.audacious.md`](docs/audacious/restore.audacious.md) — Borg data restoration
+- [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
 - [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
 
 **Astute:**
-- [`docs/astute/INSTALL.astute.md`](docs/astute/INSTALL.astute.md) — Full installation from scratch
-- [`docs/astute/RECOVERY.astute.md`](docs/astute/RECOVERY.astute.md) — Boot and ZFS recovery
+- [`docs/astute/install.astute.md`](docs/astute/install.astute.md) — Full installation from scratch
+- [`docs/astute/recovery.astute.md`](docs/astute/recovery.astute.md) — Boot and ZFS recovery
 - [`docs/astute/installed-software.astute.md`](docs/astute/installed-software.astute.md) — Complete package inventory
 
 ### System Reference
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
-- [`docs/THREAT-MODEL.md`](docs/THREAT-MODEL.md) — Security threat model and acceptable risks
-- [`docs/BACKUP-AUDIT.md`](docs/BACKUP-AUDIT.md) — Backup infrastructure audit and recommendations
+- [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
 
 ---
 

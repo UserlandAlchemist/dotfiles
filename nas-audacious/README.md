@@ -113,4 +113,4 @@ ssh astute 'systemd-inhibit --list --mode=block' | wc -l  # should be 0
 - `bash-audacious/.bashrc.d/50-nas-helpers.sh` - User-facing functions
 - `root-sudoers-audacious/nas-mount.sudoers` - Sudo policy (Audacious side)
 - `root-power-astute/README.md` - Server-side configuration (Astute)
-- INSTALL.audacious.md §17 - NAS integration setup
+- install.audacious.md §17 - NAS integration setup

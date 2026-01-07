@@ -179,4 +179,4 @@ ssh astute 'systemd-inhibit --list --mode=block | grep sleep | wc -l'  # should 
 - `nas-audacious/README.md` - Client-side NAS orchestration (Audacious)
 - `ssh-audacious/.ssh/config` - SSH host configuration for `astute-nas`
 - `root-sudoers-audacious/` - Audacious sudo policy for NFS mount control
-- INSTALL.audacious.md §17 - NAS integration setup
+- install.audacious.md §17 - NAS integration setup

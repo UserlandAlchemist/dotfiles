@@ -670,8 +670,8 @@ These tools integrate with the broader Audacious pro audio stack:
 ## Appendix B: Cross-References
 
 **Related documentation:**
-- `docs/audacious/INSTALL.audacious.md` — Full system installation
-- `docs/audacious/INSTALL.audacious.md` — Audacious system overview + install steps
+- `docs/audacious/install.audacious.md` — Full system installation
+- `docs/audacious/install.audacious.md` — Audacious system overview + install steps
 - `ardour-audacious/` — Ardour DAW configuration package
 - `pipewire-audacious/` — PipeWire audio routing configuration
 

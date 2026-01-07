@@ -271,11 +271,11 @@ Copy essential recovery docs (optional but recommended):
 mkdir -p /mnt/keyusb/docs
 
 # Key recovery procedures
-cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/audacious/INSTALL.audacious.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/audacious/RECOVERY.audacious.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/astute/INSTALL.astute.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/astute/RECOVERY.astute.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/secrets-recovery.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/audacious/install.audacious.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/audacious/recovery.audacious.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/astute/install.astute.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/astute/recovery.astute.md /mnt/keyusb/docs/
 ```
 
 ---
@@ -336,7 +336,7 @@ IMPORTANT:
 ==========
 
 After recovery, update this USB if any secrets changed!
-See docs/SECRETS-RECOVERY.md §3 for maintenance procedures.
+See docs/secrets-recovery.md §3 for maintenance procedures.
 
 Last updated: $(date)
 Host: $(hostname)
@@ -417,7 +417,7 @@ cp ~/.config/jellyfin/api.token /mnt/keyusb/tokens/jellyfin/
 
 **Recovery docs updated:**
 ```sh
-cp ~/dotfiles/docs/SECRETS-RECOVERY.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/secrets-recovery.md /mnt/keyusb/docs/
 # ... other docs as needed
 ```
 
@@ -607,7 +607,7 @@ sudo cryptsetup luksClose keyusb
 
 11. Continue with installation:
 
-Follow `docs/audacious/INSTALL.audacious.md` or `docs/astute/INSTALL.astute.md`
+Follow `docs/audacious/install.audacious.md` or `docs/astute/install.astute.md`
 
 Expected result: All secrets restored, ready to deploy dotfiles and restore data.
 
@@ -887,11 +887,11 @@ Complete directory tree of Blue USB:
 │   │   └── api.token                   # Jellyfin API token
 │   └── README.txt                      # Token inventory
 └── docs/                               # Recovery documentation copies
-    ├── SECRETS-RECOVERY.md
-    ├── INSTALL.audacious.md
-    ├── RECOVERY.audacious.md
-    ├── INSTALL.astute.md
-    └── RECOVERY.astute.md
+    ├── secrets-recovery.md
+    ├── install.audacious.md
+    ├── recovery.audacious.md
+    ├── install.astute.md
+    └── recovery.astute.md
 ```
 
 **File permissions:**
@@ -905,11 +905,11 @@ Complete directory tree of Blue USB:
 ## Appendix B: Cross-References
 
 **Related documentation:**
-- `SECRETS-RECOVERY.md` — SSH key generation and recovery
-- `docs/audacious/INSTALL.audacious.md` — Full Audacious installation
-- `docs/audacious/RECOVERY.audacious.md` — Audacious disaster recovery
-- `docs/astute/INSTALL.astute.md` — Full Astute installation
-- `docs/astute/RECOVERY.astute.md` — Astute disaster recovery
+- `secrets-recovery.md` — SSH key generation and recovery
+- `docs/audacious/install.audacious.md` — Full Audacious installation
+- `docs/audacious/recovery.audacious.md` — Audacious disaster recovery
+- `docs/astute/install.astute.md` — Full Astute installation
+- `docs/astute/recovery.astute.md` — Astute disaster recovery
 - `borg-user-audacious/README.md` — Borg backup configuration
 
 ---

@@ -340,7 +340,7 @@ Located in `/home/alchemist/.ssh/`:
 - Keys: id_astute_nas vs id_ed25519_astute_nas
 - Action: Identify active key via authorized_keys on Astute
 - Action: Remove unused key from Audacious
-- Action: Update SECRETS-RECOVERY.md if key references change
+- Action: Update secrets-recovery.md if key references change
 
 **3. Document IoT Device Inventory**
 - Devices: 192.168.1.210, 192.168.1.68, 192.168.1.94, unknown DHCPv6
@@ -365,7 +365,7 @@ Located in `/home/alchemist/.ssh/`:
 - Location: Blue USB secret recovery
 - Verify: All active SSH keys backed up
 - Verify: authorized_keys file backed up
-- Update: SECRETS-RECOVERY.md with current key paths
+- Update: secrets-recovery.md with current key paths
 
 ### P3 - Low Priority
 

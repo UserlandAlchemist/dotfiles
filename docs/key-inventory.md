@@ -165,7 +165,7 @@ Since this key was never added to any authorized_keys files or SSH config, it wa
 
 **Verify Blue USB coverage:** (when available)
 ```bash
-# Mount Blue USB first (see SECRETS-RECOVERY.md §3)
+# Mount Blue USB first (see secrets-recovery.md §3)
 ls -la /mnt/keyusb/ssh-keys/
 ```
 
