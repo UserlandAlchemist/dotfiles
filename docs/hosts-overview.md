@@ -120,5 +120,5 @@ This document lists all machines in the Wolfpack, their hardware specs, roles, a
 
 ## Planned Additions (subject to change)
 
-- Offsite backup storage (Hetzner BX11 Storage Box or equivalent)
+- Offsite backup storage (BorgBase) is now active
 - Additional mobile device for 2FA backup redundancy

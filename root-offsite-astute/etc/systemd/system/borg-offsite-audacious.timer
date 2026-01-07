@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily Borg off-site push (audacious-home)
+
+[Timer]
+OnCalendar=*-*-* 14:00:00
+Persistent=true
+WakeSystem=true
+AccuracySec=5min
+RandomizedDelaySec=5min
+
+[Install]
+WantedBy=timers.target

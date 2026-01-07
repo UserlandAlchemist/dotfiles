@@ -215,6 +215,21 @@ Export repository key:
 borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-key-export.txt
 ```
 
+Off-site BorgBase repo keys (export on Astute, then copy to Blue USB):
+
+```sh
+# On Astute (as root)
+install -d -m 0700 /root/tmp-borg-keys
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg key export ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo /root/tmp-borg-keys/audacious-home-key.txt
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo /root/tmp-borg-keys/astute-critical-key.txt
+
+# Copy to Audacious, then to Blue USB
+cp ~/audacious-home-key.txt /mnt/keyusb/borg/
+cp ~/astute-critical-key.txt /mnt/keyusb/borg/
+```
+
 Document repository details:
 
 ```sh
@@ -1028,6 +1043,8 @@ Complete directory tree of Blue USB:
 │   ├── passphrase                      # Borg repository passphrase
 │   ├── patterns                        # Borg include/exclude patterns
 │   ├── repo-key-export.txt             # Borg repository key export
+│   ├── audacious-home-key.txt          # BorgBase repo key (audacious-home)
+│   ├── astute-critical-key.txt         # BorgBase repo key (astute-critical)
 │   └── REPOSITORY-INFO.txt             # Repository location and details
 ├── pgp/
 │   ├── alchemist_public.asc            # Public PGP key (alchemist)
