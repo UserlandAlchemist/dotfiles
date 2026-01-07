@@ -2,7 +2,8 @@
 set -eu
 
 REPO="ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo"
-PATTERNS="/etc/borg-offsite/astute-critical.patterns"
+SRC1="/srv/nas/lucii"
+SRC2="/srv/nas/bitwarden-exports"
 KEY="/root/.ssh/borgbase_offsite"
 PASSFILE="/root/.config/borg-offsite/astute-critical.passphrase"
 
@@ -25,18 +26,28 @@ if [ ! -f "$PASSFILE" ]; then
   exit 1
 fi
 
-if [ ! -f "$PATTERNS" ]; then
-  echo "ERROR: missing patterns file: $PATTERNS" >&2
+if [ ! -d "$SRC1" ]; then
+  echo "ERROR: missing source directory: $SRC1" >&2
   exit 1
+fi
+
+# SRC2 may not exist yet (bitwarden-exports), allow backup to proceed
+if [ ! -d "$SRC2" ]; then
+  echo "WARNING: $SRC2 does not exist, skipping" >&2
 fi
 
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
+# Build source list (only include existing directories)
+SOURCES="$SRC1"
+if [ -d "$SRC2" ]; then
+  SOURCES="$SOURCES $SRC2"
+fi
+
 borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
-  --patterns-from "$PATTERNS" \
   "$REPO"::"astute-critical-{now}" \
-  /
+  $SOURCES
 
 # Note: No prune/compact for append-only repo (BorgBase manages compaction)
