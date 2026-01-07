@@ -220,15 +220,32 @@ Off-site BorgBase repo keys (export on Astute, then copy to Blue USB):
 ```sh
 # On Astute (as root)
 install -d -m 0700 /root/tmp-borg-keys
-BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg key export ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo /root/tmp-borg-keys/audacious-home-key.txt
-BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo /root/tmp-borg-keys/astute-critical-key.txt
 
-# Copy to Audacious, then to Blue USB
+# Export audacious-home repo key
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase" \
+  borg key export ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/audacious-home-key.txt
+
+# Export astute-critical repo key
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase" \
+  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/astute-critical-key.txt
+
+# Copy to Audacious (from Astute)
+scp /root/tmp-borg-keys/*.txt alchemist@audacious:~/
+
+# On Audacious: Copy to Blue USB
 cp ~/audacious-home-key.txt /mnt/keyusb/borg/
 cp ~/astute-critical-key.txt /mnt/keyusb/borg/
+rm ~/audacious-home-key.txt ~/astute-critical-key.txt
+
+# Clean up on Astute
+rm -rf /root/tmp-borg-keys
 ```
+
+**IMPORTANT:** These keys must be exported and stored on Blue USB. Without them, off-site backups are unrecoverable if passphrases are lost.
 
 Document repository details:
 
