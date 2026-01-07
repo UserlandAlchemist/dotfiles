@@ -1,40 +1,8 @@
 #!/bin/sh
-set -eu
+# Install root-power-audacious package
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-DOTFILES_DIR="$(dirname "$PKG_DIR")"
-
-if [ "$(id -u)" -ne 0 ]; then
-  echo "ERROR: run as root" >&2
-  exit 1
-fi
-
-install_unit() {
-  UNIT="$1"
-  SOURCE="$PKG_DIR/etc/systemd/system/$UNIT"
-  TARGET="/etc/systemd/system/$UNIT"
-
-  install -m 0644 "$SOURCE" "$TARGET"
-}
-
-install_udev_rule() {
-  RULE="$1"
-  SOURCE="$PKG_DIR/etc/udev/rules.d/$RULE"
-  TARGET="/etc/udev/rules.d/$RULE"
-
-  mkdir -p /etc/udev/rules.d
-  install -m 0644 "$SOURCE" "$TARGET"
-}
-
-install_script() {
-  RELPATH="$1"
-  SOURCE="$PKG_DIR/$RELPATH"
-  TARGET="/$RELPATH"
-  TARGETDIR="$(dirname "$TARGET")"
-
-  mkdir -p "$TARGETDIR"
-  install -m 0755 "$SOURCE" "$TARGET"
-}
+. "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-power-audacious (systemd units as real files)"
 
@@ -57,7 +25,5 @@ stow -t / \
   --ignore='^usr/local/sbin' \
   root-power-audacious
 
-echo "→ Reloading systemd"
-systemctl daemon-reload
-
-echo "✓ root-power-audacious installed successfully"
+reload_systemd
+install_success
