@@ -38,16 +38,19 @@ fi
 
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
-# Build source list (only include existing directories)
-SOURCES="$SRC1"
+# Backup sources (SRC2 optional if not exists)
 if [ -d "$SRC2" ]; then
-  SOURCES="$SOURCES $SRC2"
-fi
-
-borg create \
+ borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
   "$REPO"::"astute-critical-{now}" \
-  $SOURCES
+  "$SRC1" "$SRC2"
+else
+ borg create \
+  --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
+  --lock-wait 60 \
+  "$REPO"::"astute-critical-{now}" \
+  "$SRC1"
+fi
 
 # Note: No prune/compact for append-only repo (BorgBase manages compaction)
