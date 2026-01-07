@@ -147,8 +147,11 @@ install_sshd_dropin() {
 
 # Reload systemd manager configuration
 reload_systemd() {
-  echo "→ Reloading systemd"
-  systemctl daemon-reload
+  echo "→ Reloading systemd (timeout 30s)"
+  timeout 30 systemctl daemon-reload || {
+    echo "WARNING: daemon-reload timed out or failed (non-fatal)"
+    return 0
+  }
 }
 
 # Reload udev rules
