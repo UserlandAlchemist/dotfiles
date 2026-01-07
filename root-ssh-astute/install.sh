@@ -1,21 +1,8 @@
 #!/bin/sh
-set -eu
+# Install root-ssh-astute package
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-
-if [ "$(id -u)" -ne 0 ]; then
-  echo "ERROR: run as root" >&2
-  exit 1
-fi
-
-install_sshd_dropin() {
-  CONF="$1"
-  SOURCE="$PKG_DIR/etc/ssh/sshd_config.d/$CONF"
-  TARGET="/etc/ssh/sshd_config.d/$CONF"
-
-  mkdir -p /etc/ssh/sshd_config.d
-  install -m 0644 "$SOURCE" "$TARGET"
-}
+. "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-ssh-astute (sshd hardening)"
 
@@ -27,4 +14,4 @@ sshd -t
 echo "→ Restarting sshd"
 systemctl restart ssh
 
-echo "✓ root-ssh-astute installed successfully"
+install_success

@@ -1,13 +1,8 @@
 #!/bin/sh
-set -eu
+# Install root-sudoers-audacious package
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
-DOTFILES_DIR="$(dirname "$PKG_DIR")"
-
-if [ "$(id -u)" -ne 0 ]; then
-  echo "ERROR: run as root" >&2
-  exit 1
-fi
+. "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-sudoers-audacious (NAS mount policy)"
 
@@ -19,4 +14,4 @@ install -o root -g root -m 0440 \
 echo "→ Validating sudoers"
 visudo -c
 
-echo "✓ root-sudoers-audacious installed successfully"
+install_success
