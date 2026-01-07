@@ -672,7 +672,7 @@ Expected result: All secrets restored, ready to deploy dotfiles and restore data
 
 ---
 
-### §4.1.1 Hardware Replacement (Audacious)
+### §4.2 Hardware Replacement (Audacious)
 
 Use this when rebuilding Audacious from scratch on new hardware.
 
@@ -689,7 +689,7 @@ Expected result: Audacious fully rebuilt with secrets and data restored.
 
 ---
 
-### §4.1.2 Hardware Replacement (Astute)
+### §4.3 Hardware Replacement (Astute)
 
 Use this when rebuilding Astute from scratch on new hardware.
 
@@ -705,7 +705,7 @@ Expected result: Astute fully rebuilt with secrets and storage restored.
 
 ---
 
-### §4.2 Partial Recovery (SSH Keys Only)
+### §4.4 Partial Recovery (SSH Keys Only)
 
 Restore just SSH keys after home directory corruption.
 
@@ -754,7 +754,7 @@ Expected result: SSH keys restored and functional.
 
 ---
 
-### §4.3 Borg Repository Recovery
+### §4.5 Borg Repository Recovery
 
 Restore Borg access after losing passphrase or repository key.
 
@@ -799,7 +799,7 @@ Expected result: Borg repository accessible again.
 
 ---
 
-### §4.4 PGP Key Import (Identity Recovery)
+### §4.6 PGP Key Import (Identity Recovery)
 
 Restore PGP keys after system loss or migration.
 
