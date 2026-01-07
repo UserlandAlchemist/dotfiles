@@ -15,8 +15,10 @@ Document the BorgBase offsite backup flow and recovery steps.
 
 ## Repositories
 
-- `audacious-home` — contains the **Audacious Borg repository directory** from Astute
-- `astute-critical` — append-only; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
+- `audacious-home` (j6i5cke1) — **append-only access**; contains the Audacious Borg repository directory from Astute
+- `astute-critical` (y7pc8k07) — **append-only access**; contains `/srv/nas/lucii` and `/srv/nas/bitwarden-exports`
+
+Both repositories are accessed via an append-only SSH key for ransomware protection (key assigned as "Append-Only Access" in BorgBase). Retention must be managed manually via BorgBase web UI or offline full-access key.
 
 ---
 
@@ -77,13 +79,15 @@ sudo borg extract \
 
 ```bash
 export BORG_REPO=/srv/backups/audacious-borg
-export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+export BORG_PASSCOMMAND="cat /root/.config/borg/passphrase"
 
 borg list "$BORG_REPO"
 
 borg extract "$BORG_REPO"::audacious-YYYY-MM-DD \
   home/alchemist
 ```
+
+**Note:** Step 2 uses the LOCAL Borg repo passphrase (`/root/.config/borg/passphrase`), NOT the off-site passphrase. The off-site passphrase is only for accessing BorgBase repositories.
 
 ---
 
@@ -108,26 +112,34 @@ sudo borg extract \
 
 ## Health checks
 
-1. Timers:
+1. **Verify append-only access (BOTH repos):**
+
+   For each repository in BorgBase web UI:
+   - audacious-home (j6i5cke1): Edit Repository → ACCESS → SSH key under "Append-Only Access"
+   - astute-critical (y7pc8k07): Edit Repository → ACCESS → SSH key under "Append-Only Access"
+
+   **CRITICAL:** BorgBase implements append-only via SSH key assignment (not repo-level setting). The `astute-borgbase` key must be assigned as "Append-Only Access" to both repos. Without this, ransomware can delete off-site backups.
+
+2. Timers:
 
 ```bash
 systemctl list-timers | grep borg-offsite
 ```
 
-2. Recent logs:
+3. Recent logs:
 
 ```bash
 journalctl -u borg-offsite-audacious.service --since "1 week ago"
 journalctl -u borg-offsite-astute-critical.service --since "1 week ago"
 ```
 
-3. Monthly checks:
+4. Monthly checks:
 
 ```bash
 journalctl -u borg-offsite-check.service --since "2 months ago"
 ```
 
-4. List archives (force root SSH key):
+5. List archives (force root SSH key):
 
 ```bash
 sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
