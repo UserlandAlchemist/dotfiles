@@ -71,6 +71,17 @@ ssh-*/.ssh/authorized_keys
 borg-user-*/.config/borg/passphrase
 borg-user-*/.config/borg/security/
 
+# BorgBase off-site credentials (sensitive)
+**/borgbase_offsite
+**/*.passphrase
+root-offsite-*/root/.ssh/borgbase_offsite
+root-offsite-*/root/.config/borg-offsite/*.passphrase
+
+# Disaster recovery bundles (encrypted but should not be in repo)
+borgbase-recovery-bundle-*.tar.gz.gpg
+**/recovery-bundle/
+**/.checksums.txt
+
 # PSD runtime state file (can include absolute paths)
 */.config/psd/.psd.conf
 
