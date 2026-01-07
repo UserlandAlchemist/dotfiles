@@ -3,7 +3,6 @@ set -eu
 
 REPO="ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo"
 SRC="/srv/backups/audacious-borg"
-PATTERNS="/etc/borg-offsite/audacious-home.patterns"
 KEY="/root/.ssh/borgbase_offsite"
 PASSFILE="/root/.config/borg-offsite/audacious-home.passphrase"
 
@@ -31,19 +30,13 @@ if [ ! -f "$PASSFILE" ]; then
   exit 1
 fi
 
-if [ ! -f "$PATTERNS" ]; then
-  echo "ERROR: missing patterns file: $PATTERNS" >&2
-  exit 1
-fi
-
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
 borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
-  --patterns-from "$PATTERNS" \
   "$REPO"::"audacious-home-{now}" \
-  /
+  "$SRC"
 
 # Prune old archives (non-fatal - BorgBase may restrict or handle retention themselves)
 echo "Attempting to prune old archives..."
