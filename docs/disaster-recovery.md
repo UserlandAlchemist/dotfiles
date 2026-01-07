@@ -64,8 +64,7 @@ Complete procedures for recovering from catastrophic loss scenarios.
 
 ```bash
 cd ~/dotfiles
-chmod +x verify-blue-usb-recovery.sh
-sudo ./verify-blue-usb-recovery.sh
+sudo scripts/verify-blue-usb-recovery.sh
 ```
 
 If verification fails, populate missing files per docs/secrets-recovery.md §2.
@@ -74,8 +73,7 @@ If verification fails, populate missing files per docs/secrets-recovery.md §2.
 
 ```bash
 cd ~/dotfiles
-chmod +x create-gdrive-recovery-bundle.sh
-./create-gdrive-recovery-bundle.sh
+scripts/create-gdrive-recovery-bundle.sh
 ```
 
 This creates: `~/borgbase-recovery-bundle-YYYYMMDD.tar.gz.gpg`
@@ -242,7 +240,7 @@ Test recovery capabilities without actual disaster:
 
 ### Quarterly Verification (Minimal)
 
-1. Run `verify-blue-usb-recovery.sh`
+1. Run `scripts/verify-blue-usb-recovery.sh`
 2. List BorgBase archives (verify append-only backups running)
 3. Verify Google Drive bundle exists and is recent
 4. Verify GPG passphrase still remembered
