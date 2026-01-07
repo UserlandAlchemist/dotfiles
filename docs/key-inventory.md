@@ -8,9 +8,9 @@
 
 ## Executive Summary
 
-**Total keys on Audacious:** 4 key pairs (8 files)
+**Total keys on Audacious:** 3 key pairs (6 files)
 **Active keys:** 3 key pairs
-**Unused keys:** 1 key pair (id_astute_nas - duplicate, should be deleted)
+**Unused keys:** 0 (id_astute_nas deleted 2026-01-07)
 **Scoping status:** Good - all active keys properly scoped with restrictions
 **Security posture:** Good - forced commands, IP restrictions, no agent forwarding where appropriate
 
@@ -106,32 +106,19 @@
 
 ---
 
-### 4. id_astute_nas (OLD NAS Key) - DUPLICATE/UNUSED
+### 4. id_astute_nas (OLD NAS Key) - DELETED
 
 **Type:** ED25519
 **Fingerprint:** `ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEOErGyh5opRYMlmjtV6Q3oSrSx1t3Vj5lK8jTxNJNja`
 **Comment:** audacious→astute nas automation
-**Location:** ~/.ssh/id_astute_nas (Audacious)
+**Location:** ~~/.ssh/id_astute_nas (Audacious)~~ DELETED
 
-**Used for:** NOTHING (duplicate of id_ed25519_astute_nas)
-
-**Authorized on:** NOWHERE
-
-**SSH config entries:** NONE
-
-**Status:** ✗ UNUSED - Should be deleted
-**Recommendation:** Remove both id_astute_nas and id_astute_nas.pub
+**Status:** ✓ DELETED 2026-01-07
 
 **Analysis:**
-This appears to be an older version of the NAS automation key that was replaced by `id_ed25519_astute_nas` (created Dec 18, newer than id_astute_nas created Dec 21 - wait, that doesn't make sense chronologically).
+This was a duplicate/unused key created Dec 21 2025, likely an attempted replacement for `id_ed25519_astute_nas` that was never deployed. The older key (Dec 18) remained the active one.
 
-Actually looking at dates:
-- id_ed25519_astute_nas: Dec 18 22:22
-- id_astute_nas: Dec 21 16:04
-
-The newer key (Dec 21) is NOT being used. The older key (Dec 18) is the active one. This suggests the Dec 21 key was an attempted replacement that was never deployed.
-
-**Cleanup action:** Delete id_astute_nas and id_astute_nas.pub (the unused newer key).
+Since this key was never added to any authorized_keys files or SSH config, it was safely deleted with no impact on system functionality.
 
 ---
 
@@ -188,15 +175,9 @@ ls -la /mnt/keyusb/ssh-keys/
 
 ### P1 - High Priority
 
-**1. Delete unused key pair (id_astute_nas)**
+**1. ~~Delete unused key pair (id_astute_nas)~~** ✓ COMPLETE 2026-01-07
 
-```bash
-rm ~/.ssh/id_astute_nas ~/.ssh/id_astute_nas.pub
-```
-
-**Rationale:** Unused key, potential confusion, security hygiene.
-
-**Risk:** None - key is not referenced anywhere.
+Unused duplicate key successfully deleted with no impact.
 
 ---
 
