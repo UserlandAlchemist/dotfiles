@@ -247,6 +247,33 @@ rm -rf /root/tmp-borg-keys
 
 **IMPORTANT:** These keys must be exported and stored on Blue USB. Without them, off-site backups are unrecoverable if passphrases are lost.
 
+BorgBase SSH key and passphrases (copy from Astute to Blue USB):
+
+```sh
+# On Astute (as root), copy BorgBase credentials to tmp
+install -d -m 0700 /root/tmp-borgbase-creds
+cp /root/.ssh/borgbase_offsite /root/tmp-borgbase-creds/
+cp /root/.config/borg-offsite/audacious-home.passphrase /root/tmp-borgbase-creds/
+cp /root/.config/borg-offsite/astute-critical.passphrase /root/tmp-borgbase-creds/
+chmod 600 /root/tmp-borgbase-creds/*
+
+# Transfer to Audacious
+scp /root/tmp-borgbase-creds/* alchemist@audacious:~/
+
+# On Audacious: Copy to Blue USB
+cp ~/borgbase_offsite /mnt/keyusb/ssh-backup/
+cp ~/audacious-home.passphrase /mnt/keyusb/borg/
+cp ~/astute-critical.passphrase /mnt/keyusb/borg/
+chmod 600 /mnt/keyusb/ssh-backup/borgbase_offsite
+chmod 600 /mnt/keyusb/borg/*.passphrase
+rm ~/borgbase_offsite ~/audacious-home.passphrase ~/astute-critical.passphrase
+
+# Clean up on Astute
+rm -rf /root/tmp-borgbase-creds
+```
+
+**CRITICAL:** Without the BorgBase SSH key and passphrases on Blue USB, you cannot access off-site backups if Astute is destroyed.
+
 Document repository details:
 
 ```sh
@@ -1054,14 +1081,17 @@ Complete directory tree of Blue USB:
 │   ├── audacious-backup.pub            # Borg SSH public key
 │   ├── id_ed25519_astute_nas           # NAS control SSH private key
 │   ├── id_ed25519_astute_nas.pub       # NAS control SSH public key
+│   ├── borgbase_offsite                # BorgBase SSH private key (for disaster recovery)
 │   ├── config                          # SSH client configuration
 │   └── PASSPHRASES.txt                 # SSH key passphrases and fingerprints
 ├── borg/
-│   ├── passphrase                      # Borg repository passphrase
+│   ├── passphrase                      # Local Borg repository passphrase
 │   ├── patterns                        # Borg include/exclude patterns
-│   ├── repo-key-export.txt             # Borg repository key export
+│   ├── repo-key-export.txt             # Local Borg repository key export
 │   ├── audacious-home-key.txt          # BorgBase repo key (audacious-home)
+│   ├── audacious-home.passphrase       # BorgBase repo passphrase (audacious-home)
 │   ├── astute-critical-key.txt         # BorgBase repo key (astute-critical)
+│   ├── astute-critical.passphrase      # BorgBase repo passphrase (astute-critical)
 │   └── REPOSITORY-INFO.txt             # Repository location and details
 ├── pgp/
 │   ├── alchemist_public.asc            # Public PGP key (alchemist)

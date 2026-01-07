@@ -290,12 +290,15 @@ correct-horse-battery-staple-purple-monkey-dishwasher
 ├── ssh-backup/
 │   ├── id_alchemist (main SSH key)
 │   ├── audacious-backup (Borg SSH key)
-│   └── id_ed25519_astute_nas (NAS control key)
+│   ├── id_ed25519_astute_nas (NAS control key)
+│   └── borgbase_offsite (BorgBase SSH key)
 ├── borg/
 │   ├── passphrase (local Borg repo)
 │   ├── repo-key-export.txt (local Borg repo key)
 │   ├── audacious-home-key.txt (BorgBase repo key)
+│   ├── audacious-home.passphrase (BorgBase repo passphrase)
 │   ├── astute-critical-key.txt (BorgBase repo key)
+│   ├── astute-critical.passphrase (BorgBase repo passphrase)
 │   └── REPOSITORY-INFO.txt (metadata)
 ├── pgp/ (PGP key exports)
 └── docs/

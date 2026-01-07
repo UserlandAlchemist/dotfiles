@@ -27,7 +27,10 @@ MISSING=0
 for file in \
   "$BLUE_USB/borg/audacious-home-key.txt" \
   "$BLUE_USB/borg/astute-critical-key.txt" \
-  "$BLUE_USB/borg/passphrase"; do
+  "$BLUE_USB/borg/passphrase" \
+  "$BLUE_USB/borg/audacious-home.passphrase" \
+  "$BLUE_USB/borg/astute-critical.passphrase" \
+  "$BLUE_USB/ssh-backup/borgbase_offsite"; do
   if [ ! -f "$file" ]; then
     echo "ERROR: Missing $file"
     MISSING=$((MISSING + 1))
@@ -36,41 +39,27 @@ done
 
 if [ $MISSING -gt 0 ]; then
   echo "ERROR: Blue USB incomplete. Run verify-blue-usb-recovery.sh first."
+  echo "See docs/secrets-recovery.md for BorgBase credential backup procedure."
   exit 1
 fi
 
 echo "✓ Blue USB verified"
 echo
 
-# Verify we can access BorgBase SSH key on Astute
-echo "Checking for BorgBase SSH key on Astute..."
-if ! ssh astute "test -f /root/.ssh/borgbase_offsite"; then
-  echo "ERROR: /root/.ssh/borgbase_offsite not found on Astute"
-  echo "Cannot create recovery bundle without BorgBase SSH key."
-  exit 1
-fi
-
-echo "✓ BorgBase SSH key found on Astute"
-echo
-
 # Create working directory
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
 
-echo "Gathering secrets from Blue USB and Astute..."
+echo "Gathering secrets from Blue USB..."
 
 # Copy from Blue USB
 cp "$BLUE_USB/borg/audacious-home-key.txt" .
 cp "$BLUE_USB/borg/astute-critical-key.txt" .
 cp "$BLUE_USB/borg/passphrase" local-borg-passphrase.txt
-
-# Copy BorgBase SSH key from Astute
-scp astute:/root/.ssh/borgbase_offsite .
+cp "$BLUE_USB/borg/audacious-home.passphrase" .
+cp "$BLUE_USB/borg/astute-critical.passphrase" .
+cp "$BLUE_USB/ssh-backup/borgbase_offsite" .
 chmod 600 borgbase_offsite
-
-# Copy BorgBase passphrases from Astute
-scp astute:/root/.config/borg-offsite/audacious-home.passphrase .
-scp astute:/root/.config/borg-offsite/astute-critical.passphrase .
 
 # Create recovery instructions
 cat > RECOVERY-INSTRUCTIONS.md << 'EOF'
