@@ -39,7 +39,7 @@ fi
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
 borg create \
-  --verbose --stats --compression lz4 \
+  --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
   --patterns-from "$PATTERNS" \
   "$REPO"::"audacious-home-{now}" \
