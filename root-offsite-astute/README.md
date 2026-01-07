@@ -6,7 +6,15 @@ This package backs up specific directories directly:
 - Audacious Borg repo: `/srv/backups/audacious-borg` → `audacious-home` repo
 - Critical data: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo
 
-The `astute-critical` repository must be **append-only** in BorgBase.
+The `astute-critical` repository must be **append-only** in BorgBase to protect against ransomware.
+
+**CRITICAL: Verify append-only mode is enabled:**
+1. Log in to BorgBase web UI
+2. Navigate to the `astute-critical` repository (y7pc8k07)
+3. Settings → Repository Settings → Append-only mode: **ENABLED**
+4. If not enabled, enable it immediately
+
+Without append-only mode, ransomware can delete off-site backups, defeating the entire purpose of off-site storage.
 
 Note: Patterns files in `etc/borg-offsite/` are unused (legacy). Backups target specific directories directly.
 
