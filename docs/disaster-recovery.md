@@ -69,7 +69,16 @@ cd ~/dotfiles
 sudo scripts/verify-secrets-usb.sh
 ```
 
+This checks that all required files exist. If checksums have been saved (see below), it also verifies file integrity.
+
 If verification fails, populate missing files per docs/secrets-recovery.md §2.
+
+**After initial population or any updates:**
+```bash
+sudo scripts/verify-secrets-usb.sh --save-checksums
+```
+
+This computes SHA256 checksums of all files and saves them to `.checksums.txt` on the USB. Subsequent runs will verify files haven't been corrupted or tampered with.
 
 ### Create Google Drive Bundle (Quarterly or When Secrets Change)
 
@@ -88,6 +97,11 @@ Upload to Google Drive → Disaster Recovery folder, then delete local copy.
 - Local Borg passphrase changed
 - After any disaster recovery test
 - Minimum: quarterly
+
+**After adding/updating any secrets on Secrets USB:**
+```bash
+sudo scripts/verify-secrets-usb.sh --save-checksums
+```
 
 ### Update Trusted Person USB (Semi-Annually)
 
