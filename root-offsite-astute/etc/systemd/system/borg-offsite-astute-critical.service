@@ -1,5 +1,5 @@
 [Unit]
-Description=Borg off-site: Astute critical data to BorgBase (append-only)
+Description=Borg off-site: Astute critical data to BorgBase (append-only access)
 Wants=network-online.target
 After=network-online.target
 RequiresMountsFor=/srv/nas /var/lib/borg-offsite /var/cache/borg-offsite

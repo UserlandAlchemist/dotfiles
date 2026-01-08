@@ -4,7 +4,7 @@ set -eu
 REPO="ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo"
 SRC1="/srv/nas/lucii"
 SRC2="/srv/nas/bitwarden-exports"
-KEY="/root/.ssh/borgbase_offsite"
+KEY="/root/.ssh/borgbase-offsite-astute"
 PASSFILE="/root/.config/borg-offsite/astute-critical.passphrase"
 
 BORG_BASE_DIR="/var/lib/borg-offsite/astute-critical"
@@ -53,4 +53,4 @@ else
   "$SRC1"
 fi
 
-# Note: No prune/compact for append-only repo (BorgBase manages compaction)
+# Note: No prune/compact for append-only access (BorgBase manages compaction)

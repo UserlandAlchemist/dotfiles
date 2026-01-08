@@ -1,0 +1,20 @@
+[Unit]
+Description=Monthly Borg off-site check (audacious-home)
+Wants=network-online.target
+After=network-online.target
+RequiresMountsFor=/var/lib/borg-offsite /var/cache/borg-offsite
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+StandardOutput=journal
+StandardError=journal
+
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+
+TimeoutStartSec=0
+
+ExecStart=/usr/local/lib/borg-offsite/run-check.sh

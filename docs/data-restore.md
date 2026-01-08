@@ -81,16 +81,17 @@ Steps:
 
 ```sh
 sudo install -d -m 0700 /root/.ssh /root/.config/borg-offsite
-sudo cp /mnt/keyusb/ssh-backup/borgbase_offsite /root/.ssh/
+sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-audacious
+sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-astute /root/.ssh/borgbase-offsite-astute
 sudo cp /mnt/keyusb/borg/audacious-home.passphrase /root/.config/borg-offsite/
 sudo cp /mnt/keyusb/borg/astute-critical.passphrase /root/.config/borg-offsite/
-sudo chmod 600 /root/.ssh/borgbase_offsite /root/.config/borg-offsite/*.passphrase
+sudo chmod 600 /root/.ssh/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-astute /root/.config/borg-offsite/*.passphrase
 ```
 
 2. Use `BORG_RSH` and `BORG_PASSCOMMAND` in offsite commands if needed:
 
 ```sh
-export BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes"
+export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
 ```
 
 Expected result: BorgBase repo access works from the recovery host.
@@ -165,28 +166,29 @@ Expected result: Audacious home data restored from Astute.
 Use when Astute is unavailable or destroyed, and you must pull from offsite.
 
 Steps:
-1. Restore the Audacious Borg repo directory from BorgBase:
+1. Restore Audacious home data from BorgBase:
 
 ```sh
+export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
+export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+
+sudo borg list \
+  ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo
+
 sudo borg extract \
-  ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD \
-  srv/backups/audacious-borg
-```
-
-2. Restore Audacious data from the recovered repo:
-
-```sh
-export BORG_REPO=/srv/backups/audacious-borg
-export BORG_PASSCOMMAND="cat /root/.config/borg/passphrase"
-
-borg list "$BORG_REPO"
-borg extract "$BORG_REPO"::audacious-YYYY-MM-DD \
+  ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD \
   home/alchemist
 ```
 
-3. Restore Astute critical data (if rebuilding Astute):
+2. Restore Astute critical data (if rebuilding Astute):
 
 ```sh
+export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
+export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase"
+
+sudo borg list \
+  ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
+
 sudo borg extract \
   ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo::astute-critical-YYYY-MM-DD \
   srv/nas/lucii \

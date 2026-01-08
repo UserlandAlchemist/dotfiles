@@ -151,7 +151,8 @@ borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-ke
 ### §2.3 BorgBase keys and credentials
 
 Use `docs/offsite-backup.md` to export BorgBase repo keys and copy the SSH key and passphrases to:
-- `/mnt/keyusb/ssh-backup/borgbase_offsite`
+- `/mnt/keyusb/ssh-backup/borgbase-offsite-audacious`
+- `/mnt/keyusb/ssh-backup/borgbase-offsite-astute`
 - `/mnt/keyusb/borg/audacious-home-key.txt`
 - `/mnt/keyusb/borg/astute-critical-key.txt`
 - `/mnt/keyusb/borg/audacious-home.passphrase`
@@ -342,7 +343,8 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 │   ├── audacious-backup.pub
 │   ├── id_ed25519_astute_nas
 │   ├── id_ed25519_astute_nas.pub
-│   ├── borgbase_offsite
+│   ├── borgbase-offsite-audacious
+│   ├── borgbase-offsite-astute
 │   ├── config
 │   └── PASSPHRASES.txt
 ├── borg/
