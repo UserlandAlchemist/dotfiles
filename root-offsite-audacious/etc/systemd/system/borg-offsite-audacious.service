@@ -10,6 +10,7 @@ User=root
 Group=root
 StandardOutput=journal
 StandardError=journal
+SuccessExitStatus=1
 
 Nice=10
 IOSchedulingClass=best-effort
