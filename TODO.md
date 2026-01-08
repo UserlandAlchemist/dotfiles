@@ -93,6 +93,9 @@ Recorded intel-microcode and firmware-amd-graphics in the Astute software list a
 ## 2026-01-08 01:39 - Astute Manual Package Tracking
 Added nano, nftables, and tasksel meta packages to the Astute software inventory after marking them manual. (51aaa91)
 
+## 2026-01-08 01:41 - Astute Install List Update
+Added nano, nftables, firmware/microcode, and tasksel meta packages to the Astute base install list; removed nfs-common. (778039c)
+
 ## 2026-01-07 20:10 - Off-Site Backup Implementation (Phase 3, Task #9)
 Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-offsite-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
 
