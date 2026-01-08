@@ -12,9 +12,13 @@ if [[ ! -f "$DOC" ]]; then
 fi
 
 # Extract documented packages (lines starting with "- packagename")
-# Skip special cases: heroic (local .deb), comments, headers
-documented=$(grep '^- [a-z0-9]' "$DOC" | \
-    grep -v '(local .deb)' | \
+# Limit to APT-managed sections (exclude Non-APT Software)
+documented=$(awk '
+    /^## Non-APT Software/ { in_apt = 0 }
+    NR == 1 { in_apt = 1 }
+    in_apt { print }
+' "$DOC" | \
+    grep '^- [a-z0-9]' | \
     sed 's/^- \([a-z0-9+.][a-z0-9+.-]*\).*/\1/' | \
     sort -u)
 
