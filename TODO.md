@@ -69,6 +69,9 @@ Created lib/install.sh with 9 reusable functions, refactored all 13 root-* insta
 ## 2026-01-07 22:00 - Disaster Recovery Infrastructure
 Fixed Secrets USB missing BorgBase credentials. Created three-tier recovery strategy (Secrets USB + Trusted Copy + Google Drive) with SHA256 verification. Renamed "Blue USB" → "Secrets USB" throughout. Created verify/clone/bundle scripts. Audited both hosts for leftover secrets (all clean). Enhanced .gitignore protection. (5d560cd, 4da5fa6, 8938021, 6e399dc, da71619, 6a27cf5, 90b1495, 703fd50, 34978d5)
 
+## 2026-01-08 01:13 - Documentation Alignment + Drift Check
+Refocused threat model as timeless design doc and trimmed security audit to an operational log. Removed duplicated overview/offsite documentation. Updated drift checker to ignore non-APT installs and refreshed Audacious software list (GTK theme tools); drift check clean. (8b82c4d, dd5fd62, 44ed3e3)
+
 ## 2026-01-07 20:10 - Off-Site Backup Implementation (Phase 3, Task #9)
 Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-offsite-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
 
