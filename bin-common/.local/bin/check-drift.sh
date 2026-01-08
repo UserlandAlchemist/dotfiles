@@ -22,13 +22,6 @@ if [[ ! -f "$DOC" ]]; then
     exit 1
 fi
 
-mode="full"
-case "$DOC" in
-    *astute*)
-        mode="missing-only"
-        ;;
-esac
-
 # Extract documented packages (lines starting with "- packagename")
 # Limit to APT-managed sections and skip local deb markers.
 documented=$( { awk '
@@ -53,11 +46,7 @@ excluded=$( { awk '
     sort -u)
 
 # Get actually installed packages
-if [[ "$mode" == "missing-only" ]]; then
-    installed=$(dpkg-query -W -f '${Package}\n' | sort -u)
-else
-    installed=$(apt-mark showmanual | sort -u)
-fi
+installed=$(apt-mark showmanual | sort -u)
 if [[ -n "$excluded" ]]; then
     installed=$(comm -23 <(echo "$installed") <(echo "$excluded"))
 fi
@@ -67,13 +56,11 @@ not_installed=$(comm -23 <(echo "$documented") <(echo "$installed"))
 not_documented=$(comm -13 <(echo "$documented") <(echo "$installed"))
 
 # Report
-if [[ -z "$not_installed" ]]; then
-    if [[ "$mode" == "missing-only" || -z "$not_documented" ]]; then
-        echo "✓ No drift detected"
-        echo "  Documented: $(echo "$documented" | wc -l) packages"
-        echo "  Installed:  $(echo "$installed" | wc -l) packages"
-        exit 0
-    fi
+if [[ -z "$not_installed" ]] && [[ -z "$not_documented" ]]; then
+    echo "✓ No drift detected"
+    echo "  Documented: $(echo "$documented" | wc -l) packages"
+    echo "  Installed:  $(echo "$installed" | wc -l) packages"
+    exit 0
 fi
 
 echo "⚠ Drift detected between documentation and system"
@@ -85,7 +72,7 @@ if [[ -n "$not_installed" ]]; then
     echo
 fi
 
-if [[ "$mode" != "missing-only" && -n "$not_documented" ]]; then
+if [[ -n "$not_documented" ]]; then
     echo "Installed but NOT documented:"
     echo "$not_documented" | sed 's/^/  - /'
     echo
