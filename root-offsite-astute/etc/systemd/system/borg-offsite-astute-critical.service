@@ -17,4 +17,4 @@ IOSchedulingPriority=7
 
 TimeoutStartSec=0
 
-ExecStart=/usr/bin/systemd-inhibit --what=sleep --mode=block /usr/local/lib/borg-offsite/run-astute-critical.sh
+ExecStart=/usr/bin/systemd-inhibit --what=shutdown:sleep --mode=block /usr/local/lib/borg-offsite/run-astute-critical.sh
