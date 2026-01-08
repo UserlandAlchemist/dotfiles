@@ -61,6 +61,8 @@ R /home/alchemist
 - /home/alchemist/.claude/projects/**/tool-results/**
 - /home/alchemist/.local/share/claude/versions
 - /home/alchemist/.local/share/claude/versions/**
+- /home/alchemist/.local/bin/prismlauncher
+- /home/alchemist/.local/bin/vcv-rack
 
 # 4) Application-specific caches (keep parent dirs, exclude caches only)
 - /home/alchemist/.emacs.d/eln-cache
@@ -96,6 +98,8 @@ R /home/alchemist
 - /home/alchemist/.config/BraveSoftware/**/Code?Cache/**
 - /home/alchemist/.config/BraveSoftware/**/GPUCache
 - /home/alchemist/.config/BraveSoftware/**/GPUCache/**
+- /home/alchemist/.config/discord
+- /home/alchemist/.config/discord/**
 
 # 6) Large application data (exclude completely)
 - /home/alchemist/.codex

@@ -53,4 +53,3 @@ Timers are staggered to avoid simultaneous uploads and network contention.
 
 - `astute-critical` uses append-only access; do not prune or compact.
 - Logs: `journalctl -u borg-offsite-*.service`
-- Patterns in `etc/borg-offsite/` are unused (legacy).

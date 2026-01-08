@@ -13,10 +13,8 @@ install_unit borg-offsite-check.timer
 
 install_script usr/local/lib/borg-offsite/run-astute-critical.sh
 install_script usr/local/lib/borg-offsite/run-check.sh
-install_config etc/borg-offsite/astute-critical.patterns
 
 # Note: stow not used - all files installed directly above
-# Patterns files are legacy/unused but kept for potential future use
 
 reload_systemd
 install_success
