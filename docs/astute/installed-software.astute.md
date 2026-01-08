@@ -31,7 +31,6 @@ Last drift check: 2026-01-08
 
 ### Utilities
 - ethtool — NIC tuning
-- fdisk — disk partitioning tool
 - git — version control
 - stow — dotfile deployment
 - htop — process monitor
