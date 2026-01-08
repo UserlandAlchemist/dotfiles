@@ -52,8 +52,12 @@ excluded=$( { awk '
     sed 's/^- \([a-z0-9+.][a-z0-9+.-]*\).*/\1/' | \
     sort -u)
 
-# Get actually installed packages marked manual
-installed=$(apt-mark showmanual | sort -u)
+# Get actually installed packages
+if [[ "$mode" == "missing-only" ]]; then
+    installed=$(dpkg-query -W -f '${Package}\n' | sort -u)
+else
+    installed=$(apt-mark showmanual | sort -u)
+fi
 if [[ -n "$excluded" ]]; then
     installed=$(comm -23 <(echo "$installed") <(echo "$excluded"))
 fi
