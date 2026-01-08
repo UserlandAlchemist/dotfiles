@@ -35,7 +35,7 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 - `astute-idle-suspend.service` - Runs idle check script
 - `astute-idle-check.sh` - Suspends system if all checks pass:
   - No active SSH sessions (interactive terminals)
-  - No systemd inhibitors present
+  - No sleep inhibitors present
   - No recent NAS filesystem activity (10 minute window)
   - No active Jellyfin clients (20 minute window)
 
@@ -68,7 +68,7 @@ Astute is a low-power NAS/backup server designed to suspend on idle and wake on 
 1. Timer triggers every 3 minutes
 2. `astute-idle-check.sh` runs checks:
    - `w -h` - Any interactive SSH or local console sessions (pts/ or tty)?
-   - `systemd-inhibit --list` - Any sleep inhibitors?
+   - `systemd-inhibit --list --what=sleep` - Any sleep inhibitors?
    - `find /srv/nas -maxdepth 4 -mmin -10` - Recent NAS file activity?
    - Jellyfin API - Any active clients in last 20 minutes?
 3. If all clear: `systemctl suspend`
@@ -133,7 +133,7 @@ See `mako-audacious/README.md` for notification styling details.
 **Inhibitor leak detection:**
 ```sh
 # Check for orphaned inhibitors
-systemd-inhibit --list --mode=block
+systemd-inhibit --list --what=sleep --mode=block
 ```
 
 ## Installation

@@ -39,8 +39,8 @@ if [ "$ASTUTE_IGNORE_LOGIN_SESSIONS" -eq 0 ]; then
 	fi
 fi
 
-# Check for active inhibitors
-if systemd-inhibit --list --no-legend | grep -q .; then
+# Check for active sleep inhibitors only
+if systemd-inhibit --list --no-legend --what=sleep | grep -q .; then
 	echo "Astute staying awake - sleep inhibitor active"
     logger -t "$TAG" "Active inhibitor(s) detected; skipping suspend"
     exit 0
