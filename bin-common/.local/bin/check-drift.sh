@@ -31,24 +31,24 @@ esac
 
 # Extract documented packages (lines starting with "- packagename")
 # Limit to APT-managed sections and skip local deb markers.
-documented=$(awk '
+documented=$( { awk '
     BEGIN { in_apt = 1 }
     /^## Non-APT Software/ { in_apt = 0 }
     in_apt { print }
 ' "$DOC" | \
     grep '^- [a-z0-9]' | \
-    grep -v '(local deb' | \
+    grep -v '(local deb' || true; } | \
     sed 's/^- \([a-z0-9+.][a-z0-9+.-]*\).*/\1/' | \
     sort -u)
 
 # Local deb entries should not be part of APT drift checks.
-excluded=$(awk '
+excluded=$( { awk '
     BEGIN { in_apt = 1 }
     /^## Non-APT Software/ { in_apt = 0 }
     in_apt { print }
 ' "$DOC" | \
     grep '^- [a-z0-9]' | \
-    grep -i 'local deb' | \
+    grep -i 'local deb' || true; } | \
     sed 's/^- \([a-z0-9+.][a-z0-9+.-]*\).*/\1/' | \
     sort -u)
 
