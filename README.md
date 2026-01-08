@@ -157,7 +157,7 @@ Each host has complete rebuild documentation:
 **Audacious:**
 - [`docs/audacious/install.audacious.md`](docs/audacious/install.audacious.md) — Full installation from scratch
 - [`docs/audacious/recovery.audacious.md`](docs/audacious/recovery.audacious.md) — Boot and ZFS recovery
-- [`docs/audacious/restore.audacious.md`](docs/audacious/restore.audacious.md) — Borg data restoration
+- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
 - [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
 - [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
 
@@ -171,7 +171,9 @@ Each host has complete rebuild documentation:
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
-- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery steps
+- [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
+- [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
+- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
 - [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
 
 ---

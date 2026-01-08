@@ -3,7 +3,7 @@
 Security assumptions, threat actors, attack surfaces, and acceptable risks for Project Shipshape.
 
 **Scope:** The Wolfpack (Audacious, Astute, Artful, Steam Deck, mobile devices)
-**Operational posture and audit findings:** `docs/security-audit.md`
+**Operational posture and audit findings:** tracked in `TODO.md` session notes.
 
 ---
 
@@ -267,4 +267,4 @@ Define the threats this system is designed to withstand, make tradeoffs explicit
 
 ## Maintenance
 
-Review this document after major infrastructure changes and during periodic recovery drills. Track operational posture and audit findings in `docs/security-audit.md`.
+Review this document after major infrastructure changes and during periodic recovery drills. Track operational posture and audit findings in `TODO.md` session notes.

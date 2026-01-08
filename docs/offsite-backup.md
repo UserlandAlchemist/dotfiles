@@ -1,6 +1,6 @@
 # Offsite Backup
 
-Document the BorgBase offsite backup flow and recovery steps.
+Document the BorgBase offsite backup flow and recovery materials.
 
 ---
 
@@ -37,6 +37,64 @@ Both repositories are accessed via an append-only SSH key for ransomware protect
 
 ---
 
+## Secrets USB recovery materials
+
+Export BorgBase repo keys and credentials to the Secrets USB. Do this after repo init or any credential rotation.
+
+Steps:
+1. Export BorgBase repo keys on Astute (as root):
+
+```sh
+install -d -m 0700 /root/tmp-borg-keys
+
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase" \
+  borg key export ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/audacious-home-key.txt
+
+BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase" \
+  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/astute-critical-key.txt
+```
+
+2. Copy repo keys to Audacious, then to the Secrets USB:
+
+```sh
+scp /root/tmp-borg-keys/*.txt alchemist@audacious:~/
+
+cp ~/audacious-home-key.txt /mnt/keyusb/borg/
+cp ~/astute-critical-key.txt /mnt/keyusb/borg/
+rm ~/audacious-home-key.txt ~/astute-critical-key.txt
+
+rm -rf /root/tmp-borg-keys
+```
+
+3. Copy BorgBase SSH key and passphrases to the Secrets USB:
+
+```sh
+install -d -m 0700 /root/tmp-borgbase-creds
+cp /root/.ssh/borgbase_offsite /root/tmp-borgbase-creds/
+cp /root/.config/borg-offsite/audacious-home.passphrase /root/tmp-borgbase-creds/
+cp /root/.config/borg-offsite/astute-critical.passphrase /root/tmp-borgbase-creds/
+chmod 600 /root/tmp-borgbase-creds/*
+
+scp /root/tmp-borgbase-creds/* alchemist@audacious:~/
+
+cp ~/borgbase_offsite /mnt/keyusb/ssh-backup/
+cp ~/audacious-home.passphrase /mnt/keyusb/borg/
+cp ~/astute-critical.passphrase /mnt/keyusb/borg/
+chmod 600 /mnt/keyusb/ssh-backup/borgbase_offsite
+chmod 600 /mnt/keyusb/borg/*.passphrase
+rm ~/borgbase_offsite ~/audacious-home.passphrase ~/astute-critical.passphrase
+
+rm -rf /root/tmp-borgbase-creds
+```
+
+Expected result: Secrets USB contains BorgBase repo keys, SSH key, and passphrases.
+
+---
+
 ## Repo initialization
 
 Run once per repo (as root). Force the root SSH key:
@@ -63,52 +121,12 @@ sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
 
 ---
 
-## Restore: Audacious (from offsite)
+## Restore
 
-This is a two-step restore (repo restore, then data restore).
-
-1. Restore the Borg repo directory from BorgBase:
-
-```bash
-sudo borg extract \
-  ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD \
-  srv/backups/audacious-borg
-```
-
-2. Restore data from the recovered repo:
-
-```bash
-export BORG_REPO=/srv/backups/audacious-borg
-export BORG_PASSCOMMAND="cat /root/.config/borg/passphrase"
-
-borg list "$BORG_REPO"
-
-borg extract "$BORG_REPO"::audacious-YYYY-MM-DD \
-  home/alchemist
-```
-
-**Note:** Step 2 uses the LOCAL Borg repo passphrase (`/root/.config/borg/passphrase`), NOT the off-site passphrase. The off-site passphrase is only for accessing BorgBase repositories.
-
----
-
-## Restore: Astute critical data
-
-1. List archives:
-
-```bash
-sudo borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
-```
-
-2. Extract to a staging path, then move into place:
-
-```bash
-sudo borg extract \
-  ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo::astute-critical-YYYY-MM-DD \
-  srv/nas/lucii \
-  srv/nas/bitwarden-exports
-```
-
----
+All restore procedures are centralized in `docs/data-restore.md`. Use that guide for:
+- Audacious data restore from BorgBase.
+- Astute critical data restore from BorgBase.
+- Full-loss recovery flow.
 
 ## Health checks
 
