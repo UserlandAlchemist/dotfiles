@@ -2,7 +2,7 @@
 
 **Purpose:** Restore audacious user data and services from Borg backups on astute.
 **Prereqs:** System boots (see `recovery.audacious.md`) and network is up.
-**Secrets:** Blue encrypted USB key contains SSH keys and Borg material.
+**Secrets:** Secrets USB (encrypted) contains SSH keys and Borg material.
 
 ---
 
@@ -60,13 +60,13 @@ chmod 600 ~/.config/borg/passphrase
 ```
 
 If `borg-user-audacious` is not available, recreate `~/.config/borg/passphrase`
-from the blue USB or Bitwarden, then `chmod 600` it.
+from the Secrets USB or Bitwarden, then `chmod 600` it.
 
 Expected result: passphrase and patterns exist with correct permissions.
 
 ---
 
-## §4 Restore SSH keys from the blue USB
+## §4 Restore SSH keys from the Secrets USB
 
 Unlock the USB key to recover SSH material and Borg repo exports.
 
@@ -293,7 +293,7 @@ Expected result: ZFS is healthy and a manual backup completes.
 
 ## Appendix A: Secrets USB contents
 
-The blue USB key stores:
+The Secrets USB stores:
 - SSH keys (`audacious-backup`, `id_alchemist`)
 - `~/.ssh/config` and `known_hosts`
 - Borg passphrase

@@ -192,7 +192,7 @@ Never committed to git:
 - API tokens (`.config/*/api.token`)
 - SSH known_hosts
 
-Recovery location: Encrypted USB key (blue) contains all secrets.
+Recovery location: Secrets USB (encrypted) contains all secrets.
 
 ---
 

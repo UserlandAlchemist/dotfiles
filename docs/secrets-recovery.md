@@ -372,8 +372,8 @@ Create quick-start guide for disaster recovery:
 
 ```sh
 cat > /mnt/keyusb/QUICK-START.txt <<'EOF'
-BLUE USB RECOVERY QUICK-START
-=============================
+SECRETS USB RECOVERY QUICK-START
+=================================
 
 This USB contains all secrets needed to recover the Wolfpack.
 
