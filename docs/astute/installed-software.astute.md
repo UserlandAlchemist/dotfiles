@@ -8,6 +8,10 @@ Last drift check: 2026-01-08
 
 ## Base System (via install.astute.md §1-7)
 
+### Firmware & microcode
+- intel-microcode — CPU microcode updates
+- firmware-amd-graphics — AMD GPU firmware
+
 ### Crypto & storage
 - cryptsetup — LUKS tooling for the admin USB (optional)
 
