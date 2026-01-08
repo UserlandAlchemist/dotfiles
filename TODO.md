@@ -72,6 +72,9 @@ Fixed Secrets USB missing BorgBase credentials. Created three-tier recovery stra
 ## 2026-01-08 01:13 - Documentation Alignment + Drift Check
 Refocused threat model as timeless design doc and trimmed security audit to an operational log. Removed duplicated overview/offsite documentation. Updated drift checker to ignore non-APT installs and refreshed Audacious software list (GTK theme tools); drift check clean. (8b82c4d, dd5fd62, 44ed3e3)
 
+## 2026-01-08 01:17 - Astute Drift Check
+Confirmed jellyfin-ffmpeg7 and zfs-zed are installed on Astute, removed nfs-common from inventory, and refreshed drift-check date. (ec48d44)
+
 ## 2026-01-07 20:10 - Off-Site Backup Implementation (Phase 3, Task #9)
 Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-offsite-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
 
