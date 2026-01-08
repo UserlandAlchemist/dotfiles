@@ -1,31 +1,53 @@
 R /home/alchemist
 
-# 1) Exclude hidden anywhere (first match wins)
-- sh:**/.*
-
-# 2) Explicit excludes (top-level relative to $HOME)
+# 1) Explicit excludes (top-level relative to $HOME)
 - sh:nas
 - sh:nas/**
 - sh:Music/**
 - sh:Downloads/**
+- sh:Games/**
 - sh:go/**
 
-# 3) Application / cache exclusions
+# 2) Application / cache exclusions
 - sh:.cache/**
+- sh:.emacs.d/eln-cache/**
+- sh:.emacs.d/elpa/**
+- sh:.emacs.d/auto-save-list/**
+- sh:.emacs.d/url/**
+- sh:.emacs.d/recentf
+- sh:.emacs.d/places
+- sh:.emacs.d/bookmarks
+- sh:.emacs.d/sessions/**
 - sh:.local/share/Trash/**
+- sh:.local/share/recently-used.xbel
+- sh:.local/share/containers/**
+- sh:.bash_history-*.tmp
 - sh:.thumbnails/**
 - sh:.var/**
 - sh:.npm/**
 - sh:.cargo/**
+- sh:.rustup/**
 - sh:.mozilla/**
-
-# 4) Steam (all known locations)
+- sh:.config/google-chrome/**/Cache/**
+- sh:.config/google-chrome/**/Code Cache/**
+- sh:.config/google-chrome/**/GPUCache/**
+- sh:.config/chromium/**/Cache/**
+- sh:.config/chromium/**/Code Cache/**
+- sh:.config/chromium/**/GPUCache/**
+- sh:.config/BraveSoftware/**/Cache/**
+- sh:.config/BraveSoftware/**/Code Cache/**
+- sh:.config/BraveSoftware/**/GPUCache/**
+- sh:.wine/**
 - sh:.steam/**
+- sh:.steampath
+- sh:.steampid
 - sh:.local/share/Steam/**
+
+# 3) Steam (all known locations)
 - sh:Steam/**
 
-# 5) Include everything else under ~
+# 4) Include everything else under ~
 + sh:**
 
-# 6) Catch-all (anything not matched above is out)
+# 5) Catch-all (anything not matched above is out)
 - sh:**
