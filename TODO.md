@@ -57,8 +57,8 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
-## 2026-01-08 15:20 - Astute Networkd Migration Package
-Created root-network-astute package for ifupdown → systemd-networkd migration. Fixes DNS failures when offsite backups wake system (ifupdown doesn't properly signal network-online.target). Package includes systemd-networkd + systemd-resolved configuration with wait-online service. Updated install docs and software inventory. Ready for migration on Astute. (5946f36)
+## 2026-01-08 16:30 - Astute Networkd Migration Complete
+Migrated Astute from ifupdown to systemd-networkd + systemd-resolved. Fixed two boot timing issues: SSH binding failure (added network-online dependency) and wait-online hang (limited to enp0s31f6, 30s timeout, IPv4-only). Migration successful, boot time ~5s for network, SSH accessible immediately. Offsite backup services already had correct network-online dependencies. (5946f36, 7e6cd26, dc98e39)
 
 ## 2026-01-08 00:49 - Documentation Consolidation
 Comprehensive audit of all documentation. Fixed terminology inconsistencies (6 "blue USB" → "Secrets USB"). Eliminated 659 lines (23.6%) of duplication and low-value content. Deleted key-inventory.md (296 lines, content duplicated elsewhere). Removed implementation tasks from threat-model.md (161 lines). Removed generic best practices from secrets-recovery.md (72 lines). Changed 9 docs from 600 to 644 permissions. (08c2e89, b72ad04)
