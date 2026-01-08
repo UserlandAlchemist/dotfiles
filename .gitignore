@@ -11,7 +11,7 @@
 # LLM collaboration task files (ephemeral state, not permanent docs)
 CODEX-TODO.txt
 AGENTS.md
-AGENTS-IDENTITY-POLICY.md
+identity-policy.md
 
 # Emacs-generated state and caches
 */.emacs.d/eln-cache/
