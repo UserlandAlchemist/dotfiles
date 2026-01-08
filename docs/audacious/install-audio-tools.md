@@ -53,7 +53,7 @@ Expected result: Build environment ready for audio software compilation.
 
 ---
 
-## §1 Install sfizz (SFZ Sampler)
+## §1 Install sfizz (SFZ sampler)
 
 sfizz is an LV2/VST3 plugin for playing SFZ sample instruments. Used in Ardour and other DAWs.
 
@@ -83,7 +83,7 @@ Expected result: Source code extracted and ready to build.
 
 ---
 
-### §1.2 Build and Install sfizz
+### §1.2 Build and install sfizz
 
 Steps:
 1. Create build directory:
@@ -150,7 +150,7 @@ Expected result: sfizz LV2 plugin available in Ardour and other LV2 hosts.
 
 ---
 
-### §1.3 Document Installation
+### §1.3 Document installation
 
 Record version and date for future reference:
 
@@ -258,7 +258,7 @@ Expected result: Zyn-Fusion available as standalone and LV2 plugin.
 
 ---
 
-### §2.3 Desktop Integration (Optional)
+### §2.3 Desktop integration (optional)
 
 Create application launcher if not created by install script:
 
@@ -286,7 +286,7 @@ Expected result: Can launch from application menu.
 
 ---
 
-## §3 Install VCV Rack (Eurorack Simulator)
+## §3 Install VCV Rack (Eurorack simulator)
 
 VCV Rack is a virtual modular synthesizer platform. Used as standalone learning tool.
 
@@ -374,7 +374,7 @@ Expected result: VCV Rack launches from anywhere.
 
 ---
 
-### §3.3 Desktop Integration
+### §3.3 Desktop integration
 
 Create application launcher:
 
@@ -402,7 +402,7 @@ Expected result: Can launch from application menu.
 
 ---
 
-### §3.4 VCV Account and Plugins
+### §3.4 VCV account and plugins
 
 Steps:
 1. Launch VCV Rack
@@ -421,9 +421,9 @@ Expected result: VCV Rack configured with plugin library access.
 
 ---
 
-## §4 Version Management
+## §4 Version management
 
-### §4.1 Track Installed Versions
+### §4.1 Track installed versions
 
 Create version tracking file:
 
@@ -628,7 +628,7 @@ rm -rf ~/.local/share/Rack2  # WARNING: Deletes all plugins and patches
 
 ---
 
-## §7 Integration with Audacious Workflow
+## §7 Integration with Audacious workflow
 
 These tools integrate with the broader Audacious pro audio stack:
 
@@ -670,8 +670,8 @@ These tools integrate with the broader Audacious pro audio stack:
 ## Appendix B: Cross-References
 
 **Related documentation:**
-- `docs/audacious/install.audacious.md` — Full system installation
-- `docs/audacious/install.audacious.md` — Audacious system overview + install steps
+- `docs/audacious/install-audacious.md` — Full system installation
+- `docs/audacious/install-audacious.md` — Audacious system overview + install steps
 - `ardour-audacious/` — Ardour DAW configuration package
 - `pipewire-audacious/` — PipeWire audio routing configuration
 

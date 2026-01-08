@@ -6,7 +6,7 @@ Last drift check: 2026-01-08
 
 ---
 
-## Base System (via install.audacious.md §1-13)
+## Base System (via install-audacious.md §1-13)
 
 ### Boot & filesystem
 - cryptsetup — LUKS encryption for ZFS unlock
@@ -37,7 +37,7 @@ Last drift check: 2026-01-08
 
 ---
 
-## Desktop Infrastructure (via install.audacious.md §14)
+## Desktop Infrastructure (via install-audacious.md §14)
 
 ### Compositor & session
 - sway — Wayland compositor

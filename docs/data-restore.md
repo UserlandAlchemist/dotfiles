@@ -207,9 +207,9 @@ Steps:
    - Trusted person USB, or
    - Google Drive bundle (GPG encrypted).
 3. Follow the bundle instructions to restore secrets and BorgBase credentials.
-4. Rebuild Astute first using `docs/astute/install.astute.md`.
+4. Rebuild Astute first using `docs/astute/install-astute.md`.
 5. Restore data from BorgBase using §4.
-6. Rebuild Audacious using `docs/audacious/install.audacious.md`.
+6. Rebuild Audacious using `docs/audacious/install-audacious.md`.
 7. Restore Audacious data using §3 (from the rebuilt Astute repo).
 
 Expected result: both hosts rebuilt with data restored from offsite.

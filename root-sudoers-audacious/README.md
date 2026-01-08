@@ -146,10 +146,10 @@ astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0
 - `noatime` — Don't update access times (performance optimization)
 - `noauto` — Don't mount at boot (mount on-demand via nas-open)
 
-See `docs/audacious/install.audacious.md` §17 for complete NAS integration setup.
+See `docs/audacious/install-audacious.md` §17 for complete NAS integration setup.
 
 ## See Also
 
 - `nas-audacious/README.md` — Complete NAS orchestration system documentation
 - `root-power-astute/README.md` — Server-side sleep inhibitor configuration
-- `docs/audacious/install.audacious.md` §17 — NAS integration setup guide
+- `docs/audacious/install-audacious.md` §17 — NAS integration setup guide

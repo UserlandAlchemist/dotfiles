@@ -6,7 +6,7 @@ Last drift check: 2026-01-08
 
 ---
 
-## Base System (via install.astute.md §1-7)
+## Base System (via install-astute.md §1-7)
 
 ### Firmware & microcode
 - intel-microcode — CPU microcode updates
@@ -55,7 +55,7 @@ Last drift check: 2026-01-08
 
 ---
 
-## Media Services (optional, via install.astute.md §13)
+## Media Services (optional, via install-astute.md §13)
 
 - jellyfin — media server
 - jellyfin-ffmpeg7 — Jellyfin ffmpeg build

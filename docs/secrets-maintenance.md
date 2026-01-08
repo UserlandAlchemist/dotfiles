@@ -46,7 +46,7 @@ Expected result: trusted person USB contains a fresh copy of the Secrets USB.
 
 ---
 
-## §1 Create Encrypted USB
+## §1 Create encrypted USB
 
 Initial setup of Secrets USB with LUKS encryption.
 
@@ -196,10 +196,10 @@ mkdir -p /mnt/keyusb/docs
 cp ~/dotfiles/docs/secrets-recovery.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/secrets-maintenance.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/data-restore.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/audacious/install.audacious.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/audacious/recovery.audacious.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/astute/install.astute.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/astute/recovery.astute.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/audacious/install-audacious.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/audacious/recovery-audacious.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/astute/install-astute.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/astute/recovery-astute.md /mnt/keyusb/docs/
 ```
 
 ### §2.7 Recovery quick-start
@@ -238,7 +238,7 @@ SECRETS USB RECOVERY QUICK-START
    git clone git@github.com:UserlandAlchemist/dotfiles.git
 
 6. NEXT:
-   - Install: docs/audacious/install.audacious.md or docs/astute/install.astute.md
+   - Install: docs/audacious/install-audacious.md or docs/astute/install-astute.md
    - Restore data: docs/data-restore.md
 EOF
 ```
@@ -368,8 +368,8 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
     ├── secrets-recovery.md
     ├── secrets-maintenance.md
     ├── data-restore.md
-    ├── install.audacious.md
-    ├── recovery.audacious.md
-    ├── install.astute.md
-    └── recovery.astute.md
+    ├── install-audacious.md
+    ├── recovery-audacious.md
+    ├── install-astute.md
+    └── recovery-astute.md
 ```

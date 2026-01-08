@@ -54,7 +54,7 @@ The config explicitly disables proxying for HTTPS (`Acquire::https::Proxy "false
 - Majority of packages (Debian official repos) benefit from caching
 
 **Astute setup required:**
-This assumes apt-cacher-ng is installed and running on Astute at port 3142. See `docs/astute/install.astute.md` for setup instructions.
+This assumes apt-cacher-ng is installed and running on Astute at port 3142. See `docs/astute/install-astute.md` for setup instructions.
 
 ## Installation
 
@@ -118,5 +118,5 @@ sudo apt update  # Should use proxy if Astute is available
 
 ## See Also
 
-- `docs/audacious/install.audacious.md` §9 — Network configuration during install
-- `docs/astute/install.astute.md` — apt-cacher-ng setup on Astute
+- `docs/audacious/install-audacious.md` §9 — Network configuration during install
+- `docs/astute/install-astute.md` — apt-cacher-ng setup on Astute

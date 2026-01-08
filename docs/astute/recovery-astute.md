@@ -45,7 +45,7 @@ Expected result: Live environment with root access via `sudo`.
 
 ---
 
-## §2 Mount Root Filesystem
+## §2 Mount root filesystem
 
 Mount the ext4 root to inspect or repair.
 
@@ -77,7 +77,7 @@ Expected result: Standard Linux directory tree (bin, etc, home, usr, var, srv).
 
 ---
 
-## §3 Check Root Filesystem Integrity
+## §3 Check root filesystem integrity
 
 Run fsck if boot failed due to filesystem corruption.
 
@@ -112,7 +112,7 @@ Expected result: fsck reports clean filesystem or repairs errors.
 
 ---
 
-## §4 Chroot into Installed System
+## §4 Chroot into installed system
 
 Enter installed system to repair GRUB or modify system configuration.
 
@@ -188,7 +188,7 @@ Expected result: System boots normally.
 
 ---
 
-## §6 Post-Boot ZFS Import
+## §6 Post-boot ZFS import
 
 If system boots but ZFS pool won't auto-import.
 
@@ -236,9 +236,9 @@ Expected result: `ironwolf` pool is ONLINE, datasets mounted at /srv/nas and /sr
 
 ---
 
-## §7 ZFS Pool Recovery
+## §7 ZFS pool recovery
 
-### §7.1 Diagnose Pool Health
+### §7.1 Diagnose pool health
 
 Check pool state before taking action.
 
@@ -281,11 +281,11 @@ Expected result: Clear understanding of pool state and which drive(s) failed.
 
 ---
 
-### §7.2 Single Drive Failed
+### §7.2 Single drive failed
 
 One IronWolf drive dead, pool DEGRADED but data intact.
 
-#### §7.2.1 Temporary Operation on Degraded Pool
+#### §7.2.1 Temporary operation on degraded pool
 
 **You can continue using a DEGRADED pool** while waiting for replacement drive.
 
@@ -319,7 +319,7 @@ Expected result: System remains functional on single drive.
 
 ---
 
-#### §7.2.2 Drive Replacement (Permanent Fix)
+#### §7.2.2 Drive replacement (permanent fix)
 
 Replace failed drive and resilver mirror.
 
@@ -456,7 +456,7 @@ Expected result: Scrub completes with 0 errors, pool state ONLINE, both drives h
 
 ---
 
-#### §7.2.3 Post-Replacement Verification
+#### §7.2.3 Post-replacement verification
 
 Confirm pool health and performance.
 
@@ -501,7 +501,7 @@ Expected result: Pool performs normally, all services accessible.
 
 ---
 
-### §7.3 Both Drives Failed (Complete Data Loss)
+### §7.3 Both drives failed (complete data loss)
 
 If both IronWolf drives died simultaneously, pool cannot be imported.
 
@@ -566,7 +566,7 @@ Expected result: Clean pool ready for data, but all previous data lost.
 
 ---
 
-### §7.4 Pool Import Troubleshooting
+### §7.4 Pool import troubleshooting
 
 If `sudo zpool import` doesn't show the pool.
 
@@ -628,7 +628,7 @@ Expected result: Pool imports successfully, or error message indicates next trou
 
 ---
 
-## §8 Cache Device Recovery
+## §8 Cache device recovery
 
 If SATA SSD (/dev/sda) fails, pool loses cache but data remains intact.
 
@@ -677,7 +677,7 @@ Expected result: Cache device operational, pool performance restored.
 
 ---
 
-## §9 NFS Export Recovery
+## §9 NFS export recovery
 
 If NFS exports are broken after recovery.
 
@@ -736,7 +736,7 @@ Expected result: NFS exports visible and mountable from clients.
 
 ---
 
-## §10 Service Restoration After Recovery
+## §10 Service restoration after recovery
 
 Restore services from dotfiles after clean install or recovery.
 
@@ -804,7 +804,7 @@ Expected result: All dotfile-managed services operational.
 
 ---
 
-## §11 Borg Repository Recovery
+## §11 Borg repository recovery
 
 Restore Borg repository service after recovery.
 
@@ -855,7 +855,7 @@ Expected result: Client can list Borg repository.
 
 ---
 
-## §12 Post-Recovery Checklist
+## §12 Post-recovery checklist
 
 Verify all systems operational after recovery.
 
@@ -874,7 +874,7 @@ Verify all systems operational after recovery.
 
 ---
 
-## §13 Prevention and Monitoring
+## §13 Prevention and monitoring
 
 Reduce risk of future failures.
 

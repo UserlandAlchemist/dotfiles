@@ -160,4 +160,4 @@ journalctl -u borg-backup.timer -u borg-backup.service --since "1 week ago"
 
 - `borg-user-audacious/` — per-user Borg environment and patterns
 - `ssh-audacious/` — SSH configuration containing the backup key
-- `docs/audacious/install.audacious.md` — installation reference
+- `docs/audacious/install-audacious.md` — installation reference

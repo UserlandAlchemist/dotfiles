@@ -322,7 +322,7 @@ root-sudoers-audacious/install.sh
 
 3. Reload systemd and enable services:
 
-Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/install.audacious.md` §16 step 8.
+Use the enablement block from `/home/alchemist/dotfiles/docs/audacious/install-audacious.md` §16 step 8.
 
 4. Verify services:
 
@@ -378,7 +378,7 @@ Use these procedures when drives fail or pool is degraded.
 
 ---
 
-## §9.1 Diagnose Pool Health
+## §9.1 Diagnose pool health
 
 Before attempting repairs, understand what failed.
 
@@ -427,11 +427,11 @@ zpool status -P
 
 ---
 
-## §9.2 Single Drive Failed (Degraded Pool)
+## §9.2 Single drive failed (degraded pool)
 
 One NVMe in the mirror has failed. ZFS continues operating on the remaining drive.
 
-### §9.2.1 Temporary Operation (Running Degraded)
+### §9.2.1 Temporary operation (running degraded)
 
 If waiting for replacement drive to arrive, you can operate degraded temporarily.
 
@@ -485,7 +485,7 @@ sudo systemctl start borg-backup.service
 journalctl -u borg-backup.service -f
 ```
 
-### §9.2.2 Drive Replacement (Permanent Fix)
+### §9.2.2 Drive replacement (permanent fix)
 
 Replace failed drive and rebuild mirror.
 
@@ -742,12 +742,12 @@ rm /boot/efi/EFI/Linux/test-sync /boot/efi-backup/EFI/Linux/test-sync
 
 ---
 
-## §9.3 Both Drives Failed (Complete Data Loss)
+## §9.3 Both drives failed (complete data loss)
 
 If both NVMe drives failed or pool cannot be recovered, restore from Borg backup.
 
 **Procedure:**
-1. Follow `install.audacious.md` to create fresh ZFS-on-root installation
+1. Follow `install-audacious.md` to create fresh ZFS-on-root installation
 2. Follow `docs/data-restore.md` to recover data from Borg backup
 
 **Prerequisites:**
@@ -759,11 +759,11 @@ If both NVMe drives failed or pool cannot be recovered, restore from Borg backup
 
 ---
 
-## §9.4 Pool Import Troubleshooting
+## §9.4 Pool import troubleshooting
 
 If `zpool import` doesn't show the pool or import fails.
 
-### §9.4.1 Force Import
+### §9.4.1 Force import
 
 If pool was not cleanly exported (system crashed):
 
@@ -773,7 +773,7 @@ zpool import -f -l rpool
 
 The `-f` flag forces import despite warnings.
 
-### §9.4.2 Import with Altroot
+### §9.4.2 Import with altroot
 
 If pool imports but won't mount to `/`:
 
@@ -783,7 +783,7 @@ zpool import -f -l -o altroot=/mnt rpool
 
 This imports pool with all mounts relative to `/mnt`.
 
-### §9.4.3 Pool Not Visible
+### §9.4.3 Pool not visible
 
 If `zpool import` shows no pools:
 
@@ -808,7 +808,7 @@ zpool import -f -l -N rpool
 
 `-N` prevents automatic mounting, allowing you to mount manually.
 
-### §9.4.4 Encryption Key Issues
+### §9.4.4 Encryption key issues
 
 If pool won't unlock (wrong passphrase or key lost):
 
@@ -828,7 +828,7 @@ Data is irrecoverable from this pool. Restore from Borg backup (§9.3).
 
 ---
 
-## §10 Post-Recovery Verification
+## §10 Post-recovery verification
 
 Confirm the system is stable after recovery or drive replacement.
 
@@ -928,7 +928,7 @@ smartctl -a /dev/nvme1n1
 
 ## References
 
-- `install.audacious.md` — Fresh installation from scratch
+- `install-audacious.md` — Fresh installation from scratch
 - `docs/data-restore.md` — Data restore
-- `install.audacious.md` — What differs from stock Debian
+- `install-audacious.md` — What differs from stock Debian
 - OpenZFS documentation: https://openzfs.github.io/openzfs-docs/

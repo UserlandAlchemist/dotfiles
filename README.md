@@ -145,7 +145,7 @@ See: `root-efisync-audacious/README.md`
 ### Boot Stack (Audacious)
 systemd-boot with Unified Kernel Images (UKI) instead of GRUB. ZFS root filesystem on encrypted RAID1.
 
-See: `docs/audacious/install.audacious.md`
+See: `docs/audacious/install-audacious.md`
 
 ---
 
@@ -155,16 +155,16 @@ See: `docs/audacious/install.audacious.md`
 Each host has complete rebuild documentation:
 
 **Audacious:**
-- [`docs/audacious/install.audacious.md`](docs/audacious/install.audacious.md) — Full installation from scratch
-- [`docs/audacious/recovery.audacious.md`](docs/audacious/recovery.audacious.md) — Boot and ZFS recovery
+- [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
+- [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
 - [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
 - [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
-- [`docs/audacious/installed-software.audacious.md`](docs/audacious/installed-software.audacious.md) — Complete package inventory
+- [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
 
 **Astute:**
-- [`docs/astute/install.astute.md`](docs/astute/install.astute.md) — Full installation from scratch
-- [`docs/astute/recovery.astute.md`](docs/astute/recovery.astute.md) — Boot and ZFS recovery
-- [`docs/astute/installed-software.astute.md`](docs/astute/installed-software.astute.md) — Complete package inventory
+- [`docs/astute/install-astute.md`](docs/astute/install-astute.md) — Full installation from scratch
+- [`docs/astute/recovery-astute.md`](docs/astute/recovery-astute.md) — Boot and ZFS recovery
+- [`docs/astute/installed-software-astute.md`](docs/astute/installed-software-astute.md) — Complete package inventory
 
 ### System Reference
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
