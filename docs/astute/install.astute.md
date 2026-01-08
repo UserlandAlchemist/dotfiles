@@ -166,7 +166,7 @@ sudo apt update
 sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
   powertop git stow ethtool vim nano htop lm-sensors cpufrequtils \
   smartmontools unattended-upgrades apt-cacher-ng nftables \
-  usbutils \
+  usbutils ifupdown iproute2 iputils-ping \
   intel-microcode firmware-amd-graphics task-ssh-server
 ```
 
