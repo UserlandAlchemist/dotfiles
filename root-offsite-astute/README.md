@@ -2,28 +2,11 @@
 
 Off-site BorgBackup push from Astute to BorgBase.
 
-This package backs up specific directories directly:
-- Audacious Borg repo: `/srv/backups/audacious-borg` → `audacious-home` repo (append-only)
-- Critical data: `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` repo (append-only)
+Backs up:
+- `/srv/backups/audacious-borg` → `audacious-home` (append-only)
+- `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` (append-only)
 
-**CRITICAL: SSH key must have append-only access for ransomware protection.**
-
-**Verify append-only access is configured:**
-1. Log in to BorgBase web UI
-2. For EACH repository (audacious-home j6i5cke1, astute-critical y7pc8k07):
-   - Edit Repository → ACCESS tab
-   - Verify SSH key is under **"Append-Only Access"** section
-   - NOT under "Keys with Full Access"
-3. If key has full access, move it to append-only
-
-BorgBase implements append-only at the SSH key assignment level (per repository).
-The `astute-borgbase` SSH key should be assigned as "Append-Only Access" to both repos.
-
-Without append-only access, ransomware with root access can delete off-site backups, defeating the entire purpose of off-site storage.
-
-**Retention management:** Append-only keys cannot prune archives. Manage retention via BorgBase web UI or keep an offline key with full access for emergency pruning.
-
-Note: Patterns files in `etc/borg-offsite/` are unused (legacy). Backups target specific directories directly.
+**Critical:** Append-only SSH key assignment is required for ransomware protection. See `docs/offsite-backup.md` for verification, repo initialization, and restore steps.
 
 ---
 
@@ -39,24 +22,6 @@ Note: Patterns files in `etc/borg-offsite/` are unused (legacy). Backups target 
 4. BorgBase repos created:
    - audacious-home (normal)
    - astute-critical (append-only)
-
----
-
-## Repo initialization
-
-Initialize the BorgBase repos (run once per repo). Force the root SSH key:
-
-```bash
-sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg init --encryption=repokey-blake2 \
-  ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
-
-sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg init --encryption=repokey-blake2 \
-  ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
-```
-
-Store both passphrases in the password manager. Do not paste them here.
 
 ---
 
@@ -89,30 +54,9 @@ Timers are staggered to avoid simultaneous uploads and network contention.
 
 ---
 
-## Sanity checks
-
-List off-site archives:
-
-```bash
-sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg list ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
-
-sudo BORG_RSH="ssh -i /root/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes" \
-  borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
-```
-
-Check service status:
-
-```bash
-systemctl status borg-offsite-audacious.service
-systemctl status borg-offsite-astute-critical.service
-systemctl status borg-offsite-check.service
-```
-
----
-
 ## Notes
 
 - `audacious-home` contains the Borg repo directory from Astute. Restores are two-step.
 - `astute-critical` is append-only; do not prune or compact.
 - Logs: `journalctl -u borg-offsite-*.service`
+- Patterns in `etc/borg-offsite/` are unused (legacy).

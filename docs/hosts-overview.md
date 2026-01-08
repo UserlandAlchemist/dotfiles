@@ -2,7 +2,7 @@
 
 This document lists all machines in the Wolfpack, their hardware specs, roles, and operating systems.
 
-**The Wolfpack** is the fleet of machines managed by Project Shipshape (this dotfiles repository).
+See `README.md` for Project Shipshape naming conventions.
 
 ---
 
