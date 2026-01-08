@@ -57,6 +57,9 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-08 22:30 - Borg Patterns Fix + Codex Migration Cleanup
+Fixed broken borg patterns file (removed sh: prefixes, absolute paths, added missing exclusions for dev tools/caches). Fixed all Codex offsite migration bugs (systemd-inhibit flags, audit-secrets passphrases, docs). Audited Codex's other recent work (all correct). (695a117, 9729229, 91e6391, 59448d6, df9faaf, 8285a97, 0000a94, e4b8315, 0bf7ec5)
+
 ## 2026-01-08 19:05 - Astute ZFS Login Warning Fix
 Fixed check-zfs login warning to flag missing mounts for encrypted datasets. (954ba90)
 
