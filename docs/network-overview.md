@@ -2,7 +2,7 @@
 
 This document describes the home network fabric, core devices, addressing, and WAN configuration for the Wolfpack.
 
-**The Wolfpack** is the fleet of machines managed by Project Shipshape (this dotfiles repository).
+See `README.md` for Project Shipshape naming conventions.
 
 ---
 

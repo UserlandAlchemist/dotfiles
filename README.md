@@ -76,8 +76,6 @@ sudo root-efisync-audacious/install.sh
 sudo systemctl daemon-reload
 ```
 
-**Note:** System packages (root-*) use install scripts that copy files to /etc and other system locations. This ensures configs are real files, not symlinks, so they're available before /home mounts at boot.
-
 ### Restow user packages after edits
 
 ```bash
