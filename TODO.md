@@ -1,6 +1,6 @@
 PROJECT SHIPSHAPE - WORK QUEUE
 ======================================
-Updated: 2026-01-08 00:15
+Updated: 2026-01-08 00:49
 
 Project Shipshape: Dotfiles and configuration management for the Wolfpack.
 The Wolfpack: Audacious (workstation), Astute (NAS/server), Artful (cloud), Steam Deck (portable).
@@ -56,6 +56,9 @@ DEFERRED (Prerequisites required):
 ────────────────────────────────────────────────────────────────
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
+
+## 2026-01-08 00:49 - Documentation Consolidation
+Comprehensive audit of all documentation. Fixed terminology inconsistencies (6 "blue USB" → "Secrets USB"). Eliminated 659 lines (23.6%) of duplication and low-value content. Deleted key-inventory.md (296 lines, content duplicated elsewhere). Removed implementation tasks from threat-model.md (161 lines). Removed generic best practices from secrets-recovery.md (72 lines). Changed 9 docs from 600 to 644 permissions. (08c2e89, b72ad04)
 
 ## 2026-01-08 00:15 - Agent Coordination File Cleanup
 Condensed TODO.md from 2046 to 85 lines (96% reduction). Streamlined AGENTS.md from 228 to 119 lines. Updated ~/.claude/CLAUDE.md to match new condensed session notes approach. Session notes now 2-3 lines with commit hashes; detailed work lives in git. (e700360)
