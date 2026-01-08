@@ -204,18 +204,16 @@ sudo root-network-astute/install.sh
 sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
 ```
 
-3. Enable networking services:
+3. Enable and start networking services:
 
 ```sh
-sudo systemctl enable systemd-networkd systemd-resolved systemd-networkd-wait-online.service
+sudo systemctl enable --now systemd-networkd systemd-resolved systemd-networkd-wait-online.service
 ```
 
-4. Stop ifupdown and start systemd-networkd:
+4. Stop ifupdown (if present):
 
 ```sh
 sudo systemctl stop networking.service
-sudo systemctl start systemd-resolved
-sudo systemctl start systemd-networkd
 ```
 
 5. Verify network connectivity:
