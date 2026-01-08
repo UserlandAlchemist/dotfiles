@@ -2,7 +2,7 @@
 
 Curated inventory of manually installed packages on Astute. Sections reflect installation origin, not function. This list is derived from `apt-mark showmanual` and focuses on non-bootstrap additions.
 
-Last drift check: 2025-12-22
+Last drift check: 2026-01-08
 
 ---
 
@@ -18,7 +18,6 @@ Last drift check: 2025-12-22
 
 ### NAS & backup
 - nfs-kernel-server — NFS exports for /srv/nas
-- nfs-common — NFS client utilities (testing/diagnostics)
 - borgbackup — encrypted backup server
 
 ### Power & monitoring
