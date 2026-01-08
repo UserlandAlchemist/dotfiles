@@ -57,6 +57,12 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-08 18:45 - Astute Idle Check Inhibitor Filter
+Limit idle check to sleep inhibitors only so shutdown inhibitors do not block suspend. (4ae0103)
+
+## 2026-01-08 17:10 - Offsite Backup Topology Update
+Shifted BorgBase audacious-home to Audacious, created root-offsite-audacious, and kept Astute offsite weekly for critical data. Updated offsite/restore/secrets docs and append-only key naming. (uncommitted)
+
 ## 2026-01-08 16:30 - Astute Networkd Migration Complete
 Migrated Astute from ifupdown to systemd-networkd + systemd-resolved. Fixed two boot timing issues: SSH binding failure (added network-online dependency) and wait-online hang (limited to enp0s31f6, 30s timeout, IPv4-only). Migration successful, boot time ~5s for network, SSH accessible immediately. Offsite backup services already had correct network-online dependencies. (5946f36, 7e6cd26, dc98e39)
 
