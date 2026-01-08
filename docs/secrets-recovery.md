@@ -67,10 +67,11 @@ cp /mnt/keyusb/tokens/jellyfin/api.token ~/.config/jellyfin/ 2>/dev/null || true
 
 ```sh
 sudo install -d -m 0700 /root/.ssh /root/.config/borg-offsite
-sudo cp /mnt/keyusb/ssh-backup/borgbase_offsite /root/.ssh/
+sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-audacious
+sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-astute /root/.ssh/borgbase-offsite-astute
 sudo cp /mnt/keyusb/borg/audacious-home.passphrase /root/.config/borg-offsite/
 sudo cp /mnt/keyusb/borg/astute-critical.passphrase /root/.config/borg-offsite/
-sudo chmod 600 /root/.ssh/borgbase_offsite /root/.config/borg-offsite/*.passphrase
+sudo chmod 600 /root/.ssh/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-astute /root/.config/borg-offsite/*.passphrase
 ```
 
 8. Unmount and close:

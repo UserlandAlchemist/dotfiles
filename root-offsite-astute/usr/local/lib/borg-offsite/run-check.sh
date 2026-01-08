@@ -6,7 +6,7 @@ check_repo() {
   BASE="$2"
   PASSFILE="$3"
   REPO_NAME="$4"
-  KEY="/root/.ssh/borgbase_offsite"
+  KEY="/root/.ssh/borgbase-offsite-astute"
 
   BORG_BASE_DIR="$BASE"
   BORG_CONFIG_DIR="$BASE/config"
@@ -29,12 +29,6 @@ check_repo() {
   echo "✓ $REPO_NAME: repository healthy"
   echo
 }
-
-check_repo \
-  "ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo" \
-  "/var/lib/borg-offsite/audacious-home" \
-  "/root/.config/borg-offsite/audacious-home.passphrase" \
-  "audacious-home"
 
 check_repo \
   "ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo" \

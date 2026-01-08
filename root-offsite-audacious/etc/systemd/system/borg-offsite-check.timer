@@ -1,0 +1,12 @@
+[Unit]
+Description=Monthly Borg off-site check (audacious-home)
+
+[Timer]
+OnCalendar=monthly
+Persistent=true
+WakeSystem=true
+AccuracySec=1h
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

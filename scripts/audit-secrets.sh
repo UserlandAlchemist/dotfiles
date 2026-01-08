@@ -74,6 +74,7 @@ check_no_world_readable() {
 if [ "$HOSTNAME" = "audacious" ]; then
   echo "--- Audacious: Temporary Files (should not exist) ---"
   check_file_not_exists "$HOME/borgbase_offsite" "BorgBase SSH key (temporary)"
+  check_file_not_exists "$HOME/borgbase-offsite-astute" "BorgBase SSH key (temporary, renamed)"
   check_file_not_exists "$HOME/audacious-home.passphrase" "Audacious home passphrase (temporary)"
   check_file_not_exists "$HOME/astute-critical.passphrase" "Astute critical passphrase (temporary)"
   check_file_not_exists "$HOME/borgbase-recovery-bundle-"*.tar.gz.gpg "Recovery bundle (should be on Google Drive)"
@@ -101,6 +102,12 @@ if [ "$HOSTNAME" = "audacious" ]; then
     ERRORS=$((ERRORS + 1))
   fi
 
+  if ssh astute "test -f ~/borgbase-offsite-astute" 2>/dev/null; then
+    echo "✗ FOUND on Astute: ~/borgbase-offsite-astute (temporary file)"
+    echo "  → Run on Astute: rm ~/borgbase-offsite-astute"
+    ERRORS=$((ERRORS + 1))
+  fi
+
   if ssh astute "test -f ~/audacious-home.passphrase" 2>/dev/null; then
     echo "✗ FOUND on Astute: ~/audacious-home.passphrase (temporary file)"
     echo "  → Run on Astute: rm ~/audacious-home.passphrase"
@@ -120,10 +127,10 @@ if [ "$HOSTNAME" = "audacious" ]; then
 
   echo "--- Astute: Root Credentials (cannot verify remotely) ---"
   echo "⚠ Manual check required on Astute:"
-  echo "  - /root/.ssh/borgbase_offsite should be 600"
+  echo "  - /root/.ssh/borgbase-offsite-astute should be 600"
   echo "  - /root/.config/borg-offsite/*.passphrase should be 600"
   echo "  - /root/.config/borg/passphrase should be 600"
-  echo "  Run: sudo ls -la /root/.ssh/borgbase_offsite /root/.config/borg-offsite/ /root/.config/borg/"
+  echo "  Run: sudo ls -la /root/.ssh/borgbase-offsite-astute /root/.config/borg-offsite/ /root/.config/borg/"
   echo
 fi
 
@@ -131,6 +138,7 @@ fi
 if [ "$HOSTNAME" = "astute" ]; then
   echo "--- Astute: Temporary Files (should not exist) ---"
   check_file_not_exists "$HOME/borgbase_offsite" "BorgBase SSH key (temporary)"
+  check_file_not_exists "$HOME/borgbase-offsite-astute" "BorgBase SSH key (temporary, renamed)"
   check_file_not_exists "$HOME/audacious-home.passphrase" "Audacious home passphrase (temporary)"
   check_file_not_exists "$HOME/astute-critical.passphrase" "Astute critical passphrase (temporary)"
   echo
@@ -138,8 +146,8 @@ if [ "$HOSTNAME" = "astute" ]; then
   echo "--- Astute: Root Credentials (need sudo) ---"
   echo "Checking root-owned secrets..."
 
-  if [ -f /root/.ssh/borgbase_offsite ]; then
-    sudo stat -c "%a %U:%G %n" /root/.ssh/borgbase_offsite 2>/dev/null || echo "⚠ Cannot check /root/.ssh/borgbase_offsite (need sudo)"
+  if [ -f /root/.ssh/borgbase-offsite-astute ]; then
+    sudo stat -c "%a %U:%G %n" /root/.ssh/borgbase-offsite-astute 2>/dev/null || echo "⚠ Cannot check /root/.ssh/borgbase-offsite-astute (need sudo)"
   fi
 
   if [ -f /root/.config/borg-offsite/audacious-home.passphrase ]; then
@@ -158,7 +166,7 @@ echo "Checking for accidentally committed secrets..."
 
 cd ~/dotfiles
 # Check for actual secret files (not scripts mentioning them)
-SECRET_FILES=$(git ls-files | grep -E '\.(passphrase|secret|token)$|/borgbase_offsite$|\.checksums\.txt$|recovery-bundle.*\.tar\.gz\.gpg$' || true)
+SECRET_FILES=$(git ls-files | grep -E '\.(passphrase|secret|token)$|/borgbase_offsite$|/borgbase-offsite-(audacious|astute)$|\.checksums\.txt$|recovery-bundle.*\.tar\.gz\.gpg$' || true)
 
 if [ -n "$SECRET_FILES" ]; then
   echo "✗ SECRETS FOUND IN GIT:"

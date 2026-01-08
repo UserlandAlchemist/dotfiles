@@ -1,8 +1,8 @@
 [Unit]
-Description=Borg off-site: Audacious repo snapshot to BorgBase
+Description=Borg off-site: Audacious home snapshot to BorgBase
 Wants=network-online.target
 After=network-online.target
-RequiresMountsFor=/srv/backups /var/lib/borg-offsite /var/cache/borg-offsite
+RequiresMountsFor=/home /var/lib/borg-offsite /var/cache/borg-offsite
 
 [Service]
 Type=oneshot

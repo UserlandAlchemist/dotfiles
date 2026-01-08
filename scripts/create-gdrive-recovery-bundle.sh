@@ -30,7 +30,8 @@ for file in \
   "$SECRETS_USB/borg/passphrase" \
   "$SECRETS_USB/borg/audacious-home.passphrase" \
   "$SECRETS_USB/borg/astute-critical.passphrase" \
-  "$SECRETS_USB/ssh-backup/borgbase_offsite"; do
+  "$SECRETS_USB/ssh-backup/borgbase-offsite-audacious" \
+  "$SECRETS_USB/ssh-backup/borgbase-offsite-astute"; do
   if [ ! -f "$file" ]; then
     echo "ERROR: Missing $file"
     MISSING=$((MISSING + 1))
@@ -58,8 +59,9 @@ cp "$SECRETS_USB/borg/astute-critical-key.txt" .
 cp "$SECRETS_USB/borg/passphrase" local-borg-passphrase.txt
 cp "$SECRETS_USB/borg/audacious-home.passphrase" .
 cp "$SECRETS_USB/borg/astute-critical.passphrase" .
-cp "$SECRETS_USB/ssh-backup/borgbase_offsite" .
-chmod 600 borgbase_offsite
+cp "$SECRETS_USB/ssh-backup/borgbase-offsite-audacious" .
+cp "$SECRETS_USB/ssh-backup/borgbase-offsite-astute" .
+chmod 600 borgbase-offsite-audacious borgbase-offsite-astute
 
 # Create recovery instructions
 cat > RECOVERY-INSTRUCTIONS.md << 'EOF'
@@ -69,18 +71,19 @@ This bundle contains all secrets needed to access BorgBase off-site backups afte
 
 ## What's In This Bundle
 
-1. `borgbase_offsite` - BorgBase SSH private key
+1. `borgbase-offsite-audacious` - BorgBase SSH private key (audacious-home)
+2. `borgbase-offsite-astute` - BorgBase SSH private key (astute-critical)
 2. `audacious-home.passphrase` - Off-site repo passphrase (audacious-home)
 3. `astute-critical.passphrase` - Off-site repo passphrase (astute-critical)
 4. `audacious-home-key.txt` - Repository key export (repokey-blake2)
 5. `astute-critical-key.txt` - Repository key export (repokey-blake2)
-6. `local-borg-passphrase.txt` - Local Borg repo passphrase (for two-step restore)
+6. `local-borg-passphrase.txt` - Local Borg repo passphrase
 
 ## BorgBase Account Info
 
 - Account email: (check Bitwarden or email)
 - Repositories:
-  - audacious-home: ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
+  - audacious-home: ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo
   - astute-critical: ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
 
 ## Recovery Procedure
@@ -103,23 +106,24 @@ cd recovery-bundle/
 
 ```bash
 mkdir -p ~/.ssh
-cp borgbase_offsite ~/.ssh/
-chmod 600 ~/.ssh/borgbase_offsite
+cp borgbase-offsite-audacious ~/.ssh/
+cp borgbase-offsite-astute ~/.ssh/
+chmod 600 ~/.ssh/borgbase-offsite-audacious ~/.ssh/borgbase-offsite-astute
 ```
 
 ### 4. List Available Archives
 
 For audacious-home repo:
 ```bash
-export BORG_RSH="ssh -i ~/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes"
+export BORG_RSH="ssh -i ~/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
 export BORG_PASSCOMMAND="cat audacious-home.passphrase"
 
-borg list ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo
+borg list ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo
 ```
 
 For astute-critical repo:
 ```bash
-export BORG_RSH="ssh -i ~/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes"
+export BORG_RSH="ssh -i ~/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
 export BORG_PASSCOMMAND="cat astute-critical.passphrase"
 
 borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
@@ -130,7 +134,7 @@ borg list ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
 #### Restore from astute-critical (direct restore):
 
 ```bash
-export BORG_RSH="ssh -i ~/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes"
+export BORG_RSH="ssh -i ~/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
 export BORG_PASSCOMMAND="cat astute-critical.passphrase"
 
 # List archives
@@ -141,33 +145,19 @@ borg extract ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo::astute-critical-Y
 # This creates srv/nas/lucii and srv/nas/bitwarden-exports in current directory
 ```
 
-#### Restore from audacious-home (two-step restore):
+#### Restore from audacious-home (direct restore):
 
-Step 1: Restore the local Borg repository directory
 ```bash
-export BORG_RSH="ssh -i ~/.ssh/borgbase_offsite -T -o IdentitiesOnly=yes"
+export BORG_RSH="ssh -i ~/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
 export BORG_PASSCOMMAND="cat audacious-home.passphrase"
 
-borg extract ssh://j6i5cke1@j6i5cke1.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD
-# This creates srv/backups/audacious-borg in current directory
-```
-
-Step 2: Restore data from the local repository
-```bash
-export BORG_REPO=srv/backups/audacious-borg
-export BORG_PASSCOMMAND="cat local-borg-passphrase.txt"
-
-# List archives in local repo
-borg list
-
-# Extract home directory from latest backup
-borg extract ::audacious-YYYY-MM-DD home/alchemist
+borg extract ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD home/alchemist
 # This creates home/alchemist in current directory
 ```
 
 ## Important Notes
 
-- audacious-home is a backup of the Borg repository (two-step restore)
+- audacious-home contains Audacious home data (direct restore)
 - astute-critical contains lucii and bitwarden-exports (direct restore)
 - Repository keys are exported in case you need to recreate repo access
 - This bundle should be re-created whenever SSH keys or passphrases change
@@ -186,7 +176,7 @@ Created On: $(hostname)
 Created By: $(whoami)
 
 BorgBase Repositories:
-- audacious-home (j6i5cke1): Daily snapshots of local Borg repo
+- audacious-home (j31cxd2v): Daily snapshots of Audacious home data
 - astute-critical (y7pc8k07): Critical data (lucii, bitwarden-exports)
 
 Files Included:

@@ -24,7 +24,7 @@ Scenario map for catastrophic loss. Detailed steps live in `docs/data-restore.md
 
 ### Scenario 3: Ransomware
 - **Encrypted:** Audacious and/or Astute filesystems
-- **Survives:** BorgBase off-site (append-only), Secrets USB (offline), cold storage (offline)
+- **Survives:** BorgBase off-site (append-only access), Secrets USB (offline), cold storage (offline)
 - **RTO:** 4-8 hours (restore from BorgBase)
 - **RPO:** 24 hours (last BorgBase backup)
 
@@ -115,7 +115,7 @@ Recovery path:
 ### Quarterly Verification
 
 1. Run `scripts/verify-secrets-usb.sh`.
-2. Verify BorgBase archives exist and are append-only.
+2. Verify BorgBase archives exist and use append-only access.
 3. Verify Google Drive bundle is present and recent.
 4. Confirm GPG passphrase recall.
 
