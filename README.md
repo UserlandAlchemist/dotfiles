@@ -42,6 +42,12 @@ profile-common/
 ```
 Shell profile sourced first on all hosts.
 
+**Shared user scripts:**
+```
+bin-common/
+```
+Host-agnostic helpers for `~/.local/bin`.
+
 **Documentation:**
 ```
 docs/<hostname>/
