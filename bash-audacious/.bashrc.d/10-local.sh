@@ -1,4 +1,4 @@
-PROMPT_COMMAND='history -a'
+PROMPT_COMMAND='history -a; history -c; history -r'
 
 . "$HOME/.local/bin/env"
 
