@@ -166,7 +166,7 @@ sudo apt update
 sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
   powertop git stow ethtool vim nano htop lm-sensors cpufrequtils \
   smartmontools unattended-upgrades apt-cacher-ng nftables \
-  usbutils ifupdown iproute2 iputils-ping \
+  usbutils systemd-resolved \
   intel-microcode firmware-amd-graphics task-ssh-server
 ```
 
@@ -186,6 +186,54 @@ zpool version
 ```
 
 Expected result: `zfs` and `zpool` commands report versions.
+
+### Network configuration
+
+Configure systemd-networkd for reliable network-online.target signaling.
+
+1. Deploy network configuration:
+
+```sh
+cd ~/dotfiles
+sudo root-network-astute/install.sh
+```
+
+2. Link systemd-resolved stub:
+
+```sh
+sudo ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+```
+
+3. Enable networking services:
+
+```sh
+sudo systemctl enable systemd-networkd systemd-resolved systemd-networkd-wait-online.service
+```
+
+4. Stop ifupdown and start systemd-networkd:
+
+```sh
+sudo systemctl stop networking.service
+sudo systemctl start systemd-resolved
+sudo systemctl start systemd-networkd
+```
+
+5. Verify network connectivity:
+
+```sh
+networkctl status enp0s31f6
+ip addr show enp0s31f6  # Should show 192.168.1.154
+ping -c3 8.8.8.8
+host borgbase.com
+```
+
+6. Disable ifupdown:
+
+```sh
+sudo systemctl disable networking.service
+```
+
+**Note:** See root-network-astute/README.md for troubleshooting and rollback procedures.
 
 ---
 

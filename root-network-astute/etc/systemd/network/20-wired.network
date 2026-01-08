@@ -1,0 +1,8 @@
+[Match]
+Name=enp0s31f6
+
+[Network]
+DHCP=yes
+
+[DHCPv4]
+UseDNS=yes
