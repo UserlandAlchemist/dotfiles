@@ -127,10 +127,10 @@ Automated BorgBackup with systemd timers. Multiple daily backups, weekly integri
 
 See: `borg-user-audacious/README.md`, `root-backup-audacious/README.md`
 
-### Off-site Backups (Astute → BorgBase)
-Daily off-site snapshots pushed from Astute to BorgBase. `audacious-home` stores the local Borg repo directory; `astute-critical` stores lucii and Bitwarden exports. Monthly repo checks.
+### Off-site Backups (BorgBase)
+Daily snapshots from Audacious, weekly from Astute. `audacious-home` stores Audacious home data; `astute-critical` stores lucii and Bitwarden exports. Append-only access for ransomware protection. Monthly repo checks.
 
-See: `root-offsite-astute/README.md`, `docs/offsite-backup.md`
+See: `root-offsite-audacious/README.md`, `root-offsite-astute/README.md`, `docs/offsite-backup.md`
 
 ### Cold Storage Snapshots (Audacious)
 Monthly snapshots to the LUKS cold-storage drive with a reminder timer. Keeps 12 months of history.
