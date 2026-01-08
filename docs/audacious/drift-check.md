@@ -2,6 +2,10 @@
 
 Verify system state matches documentation.
 
+## Prerequisite
+
+`check-drift.sh` is provided by `bin-common/` and must be stowed into `~/.local/bin`.
+
 ## Run check
 
 ```sh
