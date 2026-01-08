@@ -75,6 +75,9 @@ Refocused threat model as timeless design doc and trimmed security audit to an o
 ## 2026-01-08 01:17 - Astute Drift Check
 Confirmed jellyfin-ffmpeg7 and zfs-zed are installed on Astute, removed nfs-common from inventory, and refreshed drift-check date. (ec48d44)
 
+## 2026-01-08 01:25 - Drift Check Script Shared
+Moved check-drift.sh into bin-common with host-aware behavior and updated docs to reference the shared tool. (3e7449a)
+
 ## 2026-01-07 20:10 - Off-Site Backup Implementation (Phase 3, Task #9)
 Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-offsite-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
 
