@@ -8,8 +8,7 @@
 .claude/
 !.claude/settings.local.json
 
-# LLM collaboration task files (ephemeral state, not permanent docs)
-CODEX-TODO.txt
+# LLM collaboration files (ephemeral state, not permanent docs)
 AGENTS.md
 identity-policy.md
 
@@ -119,4 +118,3 @@ borgbase-recovery-bundle-*.tar.gz.gpg
 
 # Lock files (may contain absolute paths)
 **/*.lock
-OFFSITE-BACKUP-REVIEW.md
