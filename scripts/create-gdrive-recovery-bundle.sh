@@ -6,7 +6,13 @@ set -e
 
 SECRETS_USB="/mnt/keyusb"
 WORK_DIR="/tmp/recovery-bundle-$$"
-OUTPUT_FILE="$HOME/borgbase-recovery-bundle-$(date +%Y%m%d).tar.gz.gpg"
+OUTPUT_DIR="$HOME"
+
+if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
+  OUTPUT_DIR="/home/$SUDO_USER"
+fi
+
+OUTPUT_FILE="$OUTPUT_DIR/borgbase-recovery-bundle-$(date +%Y%m%d).tar.gz.gpg"
 
 echo "=== BorgBase Recovery Bundle Creation ==="
 echo
