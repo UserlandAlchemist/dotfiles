@@ -74,19 +74,19 @@ Use `docs/data-restore.md` for all data recovery steps. Use per-host install/rec
 
 Primary path:
 1. Restore secrets (`docs/secrets-recovery.md`)
-2. Rebuild Astute (`docs/astute/install.astute.md`)
+2. Rebuild Astute (`docs/astute/install-astute.md`)
 3. Restore data from BorgBase (`docs/data-restore.md`)
-4. Rebuild Audacious (`docs/audacious/install.audacious.md`)
+4. Rebuild Audacious (`docs/audacious/install-audacious.md`)
 5. Restore data from Astute (`docs/data-restore.md`)
 
 ### Single System Loss (Hardware Failure)
 
 Audacious lost:
-1. Reinstall Audacious (`docs/audacious/install.audacious.md`)
+1. Reinstall Audacious (`docs/audacious/install-audacious.md`)
 2. Restore data from Astute (`docs/data-restore.md`)
 
 Astute lost:
-1. Rebuild Astute (`docs/astute/install.astute.md`)
+1. Rebuild Astute (`docs/astute/install-astute.md`)
 2. Restore data from BorgBase (`docs/data-restore.md`)
 
 ### Ransomware Attack

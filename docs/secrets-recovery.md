@@ -93,5 +93,5 @@ See `docs/secrets-maintenance.md` for bundle preparation and Trusted USB procedu
 
 ## §3 Next steps
 
-1. Rebuild hosts: `docs/audacious/install.audacious.md` and `docs/astute/install.astute.md`
+1. Rebuild hosts: `docs/audacious/install-audacious.md` and `docs/astute/install-astute.md`
 2. Restore data: `docs/data-restore.md`

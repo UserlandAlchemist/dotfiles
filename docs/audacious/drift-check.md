@@ -12,7 +12,7 @@ Verify system state matches documentation.
 check-drift.sh
 ```
 
-Script compares `installed-software.audacious.md` against `apt-mark showmanual`.
+Script compares `installed-software-audacious.md` against `apt-mark showmanual`.
 
 ## Expected output (no drift)
 
@@ -30,7 +30,7 @@ Script reports:
 
 ## Resolve drift
 
-**Intentional changes:** Update `installed-software.audacious.md` to reflect system reality.
+**Intentional changes:** Update `installed-software-audacious.md` to reflect system reality.
 
 **Accidental drift:** Either:
 - Install missing packages: `sudo apt install <package>`
@@ -41,7 +41,7 @@ Script reports:
 After resolving drift:
 
 ```sh
-editor ~/dotfiles/docs/audacious/installed-software.audacious.md
+editor ~/dotfiles/docs/audacious/installed-software-audacious.md
 ```
 
 Update "Last drift check" date, commit changes.

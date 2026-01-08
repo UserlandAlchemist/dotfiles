@@ -814,7 +814,7 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 ## Troubleshooting
 
 **Boot fails to find pool:**
-- See [recovery.audacious.md](recovery.audacious.md) for ZFS import and chroot procedures
+- See [recovery-audacious.md](recovery-audacious.md) for ZFS import and chroot procedures
 
 **EFI sync not working:**
 - `systemctl status efi-sync.path efi-sync.service`
@@ -834,7 +834,7 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 
 ## References
 
-- [recovery.audacious.md](recovery.audacious.md) - Boot and ZFS recovery procedures
+- [recovery-audacious.md](recovery-audacious.md) - Boot and ZFS recovery procedures
 - [docs/data-restore.md](../data-restore.md) - Data restore scenarios
-- [installed-software.audacious.md](installed-software.audacious.md) - Complete package list
+- [installed-software-audacious.md](installed-software-audacious.md) - Complete package list
 - [Debian ZFS documentation](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/)
