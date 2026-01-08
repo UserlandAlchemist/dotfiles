@@ -35,14 +35,20 @@ Last drift check: 2026-01-08
 - stow — dotfile deployment
 - htop — process monitor
 - vim — editor
+- nano — fallback editor
 - tree — directory inspection
 - jq — JSON processor
 - rsync — file sync utility
 - curl — HTTP download utility
+- nftables — host firewall tooling
 
 ### System management
 - unattended-upgrades — automated security updates
 - apt-cacher-ng — LAN apt cache
+
+### Tasksel meta packages
+- task-english — base English language task
+- task-ssh-server — SSH server task
 
 ---
 
