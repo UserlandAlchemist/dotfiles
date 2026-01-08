@@ -97,7 +97,7 @@ Added nano, nftables, and tasksel meta packages to the Astute software inventory
 Added nano, nftables, firmware/microcode, and tasksel meta packages to the Astute base install list; removed nfs-common. (778039c)
 
 ## 2026-01-08 01:42 - Astute Utility Additions
-Added fdisk, dhcpcd-base, netcat-traditional, and usbutils to the Astute inventory and install list after marking them manual. (f25a215)
+Added fdisk, dhcpcd-base, and usbutils to the Astute inventory and install list after marking them manual. (f25a215)
 
 ## 2026-01-08 01:44 - Astute Tasksel Cleanup
 Removed task-english from the Astute inventory and install list after marking it auto. (3a125ce)
