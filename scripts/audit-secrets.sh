@@ -89,6 +89,13 @@ if [ "$HOSTNAME" = "audacious" ]; then
   echo "--- Audacious: Borg Credentials ---"
   check_file_permissions "$HOME/.config/borg/passphrase" "600" "Local Borg passphrase"
   echo
+
+  echo "--- Audacious: Root Credentials (cannot verify from user context) ---"
+  echo "⚠ Manual check required:"
+  echo "  - /root/.ssh/borgbase-offsite-audacious should be 600"
+  echo "  - /root/.config/borg-offsite/audacious-home.passphrase should be 600"
+  echo "  Run: sudo ls -la /root/.ssh/borgbase-offsite-audacious /root/.config/borg-offsite/"
+  echo
 fi
 
 # === ASTUTE CHECKS (via SSH) ===
@@ -150,8 +157,8 @@ if [ "$HOSTNAME" = "astute" ]; then
     sudo stat -c "%a %U:%G %n" /root/.ssh/borgbase-offsite-astute 2>/dev/null || echo "⚠ Cannot check /root/.ssh/borgbase-offsite-astute (need sudo)"
   fi
 
-  if [ -f /root/.config/borg-offsite/audacious-home.passphrase ]; then
-    sudo stat -c "%a %U:%G %n" /root/.config/borg-offsite/audacious-home.passphrase 2>/dev/null || echo "⚠ Cannot check passphrases (need sudo)"
+  if [ -f /root/.config/borg-offsite/astute-critical.passphrase ]; then
+    sudo stat -c "%a %U:%G %n" /root/.config/borg-offsite/astute-critical.passphrase 2>/dev/null || echo "⚠ Cannot check astute-critical passphrase (need sudo)"
   fi
 
   if [ -f /root/.config/borg/passphrase ]; then
