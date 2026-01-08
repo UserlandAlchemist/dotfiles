@@ -7,6 +7,7 @@ PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 echo "Installing root-ssh-astute (sshd hardening)"
 
 install_sshd_dropin 10-listenaddress.conf
+install_config etc/systemd/system/ssh.service.d/wait-for-network.conf
 
 echo "→ Validating sshd config"
 sshd -t

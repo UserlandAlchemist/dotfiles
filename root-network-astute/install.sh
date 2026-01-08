@@ -8,5 +8,6 @@ echo "Installing root-network-astute (systemd-networkd)"
 
 install_config etc/systemd/network/10-wired.link
 install_config etc/systemd/network/20-wired.network
+install_config etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf
 
 install_success
