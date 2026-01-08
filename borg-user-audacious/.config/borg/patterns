@@ -1,53 +1,113 @@
 R /home/alchemist
 
-# 1) Explicit excludes (top-level relative to $HOME)
-- sh:nas
-- sh:nas/**
-- sh:Music/**
-- sh:Downloads/**
-- sh:Games/**
-- sh:go/**
+# 1) Large data directories (exclude completely)
+- /home/alchemist/nas
+- /home/alchemist/nas/**
+- /home/alchemist/Music
+- /home/alchemist/Music/**
+- /home/alchemist/Downloads
+- /home/alchemist/Downloads/**
+- /home/alchemist/Games
+- /home/alchemist/Games/**
+- /home/alchemist/Steam
+- /home/alchemist/Steam/**
 
-# 2) Application / cache exclusions
-- sh:.cache/**
-- sh:.emacs.d/eln-cache/**
-- sh:.emacs.d/elpa/**
-- sh:.emacs.d/auto-save-list/**
-- sh:.emacs.d/url/**
-- sh:.emacs.d/recentf
-- sh:.emacs.d/places
-- sh:.emacs.d/bookmarks
-- sh:.emacs.d/sessions/**
-- sh:.local/share/Trash/**
-- sh:.local/share/recently-used.xbel
-- sh:.local/share/containers/**
-- sh:.bash_history-*.tmp
-- sh:.thumbnails/**
-- sh:.var/**
-- sh:.npm/**
-- sh:.cargo/**
-- sh:.rustup/**
-- sh:.mozilla/**
-- sh:.config/google-chrome/**/Cache/**
-- sh:.config/google-chrome/**/Code Cache/**
-- sh:.config/google-chrome/**/GPUCache/**
-- sh:.config/chromium/**/Cache/**
-- sh:.config/chromium/**/Code Cache/**
-- sh:.config/chromium/**/GPUCache/**
-- sh:.config/BraveSoftware/**/Cache/**
-- sh:.config/BraveSoftware/**/Code Cache/**
-- sh:.config/BraveSoftware/**/GPUCache/**
-- sh:.wine/**
-- sh:.steam/**
-- sh:.steampath
-- sh:.steampid
-- sh:.local/share/Steam/**
+# 2) Development toolchains (reinstallable)
+- /home/alchemist/go
+- /home/alchemist/go/**
+- /home/alchemist/.cargo
+- /home/alchemist/.cargo/**
+- /home/alchemist/.rustup
+- /home/alchemist/.rustup/**
+- /home/alchemist/.npm
+- /home/alchemist/.npm/**
+- /home/alchemist/**/.venv
+- /home/alchemist/**/.venv/**
+- /home/alchemist/**/venv
+- /home/alchemist/**/venv/**
+- /home/alchemist/**/node_modules
+- /home/alchemist/**/node_modules/**
 
-# 3) Steam (all known locations)
-- sh:Steam/**
+# 3) System caches and transient data
+- /home/alchemist/.cache
+- /home/alchemist/.cache/**
+- /home/alchemist/.thumbnails
+- /home/alchemist/.thumbnails/**
+- /home/alchemist/.var
+- /home/alchemist/.var/**
+- /home/alchemist/.local/share/Trash
+- /home/alchemist/.local/share/Trash/**
+- /home/alchemist/.local/share/containers
+- /home/alchemist/.local/share/containers/**
+- /home/alchemist/.local/share/Steam
+- /home/alchemist/.local/share/Steam/**
+- /home/alchemist/.local/share/recently-used.xbel
+- /home/alchemist/.bash_history-*.tmp
+- /home/alchemist/.claude/cache
+- /home/alchemist/.claude/cache/**
+- /home/alchemist/.claude/file-history
+- /home/alchemist/.claude/file-history/**
+- /home/alchemist/.claude/debug
+- /home/alchemist/.claude/debug/**
+- /home/alchemist/.claude/statsig
+- /home/alchemist/.claude/statsig/**
+- /home/alchemist/.claude/paste-cache
+- /home/alchemist/.claude/paste-cache/**
+- /home/alchemist/.claude/session-env
+- /home/alchemist/.claude/session-env/**
+- /home/alchemist/.claude/shell-snapshots
+- /home/alchemist/.claude/shell-snapshots/**
+- /home/alchemist/.claude/projects/**/tool-results
+- /home/alchemist/.claude/projects/**/tool-results/**
 
-# 4) Include everything else under ~
-+ sh:**
+# 4) Application-specific caches (keep parent dirs, exclude caches only)
+- /home/alchemist/.emacs.d/eln-cache
+- /home/alchemist/.emacs.d/eln-cache/**
+- /home/alchemist/.emacs.d/elpa
+- /home/alchemist/.emacs.d/elpa/**
+- /home/alchemist/.emacs.d/auto-save-list
+- /home/alchemist/.emacs.d/auto-save-list/**
+- /home/alchemist/.emacs.d/url
+- /home/alchemist/.emacs.d/url/**
+- /home/alchemist/.emacs.d/recentf
+- /home/alchemist/.emacs.d/places
+- /home/alchemist/.emacs.d/bookmarks
+- /home/alchemist/.emacs.d/sessions
+- /home/alchemist/.emacs.d/sessions/**
 
-# 5) Catch-all (anything not matched above is out)
-- sh:**
+# 5) Browser caches (keep profiles, exclude caches only)
+- /home/alchemist/.config/google-chrome/**/Cache
+- /home/alchemist/.config/google-chrome/**/Cache/**
+- /home/alchemist/.config/google-chrome/**/Code?Cache
+- /home/alchemist/.config/google-chrome/**/Code?Cache/**
+- /home/alchemist/.config/google-chrome/**/GPUCache
+- /home/alchemist/.config/google-chrome/**/GPUCache/**
+- /home/alchemist/.config/chromium/**/Cache
+- /home/alchemist/.config/chromium/**/Cache/**
+- /home/alchemist/.config/chromium/**/Code?Cache
+- /home/alchemist/.config/chromium/**/Code?Cache/**
+- /home/alchemist/.config/chromium/**/GPUCache
+- /home/alchemist/.config/chromium/**/GPUCache/**
+- /home/alchemist/.config/BraveSoftware/**/Cache
+- /home/alchemist/.config/BraveSoftware/**/Cache/**
+- /home/alchemist/.config/BraveSoftware/**/Code?Cache
+- /home/alchemist/.config/BraveSoftware/**/Code?Cache/**
+- /home/alchemist/.config/BraveSoftware/**/GPUCache
+- /home/alchemist/.config/BraveSoftware/**/GPUCache/**
+
+# 6) Large application data (exclude completely)
+- /home/alchemist/.codex
+- /home/alchemist/.codex/**
+- /home/alchemist/.mozilla
+- /home/alchemist/.mozilla/**
+- /home/alchemist/.wine
+- /home/alchemist/.wine/**
+- /home/alchemist/.steam
+- /home/alchemist/.steam/**
+- /home/alchemist/.steampath
+- /home/alchemist/.steampid
+- /home/alchemist/.local/share/PrismLauncher
+- /home/alchemist/.local/share/PrismLauncher/**
+
+# 7) Include everything else (including .git, .config, documents, code, etc.)
++ /home/alchemist/**
