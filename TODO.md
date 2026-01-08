@@ -57,6 +57,9 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-08 19:05 - Astute ZFS Login Warning Fix
+Fixed check-zfs login warning to flag missing mounts for encrypted datasets. (uncommitted)
+
 ## 2026-01-08 18:45 - Astute Idle Check Inhibitor Filter
 Limit idle check to sleep inhibitors only so shutdown inhibitors do not block suspend. (4ae0103)
 
