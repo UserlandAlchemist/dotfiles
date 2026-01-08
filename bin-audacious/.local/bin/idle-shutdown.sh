@@ -57,9 +57,13 @@ borg_backup_running() {
   systemctl is-active --quiet borg-backup.service || \
   systemctl is-active --quiet borg-check.service || \
   systemctl is-active --quiet borg-check-deep.service || \
+  systemctl is-active --quiet borg-offsite-audacious.service || \
+  systemctl is-active --quiet borg-offsite-check.service || \
   systemctl show -p ActiveState borg-backup.service | grep -q "activating" || \
   systemctl show -p ActiveState borg-check.service | grep -q "activating" || \
-  systemctl show -p ActiveState borg-check-deep.service | grep -q "activating"
+  systemctl show -p ActiveState borg-check-deep.service | grep -q "activating" || \
+  systemctl show -p ActiveState borg-offsite-audacious.service | grep -q "activating" || \
+  systemctl show -p ActiveState borg-offsite-check.service | grep -q "activating"
 }
 
 mpris_playing() {
