@@ -13,6 +13,7 @@ Configures wired ethernet networking using systemd-networkd for proper network-o
 **Files**:
 - `etc/systemd/network/10-wired.link` — Matches enp0s31f6 interface by name
 - `etc/systemd/network/20-wired.network` — Configures DHCP on enp0s31f6
+- `etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf` — Limits wait-online to enp0s31f6 with 30s timeout
 
 **Why systemd-networkd + systemd-resolved?**
 - Proper network-online.target signaling for backup timers with WakeSystem
@@ -26,6 +27,9 @@ The interface name `enp0s31f6` is hardware-specific (predictable network interfa
 
 **DHCP reservation:**
 Astute uses DHCP with a router-side reservation. The BT Smart Hub 2 is configured to always assign 192.168.1.154 to Astute's MAC address (60:45:cb:9b:ab:3b). No static IP configuration needed on Astute.
+
+**wait-online override:**
+The systemd-networkd-wait-online service is configured to only wait for enp0s31f6 with a 30-second timeout and IPv4-only check. This prevents boot hangs while ensuring network-online.target is properly signaled for services that depend on it (like offsite backups).
 
 ## Installation
 
