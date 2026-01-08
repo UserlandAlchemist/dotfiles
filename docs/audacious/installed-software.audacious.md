@@ -2,7 +2,7 @@
 
 Machine-readable inventory of manually installed software. Sections reflect installation origin, not function. Enables auditable, reproducible system state.
 
-Last drift check: 2025-12-24
+Last drift check: 2026-01-08
 
 ---
 
@@ -145,16 +145,19 @@ Last drift check: 2025-12-24
 - zoom — video conferencing client
 
 ### Gaming
-- heroic (local .deb) — Epic/GOG/Prime Gaming launcher
+- heroic — Epic/GOG/Prime Gaming launcher (local deb install)
 - steam-installer — Steam client (non-free)
 - lutris — multi-platform game launcher
 - prismlauncher — Minecraft launcher (open-source)
 - openjdk-21-jdk — Java runtime for Minecraft
 
+### Desktop appearance
+- arc-theme — GTK theme for Ardour UI polish
+- lxappearance — GTK theme switcher (for Ardour look-and-feel adjustments)
+
 ### Media
 - jellyfin-media-player — Jellyfin client
 - imv — Wayland image viewer
-- gimp — image editor
 - ncmpcpp — TUI music player client
 - picard — music tagging software
 - kid3-cli — music tagging CLI utility
@@ -179,35 +182,3 @@ Last drift check: 2025-12-24
 - sfizz → `/usr/local/lib/lv2/sfizz.lv2` — SFZ sample-based synthesizer
 - ZynAddSubFX Fusion → `/opt/zyn-fusion` — Advanced software synthesizer
 - VCV Rack → `/opt/vcv-rack/` — Virtual modular synthesizer
-
-### Rust development toolchain
-**Installation method:** rustup (https://rustup.rs/)
-
-**Installed:** 2025-12-23
-
-**Location:** `~/.cargo/` and `~/.rustup/`
-
-**Components:**
-- rustup — Rust toolchain installer and version manager
-- rustc 1.92.0 — Rust compiler
-- cargo 1.92.0 — Rust package manager and build tool
-- rust-analyzer 1.92.0 — Rust Language Server for IDE support
-- clippy — Rust linter
-- rustfmt — Rust code formatter
-
-**Integration:**
-- PATH configured via `~/.cargo/env`
-- Sourced in `bash-audacious/.bashrc.d/30-rust-env.sh` (Audacious-specific)
-- Emacs Eglot LSP integration configured in `emacs-audacious/.config/emacs/init.el`
-
-**Update procedure:**
-```sh
-rustup update
-```
-
-**Uninstall procedure:**
-```sh
-rustup self uninstall
-# Then remove ~/.cargo and ~/.rustup
-# And remove sourcing from dotfiles
-```
