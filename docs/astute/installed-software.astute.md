@@ -42,8 +42,6 @@ Last drift check: 2026-01-08
 - rsync — file sync utility
 - curl — HTTP download utility
 - nftables — host firewall tooling
-- dhcpcd-base — DHCP client (fallback)
-- netcat-traditional — TCP/UDP diagnostics
 - usbutils — USB inspection tools
 
 ### System management
