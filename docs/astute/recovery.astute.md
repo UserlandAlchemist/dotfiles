@@ -16,15 +16,17 @@ Complete disaster recovery procedures for the Astute NAS/backup server.
 1. **Boot failures** — System won't boot, GRUB errors (§1-§5)
 2. **Single drive failed** — One IronWolf in mirror dead (§7.2)
 3. **Pool degraded** — ZFS DEGRADED status (§7.2)
-4. **Both drives failed** — Complete data loss, restore from backups (§7.3)
+4. **Both drives failed** — Complete data loss, restore from backups (§7.3 → `docs/data-restore.md`)
 5. **Pool import issues** — Can't import ironwolf pool (§7.4)
 6. **NFS broken** — Clients can't mount /srv/nas (§9)
+
+Data restore procedures are centralized in `docs/data-restore.md`.
 
 **Quick decision tree:**
 - System won't boot → Follow §1-§5
 - `zpool status ironwolf` shows DEGRADED → See §7.1 then §7.2
 - Pool won't import → See §7.4
-- Both drives dead → See §7.3
+- Both drives dead → See §7.3 and `docs/data-restore.md`
 - NFS not working → See §9
 
 ---

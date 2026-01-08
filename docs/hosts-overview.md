@@ -1,6 +1,6 @@
 # Hosts Overview
 
-This document lists all machines in the Wolfpack, their hardware specs, roles, and operating systems.
+This document lists all machines in the Wolfpack, their hardware specs, roles, and operating systems. Network infra reservations live in `docs/network-overview.md`.
 
 See `README.md` for Project Shipshape naming conventions.
 

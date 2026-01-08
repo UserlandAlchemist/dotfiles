@@ -38,8 +38,8 @@ for file in \
 done
 
 if [ $MISSING -gt 0 ]; then
-  echo "ERROR: Secrets USB incomplete. Run verify-blue-usb-recovery.sh first."
-  echo "See docs/secrets-recovery.md for BorgBase credential backup procedure."
+  echo "ERROR: Secrets USB incomplete. Run scripts/verify-secrets-usb.sh first."
+  echo "See docs/secrets-maintenance.md for BorgBase credential backup procedure."
   exit 1
 fi
 

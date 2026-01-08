@@ -25,23 +25,21 @@ See `README.md` for Project Shipshape naming conventions.
 - **PoE:** Not supported (Comet powered via USB-C)
 
 **Connected devices:**
-- audacious (main workstation)
-- astute (NAS/server)
+- Wolfpack hosts (see `docs/hosts-overview.md` for details)
 - glkvm (GL.iNet Comet - OOB KVM)
 - hue-bridge (Philips Hue Zigbee hub)
 - Steam Deck dock (when powered and docked)
 
 ---
 
-## Core Wired Devices (DHCP Reservations)
+## DHCP Reservations
 
-| Device          | IP Address       | MAC Address          | Notes                      |
-|-----------------|------------------|----------------------|----------------------------|
-| **audacious**   | 192.168.1.147    | d8:5e:d3:ac:e3:e7    | Main workstation           |
-| **astute**      | 192.168.1.154    | 60:45:cb:9b:ab:3b    | Server / NAS               |
-| **glkvm**       | 192.168.1.126    | 94:83:c4:be:77:9e    | GL.iNet Comet (OOB KVM)    |
-| **hue-bridge**  | 192.168.1.210    | ec:b5:fa:22:e0:8f    | Philips Hue Zigbee bridge  |
-| **steamdeck-dock** (when powered) | (varies) | (Realtek prefix) | Benazcap 7-in-1 dock   |
+Wolfpack host IPs and MACs live in `docs/hosts-overview.md`. This section only tracks infra devices.
+
+| Device         | IP Address    | MAC Address       | Notes                   |
+|----------------|---------------|-------------------|-------------------------|
+| **glkvm**      | 192.168.1.126 | 94:83:c4:be:77:9e | GL.iNet Comet (OOB KVM) |
+| **hue-bridge** | 192.168.1.210 | ec:b5:fa:22:e0:8f | Philips Hue Zigbee hub  |
 
 ---
 

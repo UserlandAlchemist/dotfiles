@@ -835,6 +835,6 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 ## References
 
 - [recovery.audacious.md](recovery.audacious.md) - Boot and ZFS recovery procedures
-- [restore.audacious.md](restore.audacious.md) - Full system restore from Borg backups
+- [docs/data-restore.md](../data-restore.md) - Data restore scenarios
 - [installed-software.audacious.md](installed-software.audacious.md) - Complete package list
 - [Debian ZFS documentation](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/)
