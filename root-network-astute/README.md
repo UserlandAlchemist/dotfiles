@@ -33,7 +33,7 @@ The systemd-networkd-wait-online service is configured to only wait for enp0s31f
 
 ## Installation
 
-See docs/astute/install-astute.md §7 for migration procedure.
+See docs/astute/install-astute.md §7 for network configuration.
 
 ## Verification
 
