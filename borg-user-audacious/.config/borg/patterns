@@ -100,6 +100,18 @@ R /home/alchemist
 - /home/alchemist/.config/BraveSoftware/**/GPUCache/**
 - /home/alchemist/.config/discord
 - /home/alchemist/.config/discord/**
+- /home/alchemist/.config/heroic/images-cache
+- /home/alchemist/.config/heroic/images-cache/**
+- /home/alchemist/.config/heroic/Cache
+- /home/alchemist/.config/heroic/Cache/**
+- /home/alchemist/.config/heroic/Partitions
+- /home/alchemist/.config/heroic/Partitions/**
+- /home/alchemist/.config/heroic/tools
+- /home/alchemist/.config/heroic/tools/**
+- /home/alchemist/.config/heroic/Code?Cache
+- /home/alchemist/.config/heroic/Code?Cache/**
+- /home/alchemist/.config/heroic/GPUCache
+- /home/alchemist/.config/heroic/GPUCache/**
 
 # 6) Large application data (exclude completely)
 - /home/alchemist/.codex
