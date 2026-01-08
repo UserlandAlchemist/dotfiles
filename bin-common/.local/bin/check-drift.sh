@@ -10,11 +10,11 @@ if [[ -n "$doc_arg" ]]; then
     if [[ "$doc_arg" == */* || "$doc_arg" == *.md ]]; then
         DOC="$doc_arg"
     else
-        DOC="${DOTFILES}/docs/${doc_arg}/installed-software.${doc_arg}.md"
+        DOC="${DOTFILES}/docs/${doc_arg}/installed-software-${doc_arg}.md"
     fi
 else
     host="$(hostname -s)"
-    DOC="${DOTFILES}/docs/${host}/installed-software.${host}.md"
+    DOC="${DOTFILES}/docs/${host}/installed-software-${host}.md"
 fi
 
 if [[ ! -f "$DOC" ]]; then
