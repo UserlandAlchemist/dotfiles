@@ -42,6 +42,8 @@ Last drift check: 2026-01-08
 - curl — HTTP download utility
 - nftables — host firewall tooling
 - usbutils — USB inspection tools
+- iproute2 — modern networking tools
+- iputils-ping — ping utility
 - systemd-resolved — systemd DNS resolver
 
 ### System management

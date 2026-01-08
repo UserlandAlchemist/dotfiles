@@ -166,7 +166,7 @@ sudo apt update
 sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
   powertop git stow ethtool vim nano htop lm-sensors cpufrequtils \
   smartmontools unattended-upgrades apt-cacher-ng nftables \
-  usbutils systemd-resolved \
+  usbutils systemd-resolved iproute2 iputils-ping \
   intel-microcode firmware-amd-graphics task-ssh-server
 ```
 
@@ -223,8 +223,8 @@ sudo systemctl start systemd-networkd
 ```sh
 networkctl status enp0s31f6
 ip addr show enp0s31f6  # Should show 192.168.1.154
-ping -c3 8.8.8.8
-host borgbase.com
+  ping -c3 8.8.8.8
+  resolvectl query borgbase.com
 ```
 
 6. Disable ifupdown:

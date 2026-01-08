@@ -48,7 +48,7 @@ networkctl status enp0s31f6
 ip addr show enp0s31f6  # Should show 192.168.1.154
 
 # Test DNS resolution
-host borgbase.com
+resolvectl query borgbase.com
 
 # Test offsite backup
 sudo systemctl start borg-offsite-audacious.service
