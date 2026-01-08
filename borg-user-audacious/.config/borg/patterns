@@ -108,6 +108,10 @@ R /home/alchemist
 - /home/alchemist/.steampid
 - /home/alchemist/.local/share/PrismLauncher
 - /home/alchemist/.local/share/PrismLauncher/**
+- /home/alchemist/.local/share/lutris/runners
+- /home/alchemist/.local/share/lutris/runners/**
+- /home/alchemist/.local/share/lutris/runtime
+- /home/alchemist/.local/share/lutris/runtime/**
 
 # 7) Include everything else (including .git, .config, documents, code, etc.)
 + /home/alchemist/**
