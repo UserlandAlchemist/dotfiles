@@ -1,6 +1,6 @@
 PROJECT SHIPSHAPE - WORK QUEUE
 ======================================
-Updated: 2026-01-08
+Updated: 2026-01-08 00:15
 
 Project Shipshape: Dotfiles and configuration management for the Wolfpack.
 The Wolfpack: Audacious (workstation), Astute (NAS/server), Artful (cloud), Steam Deck (portable).
@@ -56,6 +56,9 @@ DEFERRED (Prerequisites required):
 ────────────────────────────────────────────────────────────────
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
+
+## 2026-01-08 00:15 - Agent Coordination File Cleanup
+Condensed TODO.md from 2046 to 85 lines (96% reduction). Streamlined AGENTS.md from 228 to 119 lines. Updated ~/.claude/CLAUDE.md to match new condensed session notes approach. Session notes now 2-3 lines with commit hashes; detailed work lives in git. (e700360)
 
 ## 2026-01-07 23:30 - Install Library (Phase 3, Task #10)
 Created lib/install.sh with 9 reusable functions, refactored all 13 root-* install scripts, eliminated 114 lines (-38% avg). Added 30s timeout to daemon-reload. Created regression test suite - all 13 packages passed. (c135f32, 711e0ed, f36a5a6, 35a89c6, f1d943c)
