@@ -154,8 +154,6 @@ Expected result: Secrets USB contains BorgBase repo keys, SSH key, and passphras
 
 Run once per repo (as root). Force the root SSH key:
 
-If switching `audacious-home` from Astute to Audacious, delete the existing BorgBase repo first and recreate it with the same name, then re-run the init from Audacious.
-
 ```bash
 sudo BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes" \
   borg init -e repokey-blake2 \
