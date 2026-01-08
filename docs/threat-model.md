@@ -68,7 +68,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 
 **Current Exposure:**
 - Home environment (limited to household members and guests)
-- Secrets USB key with secrets (physical security critical)
+- Secrets USB (physical security critical)
 - Cold storage LUKS drive (physical security critical)
 - No BIOS passwords documented
 - Physical console access possible (keyboard/monitor)
@@ -203,7 +203,7 @@ Security assumptions, attack surfaces, acceptable risks, and defensive posture f
 - Mobile phone: Personal device (high loss/theft risk)
 
 **Removable Media:**
-- Secrets USB key (secrets: SSH keys, Borg passphrases)
+- Secrets USB (SSH keys, Borg passphrases)
 - Cold storage LUKS drive (monthly backup snapshots)
 - SD cards (Steam Deck storage)
 

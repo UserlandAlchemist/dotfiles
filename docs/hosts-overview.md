@@ -117,8 +117,3 @@ This document lists all machines in the Wolfpack, their hardware specs, roles, a
 - Remote access to self-hosted services
 
 ---
-
-## Planned Additions (subject to change)
-
-- Offsite backup storage (BorgBase) is now active
-- Additional mobile device for 2FA backup redundancy
