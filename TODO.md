@@ -133,3 +133,5 @@ Comprehensive audit of Shipshape against four core principles. Key findings: Pri
 
 Session notes older than 2 weeks are removed. See git log for full history:
   git log --all --source --full-history -- TODO.md
+## 2026-01-08 15:16 - Docs consolidation and naming cleanup
+Centralized data restore flow, split secrets recovery/maintenance, normalized doc filenames/§ headings, and updated drift-check pathing. (917a492, cf98881, 7eabfb3)
