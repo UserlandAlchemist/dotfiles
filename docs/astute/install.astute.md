@@ -167,7 +167,7 @@ sudo apt install zfs-dkms zfsutils-linux borgbackup nfs-kernel-server \
   powertop git stow ethtool fdisk vim nano htop lm-sensors cpufrequtils \
   smartmontools unattended-upgrades apt-cacher-ng nftables dhcpcd-base \
   netcat-traditional usbutils \
-  intel-microcode firmware-amd-graphics task-ssh-server task-english
+  intel-microcode firmware-amd-graphics task-ssh-server
 ```
 
 3. Install kernel headers and build ZFS for the running kernel:

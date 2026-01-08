@@ -51,7 +51,6 @@ Last drift check: 2026-01-08
 - apt-cacher-ng — LAN apt cache
 
 ### Tasksel meta packages
-- task-english — base English language task
 - task-ssh-server — SSH server task
 
 ---
