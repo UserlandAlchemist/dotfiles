@@ -32,6 +32,7 @@ PHASE 3 - Critical Backups & Infrastructure (Week 2-3):
   9. [x] ~~OFF-SITE BACKUP IMPLEMENTATION - BorgBase repositories (P1-High, critical data protection)~~ (commits: 27a4e7c, 623a4c9, 827210e, 5a50238, root-borg-astute renamed)
   10. [x] ~~INSTALL LIBRARY - Idempotent scripts (depends on: Userland philosophy)~~ (commits: c135f32, 711e0ed, f36a5a6, 35a89c6)
   11. [ ] VM TESTING ENVIRONMENT - Safe testing ground (no dependencies)
+  12. [ ] BACKUP INTEGRITY + ALERTING - Add small-file restore check (weekly) and minimal alerting for borg/ZFS
 
 PHASE 4 - Documentation & Validation (Week 3-4):
   12. [ ] UPDATE STRATEGY - Document safe updates (depends on: Userland philosophy)

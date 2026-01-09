@@ -76,6 +76,8 @@ If the Secrets USB is unavailable, use the trusted person USB or the Google Driv
 
 **Note:** If the issue is a single drive failure in a ZFS pool, follow the host recovery doc first. Data restore only applies once access to backups is required.
 
+**If no secrets are available:** You cannot decrypt Borg or mount encrypted pools. Options are limited to rebuilding from scratch and re-issuing credentials. Treat this as a total data loss scenario, rebuild hosts cleanly, rotate all keys, and recreate recovery media immediately after rebuild.
+
 ---
 
 ## §1 Restore Secrets

@@ -128,6 +128,12 @@ zfs list
 mount | grep rpool  # root should show on /mnt
 ```
 
+VM testing reminder (recommended monthly/after major edits):
+
+- Run this guide verbatim on `test-audacious` VM using current Debian Trixie ISO
+- Time the install and note deviations/unclear steps
+- Validate ZFS boot, UKI boot, networkd, and NAS integration
+
 ---
 
 ## §4 Bootstrap Debian
