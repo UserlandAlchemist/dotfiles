@@ -4,12 +4,6 @@ Security assumptions, threat actors, attack surfaces, and acceptable risks for P
 
 ---
 
-## Purpose
-
-Define the threats this system is designed to withstand, make tradeoffs explicit, and keep risk acceptance consistent across engineering decisions.
-
----
-
 ## Assumptions
 
 - Home environment with limited physical access
