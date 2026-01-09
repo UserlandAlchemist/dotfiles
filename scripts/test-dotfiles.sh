@@ -41,6 +41,30 @@ stage_root() {
     cp "$f" "$dest/"
     chmod +x "$dest/$(basename "$f")"
   done < <(rg --files -g '*.sh' root-*)
+  # stub common binaries referenced in units
+  for bin in \
+    /bin/sh \
+    /usr/bin/systemd-inhibit \
+    /usr/bin/test \
+    /usr/bin/borg \
+    /usr/bin/touch \
+    /usr/bin/wakeonlan \
+    /usr/sbin/powertop \
+    ; do
+    dest="$TMPROOT$bin"
+    mkdir -p "$(dirname "$dest")"
+    cat >"$dest" <<'EOF'
+#!/bin/sh
+exit 0
+EOF
+    chmod +x "$dest"
+  done
+  # stub sysinit.target to silence dependency warnings
+  mkdir -p "$TMPROOT/lib/systemd/system"
+  cat >"$TMPROOT/lib/systemd/system/sysinit.target" <<'EOF'
+[Unit]
+Description=Stub sysinit.target for verification
+EOF
 }
 
 # Shell linting
