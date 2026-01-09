@@ -527,27 +527,33 @@ test -f ~/.profile && mv ~/.profile ~/.profile.bak
 
 ```sh
 stow profile-common bash-audacious bin-audacious emacs-audacious \
-     fonts-audacious foot-audacious icons-audacious lf-audacious \
-     mako-audacious psd-audacious sway-audacious wallpapers-audacious \
-     waybar-audacious wofi-audacious zathura-audacious ssh-audacious \
-     borg-user-audacious nas-audacious pipewire-audacious mimeapps-audacious
+     theme-audacious sway-audacious lf-audacious zathura-audacious \
+     psd-audacious ssh-audacious borg-user-audacious nas-audacious \
+     pipewire-audacious ardour-audacious ncmpcpp-audacious picard-audacious
 ```
 
-5. Create Borg passphrase:
+5. Copy mimeapps baseline (do not stow):
+
+```sh
+cp mimeapps-audacious/.config/mimeapps.list ~/.config/mimeapps.list
+```
+
+6. Create Borg passphrase:
 
 ```sh
 editor ~/.config/borg/passphrase
 chmod 600 ~/.config/borg/passphrase
 ```
 
-6. Verify user deployment:
+7. Verify user deployment:
 
 ```sh
 ls -l ~/.bashrc ~/.local/bin/idle-shutdown.sh ~/.config/sway/config  # should be symlinks
 test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
+test -f ~/.config/mimeapps.list && echo "OK: mimeapps copied"
 ```
 
-7. Deploy system packages:
+8. Deploy system packages:
 
 ```sh
 sudo root-journald-audacious/install.sh
@@ -556,19 +562,20 @@ sudo root-efisync-audacious/install.sh
 sudo root-cachyos-audacious/install.sh
 sudo root-network-audacious/install.sh
 sudo root-firewall-audacious/install.sh
-sudo root-backup-audacious/install.sh
+sudo root-borg-audacious/install.sh
 sudo root-sudoers-audacious/install.sh
 sudo root-proaudio-audacious/install.sh
 ```
 
-**Rule of thumb:** stow anything under `~` (including `~/.config` and `~/.local`). Use install scripts for anything outside `~` (`/etc`, `/usr/local`, `/usr/lib/systemd`, etc.) to avoid `/home` mount timing issues.
+**Rule of thumb:** stow anything under `~` (including `~/.config` and `~/.local`). Use install scripts for anything outside `~` (`/etc`, `/usr/local`, `/usr/lib/systemd`, etc.) to avoid `/home` mount timing issues. Exception: mimeapps.list should be copied, not stowed (desktop tools modify it).
 
-8. Enable services:
+9. Enable services:
 
 ```sh
 sudo systemctl daemon-reload
 sudo systemctl enable --now powertop.service usb-nosuspend.service efi-sync.path
 sudo systemctl enable --now borg-backup.timer borg-check.timer borg-check-deep.timer
+sudo systemctl enable --now borg-offsite-audacious.timer borg-offsite-check.timer
 sudo systemctl enable --now zfs-trim-monthly@rpool.timer
 sudo systemctl enable --now zfs-scrub-monthly@rpool.timer
 sudo udevadm control --reload-rules && sudo udevadm trigger
@@ -597,14 +604,8 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled, syst
 | `bash-audacious` | user | Bash config, prompt, aliases, astute helpers (nas-open/close, ssh-astute) |
 | `bin-audacious` | user | Scripts: idle-shutdown, audio switching, game-performance, astute-status |
 | `emacs-audacious` | user | Editor config and custom theme |
-| `sway-audacious` | user | Wayland compositor: keybinds, swayidle (20min → idle-shutdown, resume cancels) |
-| `waybar-audacious` | user | Status bar (CPU, network, audio, time) |
-| `wofi-audacious` | user | Application launcher |
-| `mako-audacious` | user | Notification daemon |
-| `foot-audacious` | user | Terminal emulator |
-| `fonts-audacious` | user | Amiga Topaz + JetBrains Mono Nerd Font |
-| `icons-audacious` | user | Amiga-inspired cursor theme |
-| `wallpapers-audacious` | user | Desktop backgrounds |
+| `theme-audacious` | user | GTK theme, fonts (Topaz), icons (Amiga cursors), wallpapers |
+| `sway-audacious` | user | Sway + Waybar + Foot + Wofi + Mako (consolidated Wayland ecosystem) |
 | `lf-audacious` | user | File manager config |
 | `zathura-audacious` | user | PDF viewer config |
 | `psd-audacious` | user | Profile-sync-daemon (browser profile → tmpfs) |
@@ -612,15 +613,18 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled, syst
 | `borg-user-audacious` | user | Backup inclusion/exclusion patterns |
 | `nas-audacious` | user | Astute NAS wake-on-demand systemd user service |
 | `pipewire-audacious` | user | Audio routing and pro-audio latency config |
-| `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
+| `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) — copied, not stowed |
+| `ncmpcpp-audacious` | user | Music player config |
+| `picard-audacious` | user | Music tagging config |
 | `ardour-audacious` | user | DAW config (optional) |
-| `root-journald-audacious` | system | System configuration fixes for minimal Debian (journald syslog override, journald waits for /var on ZFS) |
+| `cold-storage-audacious` | user | Monthly offline backup to external LUKS drive |
+| `root-journald-audacious` | system | Journald config for minimal Debian + ZFS (ForwardToSyslog override, /var timing) |
 | `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
 | `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |
-| `root-network-audacious` | system | systemd-networkd wired ethernet config with MAC-based link naming |
+| `root-network-audacious` | system | systemd-networkd wired ethernet with APT proxy auto-detection |
 | `root-firewall-audacious` | system | nftables host firewall (default-deny inbound) |
-| `root-backup-audacious` | system | Borg systemd timers (backup daily, check weekly, deep-check monthly) |
+| `root-borg-audacious` | system | Borg timers for local (Astute) and offsite (BorgBase) backups |
 | `root-sudoers-audacious` | system | Passwordless sudo for srv-astute.mount control (NAS mounting) |
 | `root-proaudio-audacious` | system | Real-time audio kernel tuning (rtprio limits, threadirqs) |
 
