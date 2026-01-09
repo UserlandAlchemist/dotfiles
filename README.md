@@ -107,51 +107,17 @@ How these principles translate into practice:
 
 ## Pragmatic Exceptions
 
-Project Shipshape balances principled self-hosting with practical constraints.
+Project Shipshape balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, (4) self-hosting cost outweighs benefit, or (5) future migration remains viable.
 
-### Service Externalization Policy
+### Self-Hosted Services
+- Configuration management, NAS/file storage, encrypted backups, APT caching, development environment
 
-When evaluating whether to self-host a service or use an external provider, apply these criteria:
-
-**External services are acceptable when:**
-1. **Criticality exceeds capability** - Service is too critical to operate without specialized expertise (e.g., email)
-2. **Technical immaturity** - Self-hosted alternatives are not production-ready (e.g., on-prem AI on AMD hardware)
-3. **Community integration value** - External service provides significant collaboration/discovery benefits (e.g., GitHub)
-4. **Cost/benefit unfavorable** - Self-hosting cost (time, hardware, maintenance) outweighs autonomy benefit
-5. **Future optionality preserved** - Can migrate to self-hosted solution later without significant lock-in
-
-**Required characteristics for external services:**
-- Prefer open standards and portable data formats (git, IMAP, standard exports)
-- Avoid vendor lock-in (proprietary APIs, data formats)
-- Maintain offline backups and recovery paths
-- Document migration strategy for future self-hosting
-- Prefer FOSS clients when accessing proprietary services
-
-### Self-Hosted Services (Implemented)
-- Configuration management (this repository, version controlled)
-- NAS/file storage (Astute, 3.6TB ZFS mirror)
-- Encrypted backups (BorgBackup to Astute, cold storage snapshots, BorgBase off-site)
-- APT package caching (apt-cacher-ng on Astute)
-- Development environment (local workstation)
-
-### External Services (Justified)
-
-**On-Prem AI:**
-Experimented with local LLM inference but current hardware (AMD GPU) and driver stack are not production-ready. Using ChatGPT Plus as optimal balance of cost, features, and usage limits. Monitoring progress in open-source AI tooling and AMD driver maturity. Will revisit when viable.
-
-**Email:**
-Self-hosting email is a long-term goal but currently too critical to operate without specialized expertise. Relying on external provider is risk management, not a failure of principles. May revisit as operational capability improves or UK legal landscape changes.
-
-**Code Hosting (GitHub):**
-GitHub provides significant community integration value (collaboration, discovery, issue tracking). Could self-host Gitea/Forgejo, but community presence outweighs autonomy concerns. Minimal lock-in risk (git is portable).
-
-**Password Management (Bitwarden):**
-Currently evaluating self-hosted alternatives (Vaultwarden). Under review.
-
-**DNS (Cloudflare):**
-Free tier for DNS/proxy with minimal vendor lock-in. DNS is portable across providers.
-
-These decisions reflect Principle 1's "pragmatic tradeoffs" — balancing autonomy with operational reality, criticality, and resource constraints.
+### External Services
+- **AI:** ChatGPT Plus (AMD GPU/driver immaturity for local LLM)
+- **Email:** External provider (criticality exceeds current capability)
+- **Code Hosting:** GitHub (community integration value, git portability)
+- **Password Management:** Bitwarden (evaluating Vaultwarden migration)
+- **DNS:** Cloudflare (minimal lock-in, portable)
 
 ---
 
