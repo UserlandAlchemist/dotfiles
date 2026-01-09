@@ -118,7 +118,7 @@ Multi-layer orchestration allowing Audacious to wake Astute from suspend, mount 
 See: `nas-audacious/README.md`, `root-power-astute/README.md`
 
 ### Intelligent Idle Shutdown (Audacious)
-Script triggered by `swayidle` after 20 minutes of inactivity. Checks for media playback, remote streaming, and systemd inhibitors before shutting down. Allows unattended work up to 90 minutes.
+Script triggered by `swayidle` after 20 minutes of inactivity. Immediately checks for media playback, remote streaming, and systemd inhibitors before shutting down. Resume activity cancels the pending shutdown. Allows unattended work up to 90 minutes.
 
 See: `bin-audacious/.local/bin/idle-shutdown.sh`
 

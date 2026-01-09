@@ -20,7 +20,7 @@ set -euo pipefail
 # -------------------------------------------------------------------
 
 CHECK_INTERVAL_SEC=180        # 3 minutes
-MEDIA_WINDOW_SEC=1200         # 20 minutes
+MEDIA_WINDOW_SEC=0            # immediate check after swayidle trigger
 BUSY_WINDOW_SEC=5400          # 90 minutes
 NET_RATE_LIMIT_BPS=100000     # 100 KB/s RX threshold
 
