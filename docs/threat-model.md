@@ -125,14 +125,6 @@ Recovery is a core requirement; procedures must be exercised periodically throug
 
 ---
 
-## Out of Scope
-
-- Nation-state targeted compromise
-- Physical coercion and advanced hardware tampering
-- Simultaneous supply chain compromise of all upstream dependencies
-
----
-
 ## Maintenance
 
 Review this document after major infrastructure changes and during periodic recovery drills.
