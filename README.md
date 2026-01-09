@@ -16,6 +16,8 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 
 Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
 
+All hosts (except Steam Deck) run Debian 13 (Trixie) Stable for excellent ZFS support, predictable behavior, and reduced context switching.
+
 Everything is plain text, version controlled, and deployed using two methods: GNU Stow for user configs, install scripts for system configs. No configuration managers, no complex abstractions — just files that map directly to their target locations.
 
 ---
@@ -65,6 +67,34 @@ Per-host install guides, recovery procedures, and restore documentation.
 - **Clear ownership:** Every file belongs to exactly one host
 - **Fast deployment:** Deploy only the packages needed for the current host
 - **Safe boot-time configs:** System packages use install scripts, not symlinks, so configs load before /home mounts
+
+---
+
+## Documentation Map
+
+### Per-Host Guides
+Each host has complete rebuild documentation:
+
+**Audacious:**
+- [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
+- [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
+- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
+- [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
+- [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
+
+**Astute:**
+- [`docs/astute/install-astute.md`](docs/astute/install-astute.md) — Full installation from scratch
+- [`docs/astute/recovery-astute.md`](docs/astute/recovery-astute.md) — Boot and ZFS recovery
+- [`docs/astute/installed-software-astute.md`](docs/astute/installed-software-astute.md) — Complete package inventory
+
+### System Reference
+- [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
+- [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
+- [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
+- [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
+- [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
+- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
+- [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
 
 ---
 
@@ -182,46 +212,6 @@ Currently evaluating self-hosted alternatives (Vaultwarden). Under review.
 Free tier for DNS/proxy with minimal vendor lock-in. DNS is portable across providers.
 
 These decisions reflect Principle 1's "pragmatic tradeoffs" — balancing autonomy with operational reality, criticality, and resource constraints.
-
----
-
-## Documentation Map
-
-### Per-Host Guides
-Each host has complete rebuild documentation:
-
-**Audacious:**
-- [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
-- [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
-- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
-- [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
-- [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
-
-**Astute:**
-- [`docs/astute/install-astute.md`](docs/astute/install-astute.md) — Full installation from scratch
-- [`docs/astute/recovery-astute.md`](docs/astute/recovery-astute.md) — Boot and ZFS recovery
-- [`docs/astute/installed-software-astute.md`](docs/astute/installed-software-astute.md) — Complete package inventory
-
-### System Reference
-- [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
-- [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
-- [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
-- [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
-- [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
-- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
-- [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
-
----
-
-## Distro Choice
-
-All hosts (except Steam Deck) run **Debian 13 (Trixie) Stable**. This provides:
-- Excellent ZFS-on-root support
-- Predictable long-term behavior
-- Wide cloud provider availability (Hetzner)
-- Reduced context switching across machines
-
-This is a pragmatic choice, not a permanent requirement. The repo-first design keeps dotfiles portable.
 
 ---
 
