@@ -1,11 +1,54 @@
 #!/usr/bin/env bash
 # Check for drift between documented and installed packages
+#
+# Compares the package list in docs/<hostname>/installed-software-<hostname>.md
+# against apt-mark showmanual to detect undocumented installations or removals.
 
 set -euo pipefail
+
+show_help() {
+    cat <<'EOF'
+check-drift.sh - Verify system state matches package documentation
+
+USAGE:
+    check-drift.sh [HOSTNAME|PATH]
+
+EXAMPLES:
+    check-drift.sh              # Check current host
+    check-drift.sh audacious    # Check specific host
+    check-drift.sh docs/audacious/installed-software-audacious.md  # Check specific file
+
+EXPECTED OUTPUT (no drift):
+    ✓ No drift detected
+      Documented: 85 packages
+      Installed:  85 packages
+
+DRIFT DETECTED:
+    Script reports two categories:
+    - Documented but NOT installed — packages removed from system
+    - Installed but NOT documented — new packages added to system
+
+RESOLVING DRIFT:
+    Intentional changes: Update installed-software-<hostname>.md to match reality
+    Accidental drift: Either install missing or remove undocumented packages
+
+    After resolving, update "Last drift check" timestamp in the doc and commit.
+
+WHEN TO RUN:
+    - Monthly maintenance
+    - Before system backups
+    - After installing new software
+    - Before creating system documentation
+EOF
+}
 
 DOTFILES="${HOME}/dotfiles"
 
 doc_arg="${1:-}"
+if [[ "$doc_arg" == "-h" || "$doc_arg" == "--help" ]]; then
+    show_help
+    exit 0
+fi
 if [[ -n "$doc_arg" ]]; then
     if [[ "$doc_arg" == */* || "$doc_arg" == *.md ]]; then
         DOC="$doc_arg"

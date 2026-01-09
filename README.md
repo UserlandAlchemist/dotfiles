@@ -79,7 +79,6 @@ Each host has complete rebuild documentation:
 - [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
 - [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
 - [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
-- [`docs/audacious/drift-check.md`](docs/audacious/drift-check.md) — Package drift detection procedure
 - [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
 
 **Astute:**
