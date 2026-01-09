@@ -16,6 +16,7 @@ cd "$ROOT"
 
 info "Running dotfiles checks from $ROOT"
 
+# shellcheck disable=SC2317
 cleanup() {
   if [ -n "$TMPROOT" ] && [ -d "$TMPROOT" ]; then
     rm -rf "$TMPROOT"

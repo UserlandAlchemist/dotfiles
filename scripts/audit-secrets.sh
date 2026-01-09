@@ -17,6 +17,7 @@ HOSTNAME=$(hostname)
 echo "Running on: $HOSTNAME"
 echo
 
+# shellcheck disable=SC2317
 check_file_not_exists() {
   local path="$1"
   local description="$2"
@@ -29,6 +30,7 @@ check_file_not_exists() {
   fi
 }
 
+# shellcheck disable=SC2317
 check_file_permissions() {
   local path="$1"
   local expected_perms="$2"
@@ -51,6 +53,7 @@ check_file_permissions() {
   fi
 }
 
+# shellcheck disable=SC2317
 check_no_world_readable() {
   local path="$1"
   local description="$2"
