@@ -6,11 +6,15 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 
 ## What is this?
 
-This repository contains all configuration for multiple Debian-based hosts:
-- **audacious** — Main workstation (ZFS root, Sway, development + gaming)
-- **astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
-- **artful** — Cloud instance (Hetzner, currently inactive)
-- **steamdeck** — Portable system (limited dotfiles)
+**Project Shipshape** is the configuration management implementation — this dotfiles repository with everything in order, maintainable, and ready for deployment or disaster recovery.
+
+**The Wolfpack** is the fleet of machines managed by this repository:
+- **Audacious** — Main workstation (ZFS root, Sway, development + gaming)
+- **Astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
+- **Artful** — Cloud instance on Hetzner (currently inactive)
+- **Steam Deck** — Portable gaming companion
+
+Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
 
 Everything is plain text, version controlled, and deployed using two methods: GNU Stow for user configs, install scripts for system configs. No configuration managers, no complex abstractions — just files that map directly to their target locations.
 
@@ -64,6 +68,105 @@ Per-host install guides, recovery procedures, and restore documentation.
 
 ---
 
+## Core Principles
+
+These principles guide Project Shipshape and inform decisions across the Wolfpack.
+
+### 1. Autonomy & Control (with Pragmatic Tradeoffs)
+
+The project prioritizes control over core infrastructure while accepting external services where self-hosting isn't viable.
+
+- **Core infrastructure is self-hosted:** Storage, backups, configuration management, and development environment run on owned hardware.
+- **External services when justified:** Email, AI, and collaboration tools are externalized when criticality exceeds capability, technical maturity is lacking, or community value outweighs autonomy concerns.
+- **Prefer open and portable:** Open standards and auditable software prevent lock-in and enable future migration to self-hosted alternatives.
+- **Document the rationale:** Every externalization decision is explicit, justified, and revisited as capabilities evolve.
+
+### 2. Privacy & Security (Defense in Depth)
+
+Security is built on encryption, authentication at trust boundaries, and verifiable software.
+
+- **Authentication at trust boundaries:** External access and cross-host communication require strong authentication; physical security handles single-user workstation access.
+- **Encryption for sensitive data:** Sensitive data is encrypted at rest (ZFS, LUKS, Borg) and in transit (SSH, HTTPS); plaintext for non-sensitive traffic (package downloads) is acceptable on the trusted LAN.
+- **Auditable software only:** Prefer open-source packages from signed repositories; retain offline recovery paths for all critical data.
+- **Threat model guides decisions:** Security posture is explicitly designed for home lab threats, not enterprise or nation-state targeting.
+
+### 3. Resilience & Portability
+
+The project prioritizes recoverability and avoids lock-in to enable fast recovery and long-term sustainability.
+
+- **Recovery is paramount:** Multiple backup tiers (local, off-site, offline), documented procedures, and tested restore paths ensure rapid recovery from any disaster scenario.
+- **Minimal lock-in:** Open standards (git, SSH, Borg, NFS) and portable data formats allow components to be swapped or migrated without architectural changes.
+- **Documentation-driven rebuilds:** Complete installation and recovery documentation enables rebuilds without specialist knowledge or vendor support.
+- **Version control:** All configs, scripts, and documentation are versioned to enable point-in-time recovery and audit trails.
+
+### 4. Affordability and Broad Accessibility
+
+The stack is designed to remain sustainable for users with modest means and common hardware.
+
+- **Modest recurring costs:** Domains, VPS, and storage kept affordable, excluding ISP costs and already-owned hardware.
+- **Prefer FOSS alternatives:** Paid external services are treated as replaceable by self-hosted or open-source alternatives where viable.
+- **Hardware flexibility:** The stack must remain usable on older hardware, including low-RAM systems and spinning disks; enterprise features are helpful but not required.
+
+---
+
+## Implementation Patterns
+
+How these principles translate into practice:
+
+### Configuration Management
+- **Plain text configuration:** Everything versioned, transparent, and understandable
+- **Standard Debian packages:** No Snaps, AppImages, or Flatpaks
+- **Direct tooling:** GNU Stow and systemd, without config management abstraction layers
+- **Explicit over clever:** Clear scripts and dependencies over abstraction
+
+### Per-Host Isolation
+- **Independent recovery:** Each machine can be rebuilt from its own packages
+- **Minimal shared files:** `profile-common` and `bin-common` are the only shared configs; they don't create deployment dependencies between hosts
+- **Package inventory tracking:** Installed software lists and drift-check scripts track divergence from base Debian
+
+### Secrets Management
+Never committed to git:
+- SSH keys (`ssh-*/.ssh/id_*`)
+- Borg passphrases (`borg-user-*/.config/borg/passphrase`)
+- API tokens (`.config/*/api.token`)
+- SSH known_hosts
+
+Recovery location: Secrets USB (encrypted) contains all secrets.
+
+---
+
+## Pragmatic Exceptions
+
+Project Shipshape balances principled self-hosting with practical constraints. The following reflects current implementation decisions:
+
+### Self-Hosted Services (Implemented)
+- Configuration management (this repository, version controlled)
+- NAS/file storage (Astute, 3.6TB ZFS mirror)
+- Encrypted backups (BorgBackup to Astute, cold storage snapshots, BorgBase off-site)
+- APT package caching (apt-cacher-ng on Astute)
+- Development environment (local workstation)
+
+### External Services (Justified)
+
+**On-Prem AI:**
+Experimented with local LLM inference but current hardware (AMD GPU) and driver stack are not production-ready. Using ChatGPT Plus as optimal balance of cost, features, and usage limits. Monitoring progress in open-source AI tooling and AMD driver maturity. Will revisit when viable.
+
+**Email:**
+Self-hosting email is a long-term goal but currently too critical to operate without specialized expertise. Relying on external provider is risk management, not a failure of principles. May revisit as operational capability improves or UK legal landscape changes.
+
+**Code Hosting (GitHub):**
+GitHub provides significant community integration value (collaboration, discovery, issue tracking). Could self-host Gitea/Forgejo, but community presence outweighs autonomy concerns. Minimal lock-in risk (git is portable).
+
+**Password Management (Bitwarden):**
+Currently evaluating self-hosted alternatives (Vaultwarden). Under review.
+
+**DNS (Cloudflare):**
+Free tier for DNS/proxy with minimal vendor lock-in. DNS is portable across providers.
+
+These decisions reflect Principle 1's "pragmatic tradeoffs" — balancing autonomy with operational reality, criticality, and resource constraints.
+
+---
+
 ## Documentation Map
 
 ### Per-Host Guides
@@ -84,52 +187,11 @@ Each host has complete rebuild documentation:
 ### System Reference
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
-- [`docs/principles.md`](docs/principles.md) — Project principles guiding Shipshape
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
 - [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
 - [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
 - [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
 - [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
-
----
-
-## Design Principles
-
-### Repo-First Philosophy
-- **Plain text configuration:** Everything versioned, transparent, understandable
-- **Standard Debian packages:** No Snaps, AppImages, or Flatpaks
-- **No wrappers or daemons:** Direct use of GNU Stow and systemd
-- **Explicit over clever:** Clear scripts and dependencies over abstraction
-
-### Per-Host Isolation
-- **Single-host recovery:** Each machine can be rebuilt independently
-- **No shared files:** Avoid config that blocks single-host recovery
-- **Documented divergence:** Track how systems differ from vanilla Debian
-
-### Secrets Management
-Never committed to git:
-- SSH keys (`ssh-*/.ssh/id_*`)
-- Borg passphrases (`borg-user-*/.config/borg/passphrase`)
-- API tokens (`.config/*/api.token`)
-- SSH known_hosts
-
-Recovery location: Secrets USB (encrypted) contains all secrets.
-
----
-
-## Project Naming
-
-**Project Shipshape** refers to this dotfiles repository and configuration management implementation — everything in order, maintainable, and ready for deployment or disaster recovery.
-
-**The Wolfpack** refers to the fleet of machines managed by this repository:
-- **Audacious** — Main workstation (powerful, fast-booting, aggressively idle-shutdown)
-- **Astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
-- **Artful** — Cloud instance on Hetzner (currently inactive)
-- **Steam Deck** — Portable gaming companion
-
-Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling.
-
-Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
 
 ---
 
