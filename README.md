@@ -137,7 +137,25 @@ Recovery location: Secrets USB (encrypted) contains all secrets.
 
 ## Pragmatic Exceptions
 
-Project Shipshape balances principled self-hosting with practical constraints. The following reflects current implementation decisions:
+Project Shipshape balances principled self-hosting with practical constraints.
+
+### Service Externalization Policy
+
+When evaluating whether to self-host a service or use an external provider, apply these criteria:
+
+**External services are acceptable when:**
+1. **Criticality exceeds capability** - Service is too critical to operate without specialized expertise (e.g., email)
+2. **Technical immaturity** - Self-hosted alternatives are not production-ready (e.g., on-prem AI on AMD hardware)
+3. **Community integration value** - External service provides significant collaboration/discovery benefits (e.g., GitHub)
+4. **Cost/benefit unfavorable** - Self-hosting cost (time, hardware, maintenance) outweighs autonomy benefit
+5. **Future optionality preserved** - Can migrate to self-hosted solution later without significant lock-in
+
+**Required characteristics for external services:**
+- Prefer open standards and portable data formats (git, IMAP, standard exports)
+- Avoid vendor lock-in (proprietary APIs, data formats)
+- Maintain offline backups and recovery paths
+- Document migration strategy for future self-hosting
+- Prefer FOSS clients when accessing proprietary services
 
 ### Self-Hosted Services (Implemented)
 - Configuration management (this repository, version controlled)
