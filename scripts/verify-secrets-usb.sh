@@ -46,7 +46,8 @@ check_dir() {
   local description="$2"
 
   if [ -d "$path" ]; then
-    local count=$(find "$path" -type f | wc -l)
+    local count
+    count=$(find "$path" -type f | wc -l)
     echo "✓ $description"
     echo "  → $path ($count files)"
   else
