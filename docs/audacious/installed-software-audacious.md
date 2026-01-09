@@ -73,6 +73,8 @@ Last drift check: 2026-01-08
 - tree — directory visualizer
 - jq — JSON processor
 - shellcheck — shell linter
+- shfmt — shell formatter
+- markdownlint — Markdown linter
 - npm — Node package manager (Codex dependency)
 - emacs — text editor (dotfiles dependency)
 - elpa-treemacs — Emacs file tree sidebar
