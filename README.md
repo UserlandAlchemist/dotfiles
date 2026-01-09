@@ -39,11 +39,10 @@ Each host has complete rebuild documentation:
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
-- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
+- [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster scenarios and recovery procedures
 - [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
 - [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
-- [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
-- [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster recovery procedures and recovery kit maintenance
+- [`docs/offsite-backup.md`](docs/offsite-backup.md) — BorgBase setup and operations
 
 ---
 
