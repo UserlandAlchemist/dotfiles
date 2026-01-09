@@ -64,47 +64,6 @@ Per-host install guides, recovery procedures, and restore documentation.
 
 ---
 
-## Quick Start
-
-### Deploy user configuration
-
-```bash
-cd ~/dotfiles
-stow bash-audacious bin-audacious sway-audacious waybar-audacious
-```
-
-### Deploy system configuration
-
-```bash
-cd ~/dotfiles
-sudo root-power-audacious/install.sh
-sudo root-efisync-audacious/install.sh
-sudo systemctl daemon-reload
-```
-
-### Restow user packages after edits
-
-```bash
-stow --restow bash-audacious bin-audacious
-```
-
-### Update system packages after edits
-
-```bash
-sudo root-power-audacious/install.sh
-```
-
-### Remove packages
-
-```bash
-# User packages
-stow -D sway-audacious waybar-audacious
-
-# System packages (manual removal required - see package README)
-```
-
----
-
 ## Key Subsystems
 
 ### NAS Wake-on-Demand (Audacious ↔ Astute)
