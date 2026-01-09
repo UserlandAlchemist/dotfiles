@@ -86,6 +86,7 @@ set $locker swaylock -f \
 bindsym $mod+Shift+x exec $locker
 exec --no-startup-id swayidle -w \
   timeout 1200 '~/.local/bin/idle-shutdown.sh' \
+  resume 'pkill -f "/home/alchemist/.local/bin/idle-shutdown.sh"' \
   before-sleep '$locker'
 ### Input configuration
 #

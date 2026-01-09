@@ -597,7 +597,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled, syst
 | `bash-audacious` | user | Bash config, prompt, aliases, astute helpers (nas-open/close, ssh-astute) |
 | `bin-audacious` | user | Scripts: idle-shutdown, audio switching, game-performance, astute-status |
 | `emacs-audacious` | user | Editor config and custom theme |
-| `sway-audacious` | user | Wayland compositor: keybinds, swayidle (20min → idle-shutdown) |
+| `sway-audacious` | user | Wayland compositor: keybinds, swayidle (20min → idle-shutdown, resume cancels) |
 | `waybar-audacious` | user | Status bar (CPU, network, audio, time) |
 | `wofi-audacious` | user | Application launcher |
 | `mako-audacious` | user | Notification daemon |
