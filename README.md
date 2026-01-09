@@ -14,7 +14,7 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 - **Artful** — Cloud instance on Hetzner (currently inactive)
 - **Steam Deck** — Portable gaming companion
 
-Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid rather than a traditional multi-server lab, prioritizing clarity, sustainability, and low waste.
+Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid with console-like gaming and media capabilities.
 
 All hosts (except Steam Deck) run Debian 13 (Trixie) Stable for excellent ZFS support, predictable behavior, and reduced context switching.
 
