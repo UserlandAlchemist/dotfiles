@@ -6,7 +6,7 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 
 ## What is this?
 
-**Project Shipshape** is the configuration management implementation — this dotfiles repository with everything in order, maintainable, and ready for deployment or disaster recovery.
+**Project Shipshape** — This dotfiles repository managing the Wolfpack.
 
 **The Wolfpack** is the fleet of machines managed by this repository:
 - **Audacious** — Main workstation (ZFS root, Sway, development + gaming)
@@ -14,7 +14,7 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 - **Artful** — Cloud instance on Hetzner (currently inactive)
 - **Steam Deck** — Portable gaming companion
 
-Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architecture: independent, low-maintenance machines with clearly defined roles that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid with console-like gaming and media capabilities.
+Hostnames follow Royal Navy submarine names. "Wolfpack" describes independent, low-maintenance machines that cooperate without tight coupling. Together they form a "workstation × homelab" hybrid with console-like gaming and media capabilities.
 
 All hosts (except Steam Deck) run Debian 13 (Trixie) Stable for excellent ZFS support, predictable behavior, and reduced context switching.
 
@@ -49,11 +49,9 @@ Each host has complete rebuild documentation:
 
 ## Core Principles
 
-These principles guide Project Shipshape and inform decisions across the Wolfpack.
-
 ### 1. Autonomy & Control (with Pragmatic Tradeoffs)
 
-The project prioritizes control over core infrastructure while accepting external services where self-hosting isn't viable.
+Prioritizes control over core infrastructure while accepting external services where self-hosting isn't viable.
 
 - **Core infrastructure is self-hosted:** Storage, backups, configuration management, and development environment run on owned hardware.
 - **External services when justified:** Email, AI, and collaboration tools are externalized when criticality exceeds capability, technical maturity is lacking, or community value outweighs autonomy concerns.
@@ -71,7 +69,7 @@ Security is built on encryption, authentication at trust boundaries, and verifia
 
 ### 3. Resilience & Portability
 
-The project prioritizes recoverability and avoids lock-in to enable fast recovery and long-term sustainability.
+Prioritizes recoverability and avoids lock-in for fast recovery and long-term sustainability.
 
 - **Recovery is paramount:** Multiple backup tiers (local, off-site, offline), documented procedures, and tested restore paths ensure rapid recovery from any disaster scenario.
 - **Minimal lock-in:** Open standards (git, SSH, Borg, NFS) and portable data formats allow components to be swapped or migrated without architectural changes.
@@ -90,8 +88,6 @@ The stack is designed to remain sustainable for users with modest means and comm
 
 ## Implementation Patterns
 
-How these principles translate into practice:
-
 ### Configuration Management
 - **Plain text configuration:** Everything versioned, transparent, and understandable
 - **Standard Debian packages:** No Snaps, AppImages, or Flatpaks
@@ -107,7 +103,7 @@ How these principles translate into practice:
 
 ## Pragmatic Exceptions
 
-Project Shipshape balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, or (4) self-hosting cost outweighs benefit—provided migration paths remain viable.
+Balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, or (4) self-hosting cost outweighs benefit—provided migration paths remain viable.
 
 ### Self-Hosted Services
 - Configuration management, NAS/file storage, encrypted backups, APT caching, development environment
