@@ -179,12 +179,11 @@ sudo BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=ye
 
 ## Restore
 
-All restore procedures are centralized in `docs/data-restore.md`. Use that guide for:
-- Audacious data restore from BorgBase.
-- Astute critical data restore from BorgBase.
-- Full-loss recovery flow.
+All restore procedures are in `docs/disaster-recovery.md` (§4).
 
-## Health checks
+---
+
+## Health Checks
 
 1. **Verify append-only access (BOTH repos):**
 
