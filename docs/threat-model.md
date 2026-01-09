@@ -124,9 +124,3 @@ Backups and storage require monitoring to ensure recoverability. Gaps in monitor
 Recovery is a core requirement; procedures must be exercised periodically through drills and verification.
 
 ---
-
-## Maintenance
-
-Review this document after major infrastructure changes and during periodic recovery drills.
-
----
