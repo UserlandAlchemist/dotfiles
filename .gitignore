@@ -10,7 +10,6 @@
 
 # LLM collaboration files (ephemeral state, not permanent docs)
 AGENTS.md
-identity-policy.md
 
 # Emacs-generated state and caches
 */.emacs.d/eln-cache/
