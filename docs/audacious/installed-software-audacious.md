@@ -72,6 +72,7 @@ Last drift check: 2026-01-08
 - rsync — file/directory synchronization
 - tree — directory visualizer
 - jq — JSON processor
+- shellcheck — shell linter
 - npm — Node package manager (Codex dependency)
 - emacs — text editor (dotfiles dependency)
 - elpa-treemacs — Emacs file tree sidebar
