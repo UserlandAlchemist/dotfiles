@@ -550,7 +550,7 @@ test -f ~/.config/borg/passphrase && echo "OK: Borg passphrase exists"
 7. Deploy system packages:
 
 ```sh
-sudo root-system-audacious/install.sh
+sudo root-journald-audacious/install.sh
 sudo root-power-audacious/install.sh
 sudo root-efisync-audacious/install.sh
 sudo root-cachyos-audacious/install.sh
@@ -614,7 +614,7 @@ Expected result: All dotfiles deployed, services enabled, timers scheduled, syst
 | `pipewire-audacious` | user | Audio routing and pro-audio latency config |
 | `mimeapps-audacious` | user | Default applications (PDF→zathura, http→firefox) |
 | `ardour-audacious` | user | DAW config (optional) |
-| `root-system-audacious` | system | System configuration fixes for minimal Debian (journald syslog override, journald waits for /var on ZFS) |
+| `root-journald-audacious` | system | System configuration fixes for minimal Debian (journald syslog override, journald waits for /var on ZFS) |
 | `root-power-audacious` | system | Powertop tuning, udev autosuspend rules, SATA power policy |
 | `root-efisync-audacious` | system | Dual ESP rsync (efi-sync.path watches /boot/efi/EFI/Linux/) |
 | `root-cachyos-audacious` | system | Kernel/sysctl/I/O scheduler tuning (CachyOS-derived gaming optimizations) |

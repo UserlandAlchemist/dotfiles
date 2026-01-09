@@ -22,12 +22,12 @@ if [ "$HOSTNAME" = "audacious" ]; then
     root-power-audacious
     root-proaudio-audacious
     root-sudoers-audacious
-    root-system-audacious
+    root-journald-audacious
   )
 elif [ "$HOSTNAME" = "astute" ]; then
   PACKAGES=(
     root-firewall-astute
-    root-offsite-astute
+    root-borg-astute
     root-power-astute
     root-ssh-astute
   )

@@ -29,7 +29,7 @@ PHASE 2 - Security Audit (After Critical Fixes):
   8. [x] ~~CRYPTO AUDIT - SSH/GPG key inventory and cleanup (runs alongside #7)~~ (included in security-audit.md)
 
 PHASE 3 - Critical Backups & Infrastructure (Week 2-3):
-  9. [x] ~~OFF-SITE BACKUP IMPLEMENTATION - BorgBase repositories (P1-High, critical data protection)~~ (commits: 27a4e7c, 623a4c9, 827210e, 5a50238)
+  9. [x] ~~OFF-SITE BACKUP IMPLEMENTATION - BorgBase repositories (P1-High, critical data protection)~~ (commits: 27a4e7c, 623a4c9, 827210e, 5a50238, root-borg-astute renamed)
   10. [x] ~~INSTALL LIBRARY - Idempotent scripts (depends on: Userland philosophy)~~ (commits: c135f32, 711e0ed, f36a5a6, 35a89c6)
   11. [ ] VM TESTING ENVIRONMENT - Safe testing ground (no dependencies)
 
@@ -136,7 +136,7 @@ Removed netcat-traditional from the Astute base install list after confirming it
 Removed fdisk from the Astute inventory and base install list. (fb76f50)
 
 ## 2026-01-07 20:10 - Off-Site Backup Implementation (Phase 3, Task #9)
-Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-offsite-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
+Implemented BorgBase off-site repos (audacious-home + astute-critical). Created root-borg-astute package with systemd units and scripts. Append-only mode for ransomware protection. Changed astute-critical to weekly schedule (Sunday 15:00). Added health status output to check script. Manual triggers verified both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature branch)
 
 ## 2026-01-07 18:30 - Security Audit Complete (Phase 2, Tasks #7-8)
 Comprehensive security audit + crypto/SSH key inventory. Overall security posture: GOOD. All Phase 1 fixes verified operational. Inventoried all SSH keys (4 pairs → 3 active, deleted unused id_astute_nas). Documented cold storage procedures. No suspicious activity in logs. Firewall active with 8K+ drops on Audacious. (d6a1bb4, 2a6993f, 92d8091, fb5122c)
