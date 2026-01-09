@@ -59,6 +59,30 @@ if rg --quiet 'data-restore\\.md' docs; then
   error "Found stale reference to data-restore.md in docs/"
 fi
 
+# Shell formatting (optional)
+if command -v shfmt >/dev/null 2>&1; then
+  info "shfmt check (${#sh_files[@]} files)"
+  if ! shfmt -d "${sh_files[@]}"; then
+    warn "shfmt reported formatting differences"
+  fi
+else
+  warn "shfmt not installed; skipping shell formatting check"
+fi
+
+# Markdown lint (optional)
+md_files=()
+while IFS= read -r f; do md_files+=("$f"); done < <(rg --files -g '*.md')
+if command -v markdownlint >/dev/null 2>&1; then
+  if [ "${#md_files[@]}" -gt 0 ]; then
+    info "markdownlint (${#md_files[@]} files)"
+    if ! markdownlint "${md_files[@]}"; then
+      warn "markdownlint reported issues"
+    fi
+  fi
+else
+  warn "markdownlint not installed; skipping markdown lint"
+fi
+
 if [ "$FAILURES" -eq 0 ] && [ "$WARNINGS" -eq 0 ]; then
   info "All checks passed"
   exit 0
