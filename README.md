@@ -4,11 +4,12 @@ Configuration management for "the Wolfpack" — a small ecosystem of independent
 
 ---
 
-## What is this?
+## Project Overview
 
 **Project Shipshape** — This dotfiles repository managing the Wolfpack.
 
 **The Wolfpack** is the fleet of machines managed by this repository:
+
 - **Audacious** — Main workstation (ZFS root, Sway, development + gaming)
 - **Astute** — Low-power NAS/backup server (suspend-on-idle, Wake-on-LAN)
 - **Artful** — Cloud instance on Hetzner (currently inactive)
@@ -23,19 +24,23 @@ All hosts (except Steam Deck) run Debian 13 (Trixie) Stable for excellent ZFS su
 ## Documentation Map
 
 ### Per-Host Guides
+
 Each host has complete rebuild documentation:
 
 **Audacious:**
+
 - [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
 - [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
 - [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
 
 **Astute:**
+
 - [`docs/astute/install-astute.md`](docs/astute/install-astute.md) — Full installation from scratch
 - [`docs/astute/recovery-astute.md`](docs/astute/recovery-astute.md) — Boot and ZFS recovery
 - [`docs/astute/installed-software-astute.md`](docs/astute/installed-software-astute.md) — Complete package inventory
 
 ### System Reference
+
 - [`docs/infrastructure.md`](docs/infrastructure.md) — Network and hardware reference
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
 - [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster scenarios and recovery procedures
@@ -86,12 +91,14 @@ The stack is designed to remain sustainable for users with modest means and comm
 ## Implementation Patterns
 
 ### Configuration Management
+
 - **Plain text configuration:** Everything versioned, transparent, and understandable
 - **Standard Debian packages:** No Snaps, AppImages, or Flatpaks
 - **Direct tooling:** GNU Stow and systemd, without config management abstraction layers
 - **Explicit over clever:** Clear scripts and dependencies over abstraction
 
 ### Per-Host Isolation
+
 - **Independent recovery:** Each machine can be rebuilt from its own packages
 - **Minimal shared files:** `profile-common` and `bin-common` are the only shared configs; they don't create deployment dependencies between hosts
 - **Package inventory tracking:** Installed software lists and drift-check scripts track divergence from base Debian
@@ -103,9 +110,11 @@ The stack is designed to remain sustainable for users with modest means and comm
 Balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, or (4) self-hosting cost outweighs benefit—provided migration paths remain viable.
 
 ### Self-Hosted Services
+
 - Configuration management, NAS/file storage, encrypted backups, APT caching, development environment
 
 ### External Services
+
 - **AI:** ChatGPT Plus (AMD GPU/driver immaturity for local LLM)
 - **Email:** External provider (criticality exceeds current capability)
 - **Code Hosting:** GitHub (community integration value, git portability)
