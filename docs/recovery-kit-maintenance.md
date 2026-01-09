@@ -150,13 +150,56 @@ borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-ke
 
 ### §2.3 BorgBase keys and credentials
 
-Use `docs/offsite-backup.md` to export BorgBase repo keys and copy the SSH key and passphrases to:
-- `/mnt/keyusb/ssh-backup/borgbase-offsite-audacious`
-- `/mnt/keyusb/ssh-backup/borgbase-offsite-astute`
-- `/mnt/keyusb/borg/audacious-home-key.txt`
-- `/mnt/keyusb/borg/astute-critical-key.txt`
-- `/mnt/keyusb/borg/audacious-home.passphrase`
-- `/mnt/keyusb/borg/astute-critical.passphrase`
+Export BorgBase repo keys:
+
+Audacious (as root):
+
+```sh
+install -d -m 0700 /root/tmp-borg-keys
+
+BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase" \
+  borg key export ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/audacious-home-key.txt
+
+cp /root/tmp-borg-keys/audacious-home-key.txt /mnt/keyusb/borg/
+cp /root/.ssh/borgbase-offsite-audacious /mnt/keyusb/ssh-backup/
+cp /root/.config/borg-offsite/audacious-home.passphrase /mnt/keyusb/borg/
+chmod 600 /mnt/keyusb/ssh-backup/borgbase-offsite-audacious
+chmod 600 /mnt/keyusb/borg/audacious-home.*
+rm -rf /root/tmp-borg-keys
+```
+
+Astute (as root), then on Audacious:
+
+```sh
+install -d -m 0700 /root/tmp-borg-keys
+
+BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes" \
+BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase" \
+  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo \
+  /root/tmp-borg-keys/astute-critical-key.txt
+
+install -d -m 0700 /root/tmp-borgbase-creds
+cp /root/tmp-borg-keys/astute-critical-key.txt /root/tmp-borgbase-creds/
+cp /root/.ssh/borgbase-offsite-astute /root/tmp-borgbase-creds/
+cp /root/.config/borg-offsite/astute-critical.passphrase /root/tmp-borgbase-creds/
+chmod 600 /root/tmp-borgbase-creds/*
+
+scp /root/tmp-borgbase-creds/* alchemist@audacious:~/
+rm -rf /root/tmp-borg-keys /root/tmp-borgbase-creds
+```
+
+On Audacious:
+
+```sh
+cp ~/astute-critical-key.txt /mnt/keyusb/borg/
+cp ~/borgbase-offsite-astute /mnt/keyusb/ssh-backup/
+cp ~/astute-critical.passphrase /mnt/keyusb/borg/
+chmod 600 /mnt/keyusb/ssh-backup/borgbase-offsite-astute
+chmod 600 /mnt/keyusb/borg/astute-critical.*
+rm ~/astute-critical-key.txt ~/borgbase-offsite-astute ~/astute-critical.passphrase
+```
 
 ### §2.4 PGP keys
 
