@@ -22,54 +22,6 @@ Everything is plain text, version controlled, and deployed using two methods: GN
 
 ---
 
-## Architecture
-
-### Package Organization
-
-Configuration is split into **per-host stow packages** using a consistent naming convention:
-
-**User-level packages** (deploy to `$HOME`):
-```
-<tool>-<hostname>/
-```
-Examples: `bash-audacious/`, `sway-audacious/`, `emacs-audacious/`
-
-**System-level packages** (deploy to `/` via install scripts):
-```
-root-<concern>-<hostname>/
-```
-Examples: `root-power-audacious/`, `root-backup-audacious/`, `root-efisync-audacious/`
-
-System packages include `install.sh` scripts that copy files to /etc and other system locations as real files (not symlinks). This ensures configs are available before /home mounts during boot.
-
-**Shared configuration:**
-```
-profile-common/
-```
-Shell profile sourced first on all hosts.
-
-**Shared user scripts:**
-```
-bin-common/
-```
-Host-agnostic helpers for `~/.local/bin`.
-
-**Documentation:**
-```
-docs/<hostname>/
-```
-Per-host install guides, recovery procedures, and restore documentation.
-
-### Why Per-Host Packages?
-
-- **Independent recovery:** Each host can be rebuilt from its own packages without touching others
-- **No shared config drift:** Changes to one host never affect another
-- **Clear ownership:** Every file belongs to exactly one host
-- **Fast deployment:** Deploy only the packages needed for the current host
-- **Safe boot-time configs:** System packages use install scripts, not symlinks, so configs load before /home mounts
-
----
-
 ## Documentation Map
 
 ### Per-Host Guides
