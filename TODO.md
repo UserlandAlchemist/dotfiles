@@ -57,6 +57,9 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-09 - Install/Recovery Doc Consistency
+Aligned install/recovery docs (audacious ZFS altroot to /mnt + verification, disaster-recovery references, root-borg naming) and fixed astute SSH key path plus install test package list. (3a9b404)
+
 ## 2026-01-09 - Comprehensive Documentation Review
 Major documentation restructure across 19 commits. Merged principles.md into README (228→120 lines), merged identity-policy into AGENTS.md. Consolidated recovery docs (data-restore→disaster-recovery, renamed secrets-maintenance→recovery-kit-maintenance). Merged hosts/network-overview→infrastructure.md. Restructured threat-model.md to in-scope/out-of-scope format (271→117 lines, 57% reduction). Fixed critical SSH key passphrase guidance in offsite-backup.md (no passphrase required for automated backups). Focused vm-architecture.md on immediate install testing (removed Gentoo/OpenBSD, 542→470 lines). (d41f131..c2a57de, 19 commits)
 
