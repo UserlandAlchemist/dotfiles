@@ -18,8 +18,6 @@ Hostnames follow Royal Navy submarine names. "Wolfpack" describes the architectu
 
 All hosts (except Steam Deck) run Debian 13 (Trixie) Stable for excellent ZFS support, predictable behavior, and reduced context switching.
 
-Everything is plain text, version controlled, and deployed using two methods: GNU Stow for user configs, install scripts for system configs. No configuration managers, no complex abstractions — just files that map directly to their target locations.
-
 ---
 
 ## Documentation Map
