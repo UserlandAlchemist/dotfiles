@@ -47,7 +47,7 @@ borg create \
   --verbose --stats --compression lz4 \
   --lock-wait 60 --one-file-system --checkpoint-interval 60 \
   --patterns-from "$HOME/.config/borg/patterns" \
-  "$REPO"::'{hostname}-{now}'
+  "${REPO}::{hostname}-{now}"
 
 echo "Pruning old archives..."
 borg prune --list \

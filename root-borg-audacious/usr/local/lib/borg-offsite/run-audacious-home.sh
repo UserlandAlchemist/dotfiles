@@ -42,7 +42,7 @@ borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 --one-file-system \
   --patterns-from "$PATTERNS" \
-  "$REPO"::'audacious-home-{now}'
+  "${REPO}::audacious-home-{now}"
 
 # Note: This repo should use append-only access in BorgBase for ransomware protection.
 # Prune operations are disabled - manage retention manually via BorgBase web UI.

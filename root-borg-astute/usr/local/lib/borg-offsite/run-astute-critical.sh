@@ -43,13 +43,13 @@ if [ -d "$SRC2" ]; then
  borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
-  "$REPO"::'astute-critical-{now}' \
+  "${REPO}::astute-critical-{now}" \
   "$SRC1" "$SRC2"
 else
  borg create \
   --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
   --lock-wait 60 \
-  "$REPO"::'astute-critical-{now}' \
+  "${REPO}::astute-critical-{now}" \
   "$SRC1"
 fi
 
