@@ -1,24 +1,15 @@
 # root-efisync-audacious
 
-Dual EFI System Partition synchronization for **audacious**.
+Dual EFI System Partition synchronization.
 
-Currently provides:
-- efi-sync.service
-- efi-sync.path
-
-These units keep the primary EFI System Partition (/boot/efi) mirrored to a secondary backup ESP (/boot/efi-backup) whenever `kernel-install` updates unified kernel images (UKIs).
+Keeps the primary EFI System Partition (/boot/efi) mirrored to a secondary
+backup ESP (/boot/efi-backup) whenever `kernel-install` updates unified kernel
+images (UKIs).
 
 ## Deploy
 
-Install systemd units as real files (avoid `/home` symlink breakage at boot):
-
-1. Run the install script:
 ```bash
-sudo /home/alchemist/dotfiles/root-efisync-audacious/install.sh
-```
-
-2. Enable the path unit:
-```bash
+sudo ./root-efisync-audacious/install.sh
 sudo systemctl enable --now efi-sync.path
 ```
 

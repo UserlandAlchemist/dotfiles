@@ -1,8 +1,6 @@
-# root-firewall-audacious - Host Firewall (nftables)
+# root-firewall-audacious
 
-System-level firewall for Audacious using nftables.
-
-## Purpose
+Host firewall using nftables.
 
 Default-deny inbound rules to reduce LAN lateral movement and accidental exposure.
 

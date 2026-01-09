@@ -1,10 +1,9 @@
 # root-sudoers-audacious
 
-Sudo permissions for NAS mount control without password prompts.
+Sudo permissions for NAS mount control.
 
-## Purpose
-
-This package grants the `alchemist` user passwordless sudo access to mount and unmount the Astute NAS. This is required for the NAS wake-on-demand orchestration system.
+Grants passwordless sudo access to mount and unmount the Astute NAS, required
+for the NAS wake-on-demand orchestration system.
 
 ## Contents
 

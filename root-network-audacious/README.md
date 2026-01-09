@@ -1,10 +1,9 @@
 # root-network-audacious
 
-Network configuration for Audacious using systemd-networkd with APT proxy auto-detection.
+Network configuration using systemd-networkd with APT proxy auto-detection.
 
-## Purpose
-
-This package configures wired ethernet networking using systemd-networkd and sets up automatic APT proxy detection for faster package downloads when the Astute NAS is available.
+Configures wired ethernet and automatic APT proxy detection for faster package
+downloads when the Astute NAS is available.
 
 ## Contents
 

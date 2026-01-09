@@ -1,6 +1,6 @@
-# Cold Storage Backups (Audacious)
+# cold-storage-audacious
 
-Monthly cold storage snapshots for Audacious with a manual reminder timer.
+Monthly cold storage snapshots with manual reminder timer.
 
 **Device:** 931.5GB external HDD (/dev/sda1)
 **UUID:** 21462e69-569e-4dad-9ab0-88a3b7c8919c

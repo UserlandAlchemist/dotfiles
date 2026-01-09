@@ -1,10 +1,9 @@
-# root-ssh-astute - SSH Server Hardening
+# root-ssh-astute
 
-System-level SSH server hardening for Astute.
+SSH server hardening.
 
-## Purpose
-
-Lock SSH to LAN-only access to reduce exposure if router settings change or UPnP opens ports.
+Locks SSH to LAN-only access to reduce exposure if router settings change or
+UPnP opens ports.
 
 ## Components
 

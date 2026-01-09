@@ -1,8 +1,6 @@
-# root-firewall-astute - Host Firewall (nftables)
+# root-firewall-astute
 
-System-level firewall for Astute using nftables.
-
-## Purpose
+Host firewall using nftables.
 
 Default-deny inbound rules to protect the NAS from LAN lateral movement while
 allowing only Audacious to reach core services.

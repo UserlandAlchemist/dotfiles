@@ -1,9 +1,9 @@
 # mimeapps-audacious
 
-Default application associations (MIME handlers) for **audacious**.
+Default application associations (MIME handlers).
 
-This package provides a baseline `mimeapps.list` defining preferred default
-applications (browser, terminal, editor, etc.) for a fresh setup.
+Provides baseline `mimeapps.list` defining preferred default applications
+(browser, terminal, editor, etc.) for fresh setup.
 
 ## Important
 

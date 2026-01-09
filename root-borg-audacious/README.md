@@ -10,10 +10,8 @@ Manages two independent backup streams:
 
 ## Deploy
 
-Install systemd units as real files (avoid `/home` symlink breakage at boot):
-
 ```bash
-sudo /home/alchemist/dotfiles/root-borg-audacious/install.sh
+sudo ./root-borg-audacious/install.sh
 ```
 
 Enable timers:

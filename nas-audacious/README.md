@@ -1,10 +1,9 @@
-# nas-audacious - NAS Wake-on-Demand Orchestration
+# nas-audacious
 
-User-level systemd service that orchestrates wake-on-demand access to the Astute NAS server.
+NAS wake-on-demand orchestration.
 
-## Purpose
-
-Allows Audacious to wake Astute from suspend, mount the NFS share, and prevent Astute from sleeping while the NAS is in use.
+User-level systemd service that wakes Astute from suspend, mounts the NFS share,
+and prevents Astute from sleeping while NAS is in use.
 
 ## Components
 
