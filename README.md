@@ -107,7 +107,7 @@ How these principles translate into practice:
 
 ## Pragmatic Exceptions
 
-Project Shipshape balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, (4) self-hosting cost outweighs benefit, or (5) future migration remains viable.
+Project Shipshape balances principled self-hosting with practical constraints. External services are acceptable when: (1) criticality exceeds capability, (2) self-hosted alternatives are immature, (3) community integration provides significant value, or (4) self-hosting cost outweighs benefit—provided migration paths remain viable.
 
 ### Self-Hosted Services
 - Configuration management, NAS/file storage, encrypted backups, APT caching, development environment
