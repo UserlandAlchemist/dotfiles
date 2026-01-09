@@ -2,6 +2,8 @@
 
 Security assumptions, threat scope, and risk decisions for Project Shipshape.
 
+**Note:** This document reflects current infrastructure with Artful inactive. When Artful is deployed with public-facing services, threat scope and security decisions will require re-evaluation.
+
 ---
 
 ## Assumptions
@@ -65,41 +67,6 @@ Sophisticated adversary with significant resources targeting this specific infra
 
 ### Advanced Supply Chain Attacks
 Coordinated compromise of multiple upstream dependencies or signing keys. No extensive source audits or builds from source. Rationale: impractical for home infrastructure; rely on Debian's security process.
-
----
-
-## Attack Surfaces
-
-### External (WAN)
-- Router and ISP edge
-- UPnP (automatic port forwarding enabled)
-- External services (GitHub, Bitwarden, ChatGPT, Cloudflare)
-- Artful VPS when active
-
-### Internal (LAN)
-- SSH management between hosts
-- apt-cacher-ng traffic (plaintext HTTP)
-- Service discovery protocols (mDNS, LLMNR, DHCP)
-- IoT devices with unknown security posture
-- NFSv4 traffic (plaintext when implemented)
-
-### Physical
-- Desktop workstation and NAS hardware
-- Portable devices (Steam Deck, mobile)
-- Secrets USB and cold storage drive
-
-### Authentication
-- SSH keys (no 2FA on LAN)
-- Local autologin and physical console access
-- External service accounts (2FA enabled where available)
-
-### Data at Rest
-- Encrypted: ZFS pools, LUKS cold storage, Borg repositories
-- Plaintext: system logs and configuration files
-
-### Data in Transit
-- Encrypted: SSH, HTTPS, Borg over SSH
-- Plaintext on LAN: apt-cacher-ng, discovery protocols, NFSv4 (when implemented)
 
 ---
 
