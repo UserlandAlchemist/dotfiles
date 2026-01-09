@@ -36,8 +36,7 @@ Each host has complete rebuild documentation:
 - [`docs/astute/installed-software-astute.md`](docs/astute/installed-software-astute.md) — Complete package inventory
 
 ### System Reference
-- [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
-- [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
+- [`docs/infrastructure.md`](docs/infrastructure.md) — Network and hardware reference
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
 - [`docs/disaster-recovery.md`](docs/disaster-recovery.md) — Disaster scenarios and recovery procedures
 - [`docs/recovery-kit-maintenance.md`](docs/recovery-kit-maintenance.md) — Recovery kit creation and maintenance
