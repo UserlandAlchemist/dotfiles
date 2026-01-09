@@ -1,11 +1,12 @@
 #!/bin/sh
-# Install root-backup-audacious package
+# Install root-borg-audacious package (local + offsite Borg backups)
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
-echo "Installing root-backup-audacious (systemd units as real files)"
+echo "Installing root-borg-audacious (systemd units as real files)"
 
+# Local backup to Astute
 install_unit borg-backup.service
 install_unit borg-backup.timer
 install_unit borg-check.service
@@ -17,6 +18,14 @@ install_script usr/local/lib/borg/run-backup-with-logging.sh
 install_script usr/local/lib/borg/run-deep-check.sh
 install_script usr/local/lib/borg/wait-for-astute.sh
 
+# Offsite backup to BorgBase
+install_unit borg-offsite-audacious.service
+install_unit borg-offsite-audacious.timer
+install_unit borg-offsite-check.service
+install_unit borg-offsite-check.timer
+install_script usr/local/lib/borg-offsite/run-audacious-home.sh
+install_script usr/local/lib/borg-offsite/run-check.sh
+
 echo "→ Stowing package (excluding systemd units)"
 cd "$DOTFILES_DIR"
 stow -t / \
@@ -25,7 +34,7 @@ stow -t / \
   --ignore='^README\.md$' \
   --ignore='^etc/systemd/system' \
   --ignore='^usr/local/lib' \
-  root-backup-audacious
+  root-borg-audacious
 
 reload_systemd
 install_success
