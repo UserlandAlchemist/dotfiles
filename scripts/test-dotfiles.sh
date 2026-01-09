@@ -72,12 +72,16 @@ fi
 # Markdown lint (optional)
 md_files=()
 while IFS= read -r f; do md_files+=("$f"); done < <(rg --files -g '*.md')
+mdlint_bin=""
 if command -v markdownlint >/dev/null 2>&1; then
-  if [ "${#md_files[@]}" -gt 0 ]; then
-    info "markdownlint (${#md_files[@]} files)"
-    if ! markdownlint "${md_files[@]}"; then
-      warn "markdownlint reported issues"
-    fi
+  mdlint_bin="markdownlint"
+elif command -v mdl >/dev/null 2>&1; then
+  mdlint_bin="mdl"
+fi
+if [ -n "$mdlint_bin" ] && [ "${#md_files[@]}" -gt 0 ]; then
+  info "markdownlint (${#md_files[@]} files) via $mdlint_bin"
+  if ! "$mdlint_bin" "${md_files[@]}"; then
+    warn "markdownlint reported issues"
   fi
 else
   warn "markdownlint not installed; skipping markdown lint"
