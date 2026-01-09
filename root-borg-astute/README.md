@@ -24,10 +24,8 @@ Backs up:
 
 ## Deploy
 
-Install systemd units as real files:
-
 ```bash
-sudo /home/alchemist/dotfiles/root-borg-astute/install.sh
+sudo ./root-borg-astute/install.sh
 ```
 
 Enable timers:

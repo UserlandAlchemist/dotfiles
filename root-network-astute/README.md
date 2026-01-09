@@ -1,10 +1,10 @@
 # root-network-astute
 
-Network configuration for Astute using systemd-networkd with DHCP.
+Network configuration using systemd-networkd with DHCP.
 
-## Purpose
-
-Configures wired ethernet networking using systemd-networkd for proper network-online.target signaling. This ensures services that depend on network connectivity (especially offsite backups) wait until DNS resolution is working.
+Configures wired ethernet for proper network-online.target signaling. Ensures
+services that depend on network connectivity (especially offsite backups) wait
+until DNS resolution is working.
 
 ## Contents
 

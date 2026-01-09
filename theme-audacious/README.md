@@ -1,4 +1,6 @@
-# gtk-audacious – Workbench Dark GTK3 Theme Override
+# theme-audacious
+
+Workbench Dark theme for GTK3, fonts, icons, and wallpapers.
 
 **Purpose:** Applies Amiga Workbench color palette over Arc-Dark GTK theme base.
 

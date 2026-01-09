@@ -1,9 +1,9 @@
 # borg-user-audacious
 
-Per-user BorgBackup configuration for audacious.
+Per-user BorgBackup configuration.
 
-This package defines the user-level environment and non-secret configuration
-required by the systemd timers from `root-backup-audacious`.
+User-level environment and non-secret configuration required by the systemd
+timers from `root-borg-audacious`.
 
 Contents:
 - `.config/borg/env` — systemd-style environment variables for Borg

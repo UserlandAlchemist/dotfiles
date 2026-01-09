@@ -2,9 +2,9 @@
 
 Real-time audio permissions for low-latency audio work.
 
-## Purpose
-
-This package grants real-time scheduling privileges to users in the `audio` group, enabling low-latency audio applications like DAWs, soft synths, and VoIP to run without dropouts or xruns.
+Grants real-time scheduling privileges to users in the `audio` group, enabling
+low-latency audio applications like DAWs, soft synths, and VoIP to run without
+dropouts or xruns.
 
 ## Contents
 

@@ -1,6 +1,6 @@
 # ssh-audacious
 
-Manages `~/.ssh/config` for **audacious**.
+SSH client configuration.
 
 - Only the SSH config file is tracked.
 - Keys, known_hosts, and other sensitive files are *never* committed to git.

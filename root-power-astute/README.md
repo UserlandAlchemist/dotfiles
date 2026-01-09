@@ -1,15 +1,14 @@
-# root-power-astute - Astute Power Management
+# root-power-astute
 
-System-level power management policy and NAS orchestration support for Astute.
+Power management policy and NAS orchestration support.
 
-## Purpose
+Low-power NAS/backup server designed to suspend on idle and wake on demand.
 
-Astute is a low-power NAS/backup server designed to suspend on idle and wake on demand. This package provides:
-
-1. **Idle suspend policy** - Automatic suspension after inactivity
-2. **NAS sleep inhibitor** - Prevents suspension while NAS is in use by Audacious
-3. **Power optimization** - Aggressive power savings via powertop
-4. **Hardware blacklists** - Disable unnecessary modules (watchdog, GPU)
+Provides:
+- **Idle suspend policy** - Automatic suspension after inactivity
+- **NAS sleep inhibitor** - Prevents suspension while NAS is in use
+- **Power optimization** - Aggressive power savings via powertop
+- **Hardware blacklists** - Disable unnecessary modules (watchdog, GPU)
 
 ## Components
 

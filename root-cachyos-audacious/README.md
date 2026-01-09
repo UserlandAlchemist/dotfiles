@@ -2,9 +2,8 @@
 
 Gaming and desktop performance optimizations derived from CachyOS kernel tuning.
 
-## Purpose
-
-This package contains system-level performance tweaks optimized for a high-performance desktop with gaming workloads. The configuration is derived from CachyOS optimizations but adapted for Audacious's specific use case: desktop productivity + gaming (MTGA, MMOs) + media streaming (Twitch).
+System-level performance tweaks optimized for high-performance desktop with
+gaming workloads: desktop productivity + gaming (MTGA, MMOs) + media streaming (Twitch).
 
 ## Hardware assumptions
 

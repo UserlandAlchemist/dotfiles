@@ -1,10 +1,9 @@
 # root-journald-audacious
 
-General system configuration fixes for Audacious (minimal Debian install).
+Journald configuration for minimal Debian + ZFS.
 
-## Purpose
-
-This package contains system-level configuration overrides that don't fit into more specific packages. These are fixes for Debian defaults that assume a full install but break in minimal debootstrap environments.
+Fixes for Debian defaults that assume full install but break in minimal
+debootstrap environments with ZFS root.
 
 ## Contents
 
@@ -39,17 +38,10 @@ the journald socket failed to start at boot. Replaced with
 
 ## Deploy
 
-Run the install script as root:
-
 ```bash
-sudo /home/alchemist/dotfiles/root-journald-audacious/install.sh
+sudo ./root-journald-audacious/install.sh
+sudo systemctl restart systemd-journald
 ```
-
-The script will:
-1. Install systemd configs as real files (avoiding /home symlink issues at boot)
-2. Stow remaining package files (if any)
-3. Reload systemd daemon
-4. Prompt to restart journald
 
 ## Related Issues
 
