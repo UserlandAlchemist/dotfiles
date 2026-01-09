@@ -30,7 +30,7 @@ echo
 echo "Available block devices:"
 lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS | grep -v loop
 echo
-read -p "Enter target USB device (e.g., sdc): " TARGET_DEV
+read -r -p "Enter target USB device (e.g., sdc): " TARGET_DEV
 
 if [ -z "$TARGET_DEV" ]; then
   echo "ERROR: No device specified"
@@ -52,7 +52,7 @@ echo
 echo "WARNING: This will DESTROY all data on $TARGET_DEV"
 lsblk "$TARGET_DEV"
 echo
-read -p "Type 'yes' to continue: " CONFIRM
+read -r -p "Type 'yes' to continue: " CONFIRM
 
 if [ "$CONFIRM" != "yes" ]; then
   echo "Aborted."
