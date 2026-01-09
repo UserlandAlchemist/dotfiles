@@ -150,7 +150,9 @@ borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-ke
 
 ### §2.3 BorgBase keys and credentials
 
-Export BorgBase repo keys:
+Run after BorgBase repo initialization (see `docs/offsite-backup.md`) or any credential rotation.
+
+Prereq: Secrets USB mounted at `/mnt/keyusb`.
 
 Audacious (as root):
 
