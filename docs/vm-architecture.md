@@ -1,8 +1,6 @@
 # VM Testing Environment Architecture
 
-**Purpose:** Test installation documentation and experiment with alternative systems (Gentoo, BSD)
-
-**Design Date:** 2025-12-23
+**Purpose:** Test installation documentation for Audacious and Astute
 
 ---
 
@@ -90,46 +88,6 @@ Virtual machines for testing Project Shipshape installation procedures, with fai
 
 ---
 
-### 3. test-gentoo (Future)
-**Purpose:** Gentoo experimentation and learning
-
-**Specifications:**
-- RAM: 4GB (compilation needs memory)
-- vCPUs: 4 (faster builds)
-- Architecture: x86_64
-- Firmware: UEFI
-
-**Disk Layout:**
-- vda: 40GB single disk (simple layout for learning)
-
-**Goals:**
-- Learn Portage package management
-- Custom kernel compilation
-- Understand USE flags
-- Stage3 installation process
-
----
-
-### 4. test-openbsd (Future)
-**Purpose:** BSD experimentation and learning
-
-**Specifications:**
-- RAM: 2GB
-- vCPUs: 2
-- Architecture: amd64
-- Firmware: UEFI
-
-**Disk Layout:**
-- vda: 20GB single disk (BSD disklabel)
-
-**Goals:**
-- Learn BSD userland differences
-- OpenBSD security features
-- pkg_add package management
-- Understanding BSD philosophy
-
----
-
 ## Storage Strategy
 
 **Format:** qcow2 (QEMU Copy-On-Write v2)
@@ -149,8 +107,6 @@ test-audacious-vdb.qcow2
 test-astute-vda.qcow2
 test-astute-vdb.qcow2
 test-astute-vdc.qcow2
-test-gentoo-vda.qcow2
-test-openbsd-vda.qcow2
 ```
 
 **Alternative:** Raw images for performance
@@ -177,8 +133,6 @@ Host (audacious)
 **IP Allocation:**
 - test-audacious: DHCP or static 192.168.1.200
 - test-astute: DHCP or static 192.168.1.201
-- test-gentoo: DHCP or static 192.168.1.202
-- test-openbsd: DHCP or static 192.168.1.203
 
 **Benefits:**
 - VMs visible on LAN (can test NAS from test-audacious)
@@ -202,17 +156,14 @@ Host (audacious)
 
 **Concurrent VM Limits:**
 - Comfortable: 2 VMs running simultaneously
-- Maximum: 4 VMs with reduced performance
 - Testing mode: 1 VM at a time (full resources)
 
-**Conservative Allocation:**
+**Allocation:**
 ```
 test-audacious: 4GB RAM, 2 vCPUs
 test-astute: 2GB RAM, 2 vCPUs
-test-gentoo: 4GB RAM, 4 vCPUs (compiling)
-test-openbsd: 2GB RAM, 2 vCPUs
 ---
-Total: 12GB RAM, 10 vCPUs (well within limits)
+Total: 6GB RAM, 4 vCPUs
 ```
 
 ---
@@ -221,19 +172,15 @@ Total: 12GB RAM, 10 vCPUs (well within limits)
 
 **Storage Location:** `/var/lib/libvirt/boot/`
 
-**ISOs to Download:**
-1. Debian 13 (Trixie) netinst: ~400MB
-   - Source: https://cdimage.debian.org/cdimage/trixie_di_rc3/amd64/iso-cd/
-2. Gentoo minimal install: ~400MB
-   - Source: https://www.gentoo.org/downloads/
-3. OpenBSD install: ~500MB
-   - Source: https://www.openbsd.org/
+**ISO to Download:**
+- Debian 13 (Trixie) netinst: ~400MB
+- Source: https://cdimage.debian.org/cdimage/release/current/amd64/iso-cd/
 
-**Management:**
+**Download:**
 ```bash
 sudo mkdir -p /var/lib/libvirt/boot
 cd /var/lib/libvirt/boot
-sudo wget [ISO URLs]
+sudo wget [Debian ISO URL]
 ```
 
 ---
@@ -362,7 +309,6 @@ virsh console test-astute
 
 **Bottlenecks:**
 - ZFS operations may be slower (fewer disks, no cache)
-- Compilation (Gentoo) limited by vCPU allocation
 - Network throughput limited by bridge capacity
 
 ---
@@ -426,23 +372,6 @@ sudo virt-sparsify --in-place test-audacious-vda.qcow2
 - [ ] Test key functionality (ZFS, boot, networking)
 - [ ] Update documentation with findings
 - [ ] Create "working" snapshot for future reference
-
----
-
-## Future Enhancements
-
-**Possible Additions:**
-1. Automated testing with Ansible/shell scripts
-2. CI/CD integration (test docs on every commit)
-3. Network boot (PXE) for faster deployment
-4. Nested virtualization (VMs inside VMs)
-5. GPU passthrough for testing graphics workloads
-6. Cloud-init integration for automated provisioning
-
-**Not Recommended:**
-- Trying to perfectly match hardware (impossible and unnecessary)
-- Over-allocating resources (causes host instability)
-- Running VMs 24/7 (use suspend/resume)
 
 ---
 
