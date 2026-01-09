@@ -33,6 +33,7 @@ ss -tlnp
 ```
 
 Expected result:
+
 - `nftables` service active
 - Only Audacious can reach SSH/NFS/RPC/apt-cacher-ng
 
