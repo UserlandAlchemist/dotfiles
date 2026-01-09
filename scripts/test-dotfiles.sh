@@ -28,13 +28,15 @@ stage_root() {
   TMPROOT="$(mktemp -d)"
   # stage unit files
   while IFS= read -r f; do
-    dest="$TMPROOT/$(dirname "$f")"
+    rel="${f#*/}"         # strip package prefix
+    dest="$TMPROOT/$(dirname "$rel")"
     mkdir -p "$dest"
     cp "$f" "$dest/"
   done < <(rg --files -g '*.service' -g '*.timer' -g '*.path' root-*)
   # stage executable payloads (best-effort)
   while IFS= read -r f; do
-    dest="$TMPROOT/$(dirname "$f")"
+    rel="${f#*/}"
+    dest="$TMPROOT/$(dirname "$rel")"
     mkdir -p "$dest"
     cp "$f" "$dest/"
     chmod +x "$dest/$(basename "$f")"
@@ -75,7 +77,8 @@ if [ "${#unit_files[@]}" -gt 0 ]; then
     stage_root
     staged_units=()
     for f in "${unit_files[@]}"; do
-      staged_units+=("$TMPROOT/$f")
+      rel="${f#*/}"
+      staged_units+=("$TMPROOT/$rel")
     done
     if ! SYSTEMD_PAGER=cat SYSTEMD_LOG_LEVEL=warning systemd-analyze verify --root="$TMPROOT" "${staged_units[@]}"; then
       warn "systemd-analyze verify reported issues (see output above)"
