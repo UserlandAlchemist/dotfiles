@@ -78,7 +78,6 @@ Each host has complete rebuild documentation:
 **Audacious:**
 - [`docs/audacious/install-audacious.md`](docs/audacious/install-audacious.md) — Full installation from scratch
 - [`docs/audacious/recovery-audacious.md`](docs/audacious/recovery-audacious.md) — Boot and ZFS recovery
-- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
 - [`docs/audacious/installed-software-audacious.md`](docs/audacious/installed-software-audacious.md) — Complete package inventory
 
 **Astute:**
@@ -90,6 +89,7 @@ Each host has complete rebuild documentation:
 - [`docs/hosts-overview.md`](docs/hosts-overview.md) — Hardware specs for all hosts
 - [`docs/network-overview.md`](docs/network-overview.md) — Network topology and addressing
 - [`docs/threat-model.md`](docs/threat-model.md) — Security threat model and acceptable risks
+- [`docs/data-restore.md`](docs/data-restore.md) — Data restore scenarios
 - [`docs/secrets-recovery.md`](docs/secrets-recovery.md) — Emergency secrets restore
 - [`docs/secrets-maintenance.md`](docs/secrets-maintenance.md) — Secrets USB creation and upkeep
 - [`docs/offsite-backup.md`](docs/offsite-backup.md) — Off-site backup design and recovery materials
