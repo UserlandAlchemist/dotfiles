@@ -1,10 +1,10 @@
 #!/bin/sh
-# Install root-offsite-astute package
+# Install root-borg-astute package
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
-echo "Installing root-offsite-astute (systemd units as real files)"
+echo "Installing root-borg-astute (systemd units as real files)"
 
 install_unit borg-offsite-astute-critical.service
 install_unit borg-offsite-astute-critical.timer

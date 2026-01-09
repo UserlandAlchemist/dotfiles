@@ -1,4 +1,4 @@
-# root-offsite-astute
+# root-borg-astute
 
 Off-site BorgBackup push from Astute to BorgBase.
 
@@ -27,7 +27,7 @@ Backs up:
 Install systemd units as real files:
 
 ```bash
-sudo /home/alchemist/dotfiles/root-offsite-astute/install.sh
+sudo /home/alchemist/dotfiles/root-borg-astute/install.sh
 ```
 
 Enable timers:

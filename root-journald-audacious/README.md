@@ -1,4 +1,4 @@
-# root-system-audacious
+# root-journald-audacious
 
 General system configuration fixes for Audacious (minimal Debian install).
 
@@ -42,7 +42,7 @@ the journald socket failed to start at boot. Replaced with
 Run the install script as root:
 
 ```bash
-sudo /home/alchemist/dotfiles/root-system-audacious/install.sh
+sudo /home/alchemist/dotfiles/root-journald-audacious/install.sh
 ```
 
 The script will:

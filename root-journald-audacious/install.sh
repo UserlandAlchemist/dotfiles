@@ -1,10 +1,10 @@
 #!/bin/sh
-# Install root-system-audacious package
+# Install root-journald-audacious package
 
 PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
-echo "Installing root-system-audacious (general system configuration)"
+echo "Installing root-journald-audacious (general system configuration)"
 
 # Install systemd configs as real files (no symlinks to /home)
 # This overrides Debian's /usr/lib/systemd/journald.conf.d/syslog.conf
@@ -20,7 +20,7 @@ stow -t / \
   --ignore='^\.stow-local-ignore$' \
   --ignore='^README\.md$' \
   --ignore='^etc/systemd' \
-  root-system-audacious
+  root-journald-audacious
 
 reload_systemd
 install_success
