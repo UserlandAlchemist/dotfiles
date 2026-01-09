@@ -91,10 +91,10 @@ Expected result: Both NVMe drives have 512MB ESP and remaining space for ZFS.
 
 ## §3 Create ZFS pool
 
-Create encrypted ZFS mirror pool with optimized settings.
+Create encrypted ZFS mirror pool with optimized settings and mount the root dataset at `/mnt` for bootstrapping.
 
 Steps:
-1. Create the pool:
+1. Create the pool with an alternate root at `/mnt`:
 
 ```sh
 zpool create -o ashift=12 \
@@ -102,13 +102,13 @@ zpool create -o ashift=12 \
   -O atime=off -O relatime=on \
   -O acltype=posixacl -O xattr=sa \
   -O encryption=aes-256-gcm -O keyformat=passphrase \
-  -O mountpoint=none \
+  -O mountpoint=none -R /mnt \
   rpool mirror /dev/nvme0n1p2 /dev/nvme1n1p2
 ```
 
-**Why:** `ashift=12` matches 4K sectors. `compression=lz4` reduces write amplification with negligible CPU overhead. `encryption=aes-256-gcm` provides AEAD encryption.
+**Why:** `ashift=12` matches 4K sectors. `compression=lz4` reduces write amplification with negligible CPU overhead. `encryption=aes-256-gcm` provides AEAD encryption. `-R /mnt` mounts datasets under `/mnt` for the install workflow.
 
-2. Create datasets:
+2. Create datasets and mount the root:
 
 ```sh
 zfs create -o mountpoint=none                 rpool/ROOT
@@ -119,7 +119,14 @@ zfs create -o mountpoint=/srv                 rpool/SRV
 zfs mount rpool/ROOT/debian
 ```
 
-Expected result: Pool created and root dataset mounted at /mnt.
+Expected result: Pool created and root dataset mounted at `/mnt`.
+
+Verification:
+
+```sh
+zfs list
+mount | grep rpool  # root should show on /mnt
+```
 
 ---
 
@@ -582,7 +589,7 @@ sudo udevadm control --reload-rules && sudo udevadm trigger
 sudo sysctl --system
 ```
 
-9. Verify system deployment:
+10. Verify system deployment:
 
 ```sh
 systemctl status powertop.service efi-sync.path
@@ -839,6 +846,6 @@ Expected result: System boots via systemd-boot UKI, prompts for ZFS passphrase, 
 ## References
 
 - [recovery-audacious.md](recovery-audacious.md) - Boot and ZFS recovery procedures
-- [docs/data-restore.md](../data-restore.md) - Data restore scenarios
+- [docs/disaster-recovery.md](../disaster-recovery.md) - Disaster scenarios and data restore paths
 - [installed-software-audacious.md](installed-software-audacious.md) - Complete package list
 - [Debian ZFS documentation](https://openzfs.github.io/openzfs-docs/Getting%20Started/Debian/)

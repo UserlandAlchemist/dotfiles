@@ -284,7 +284,7 @@ SECRETS USB RECOVERY QUICK-START
 
 6. NEXT:
    - Install: docs/audacious/install-audacious.md or docs/astute/install-astute.md
-   - Restore data: docs/data-restore.md
+   - Restore data: docs/disaster-recovery.md
 EOF
 ```
 

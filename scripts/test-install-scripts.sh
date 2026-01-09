@@ -14,7 +14,7 @@ echo
 # Determine which packages to test based on hostname
 if [ "$HOSTNAME" = "audacious" ]; then
   PACKAGES=(
-    root-backup-audacious
+    root-borg-audacious
     root-cachyos-audacious
     root-efisync-audacious
     root-firewall-audacious

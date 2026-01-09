@@ -109,5 +109,5 @@ any Borg command to ensure the target system (`astute`) is reachable.
 
 ## Related packages
 
-- `root-backup-audacious/` — systemd service and timer units that invoke Borg
+- `root-borg-audacious/` — systemd service and timer units that invoke Borg
 - `ssh-audacious/` — SSH configuration containing the backup key used by Borg

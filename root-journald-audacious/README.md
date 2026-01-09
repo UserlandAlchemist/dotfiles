@@ -52,7 +52,7 @@ sudo systemctl restart systemd-journald
 
 ## Related packages
 
-- `root-backup-audacious` — Backup systemd units
+- `root-borg-audacious` — Backup systemd units
 - `root-efisync-audacious` — EFI sync systemd units
 - `root-power-audacious` — Power management systemd units
 - `root-network-audacious` — Network configuration

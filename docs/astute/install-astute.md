@@ -110,7 +110,7 @@ mount /dev/mapper/keyusb /mnt/keyusb
 
 ```sh
 mkdir -p /home/alchemist/.ssh
-cat /mnt/keyusb/id-alchemist.pub >> /home/alchemist/.ssh/authorized_keys
+cat /mnt/keyusb/ssh-backup/id_alchemist.pub >> /home/alchemist/.ssh/authorized_keys
 chmod 700 /home/alchemist/.ssh
 chmod 600 /home/alchemist/.ssh/authorized_keys
 chown -R alchemist:alchemist /home/alchemist/.ssh
@@ -221,8 +221,8 @@ sudo systemctl stop networking.service
 ```sh
 networkctl status enp0s31f6
 ip addr show enp0s31f6  # Should show 192.168.1.154
-  ping -c3 8.8.8.8
-  resolvectl query borgbase.com
+ping -c3 8.8.8.8
+resolvectl query borgbase.com
 ```
 
 6. Disable ifupdown:
