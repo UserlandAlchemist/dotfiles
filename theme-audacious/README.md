@@ -7,11 +7,12 @@ Workbench Dark theme for GTK3, fonts, icons, and wallpapers.
 ## Architecture
 
 Uses GTK3's override system instead of forking themes:
+
 - **Base theme:** Arc-Dark (well-maintained, apt-managed)
 - **Color override:** `~/.config/gtk-3.0/gtk.css` replaces Arc's blue-grays with Workbench pure grays
 - **Settings:** `~/.config/gtk-3.0/settings.ini` points to Arc-Dark and enables dark mode preference
 
-## Why This Approach?
+## Why This Approach
 
 1. **Stability:** Arc-Dark is actively maintained and receives updates
 2. **Git-tracked:** Override CSS is version-controlled in dotfiles
@@ -41,6 +42,7 @@ Arc-Dark's blue-gray palette → Workbench pure grays:
 - `lxappearance` (optional, for GUI theme selection)
 
 Install:
+
 ```bash
 sudo apt install arc-theme lxappearance
 ```
@@ -65,12 +67,14 @@ Expected result: GTK apps use Arc-Dark's design with Workbench's gray/blue color
 ## Workbench Aesthetic Consistency
 
 Matches color palette from:
+
 - waybar-audacious (title bar with beveled borders)
 - wofi-audacious (app launcher)
 - mako-audacious (notifications)
 - sway-audacious (window borders)
 
 All use standardized Workbench palette:
+
 - Panel: `#242424`
 - Background: `#202020`
 - Border: `#303030`

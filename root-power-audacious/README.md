@@ -3,6 +3,7 @@
 System power and latency tuning.
 
 Includes:
+
 - udev rules to prevent autosuspend on critical USB devices (keyboard, mouse, webcam)
 - hdparm / SATA power policies
 - powertop.service (aggressive power savings)

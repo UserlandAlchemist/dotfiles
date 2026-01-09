@@ -14,6 +14,7 @@ debootstrap environments with ZFS root.
 **Purpose**: Fix syslog forwarding + restore persistent storage at boot.
 
 **Background**:
+
 1. Debian's default enables `ForwardToSyslog=yes` which assumes rsyslog is installed. In our minimal debootstrap, rsyslog is not present, causing journald wedging.
 2. Persistent storage previously failed at boot when `/var` was not mounted yet (ZFS datasets mount later) and `/var/log/journal` was not ready. Journald silently failed to create the system journal and captured zero system logs until manually restarted.
 

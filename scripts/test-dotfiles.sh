@@ -73,14 +73,17 @@ fi
 md_files=()
 while IFS= read -r f; do md_files+=("$f"); done < <(rg --files -g '*.md')
 mdlint_bin=""
+mdlint_args=()
 if command -v markdownlint >/dev/null 2>&1; then
   mdlint_bin="markdownlint"
 elif command -v mdl >/dev/null 2>&1; then
   mdlint_bin="mdl"
+  # Exclude MD013 (line length) for technical documentation
+  mdlint_args=("-r" "~MD013")
 fi
 if [ -n "$mdlint_bin" ] && [ "${#md_files[@]}" -gt 0 ]; then
   info "markdownlint (${#md_files[@]} files) via $mdlint_bin"
-  if ! "$mdlint_bin" "${md_files[@]}"; then
+  if ! "$mdlint_bin" "${mdlint_args[@]}" "${md_files[@]}"; then
     warn "markdownlint reported issues"
   fi
 else

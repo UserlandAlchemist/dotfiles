@@ -9,13 +9,15 @@ SSH client configuration.
 
 Run as your user (not root):
 
-    mkdir -p ~/.ssh
-    chmod 700 ~/.ssh
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
 
-    cd ~/dotfiles
-    stow ssh-audacious
+cd ~/dotfiles
+stow ssh-audacious
 
-    chmod 600 ~/.ssh/config
+chmod 600 ~/.ssh/config
+```
 
 This ensures the `~/.ssh` directory exists as a real directory before stowing,
 preventing it from being replaced by a symlink if it doesn’t already exist.

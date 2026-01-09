@@ -3,6 +3,7 @@
 Off-site BorgBackup push from Astute to BorgBase.
 
 Backs up:
+
 - `/srv/nas/lucii` and `/srv/nas/bitwarden-exports` → `astute-critical` (append-only access)
 
 **Critical:** Append-only SSH key assignment is required for ransomware protection. See `docs/offsite-backup.md` for verification, repo initialization, and restore steps.
