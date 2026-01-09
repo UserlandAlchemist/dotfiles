@@ -64,50 +64,6 @@ Per-host install guides, recovery procedures, and restore documentation.
 
 ---
 
-## Key Subsystems
-
-### NAS Wake-on-Demand (Audacious ↔ Astute)
-Multi-layer orchestration allowing Audacious to wake Astute from suspend, mount NFS storage, and prevent Astute from sleeping while in use.
-
-- User service: `astute-nas.service` (WOL + SSH + mount)
-- Bash helpers: `nas-open`, `nas-close`
-- Remote inhibitor: `nas-inhibit.service` on Astute
-- SSH forced commands for security
-
-See: `nas-audacious/README.md`, `root-power-astute/README.md`
-
-### Intelligent Idle Shutdown (Audacious)
-Script triggered by `swayidle` after 20 minutes of inactivity. Immediately checks for media playback, remote streaming, and systemd inhibitors before shutting down. Resume activity cancels the pending shutdown. Allows unattended work up to 90 minutes.
-
-See: `bin-audacious/.local/bin/idle-shutdown.sh`
-
-### Encrypted Backups (Audacious → Astute)
-Automated BorgBackup with systemd timers. Multiple daily backups, weekly integrity checks, monthly deep verification. SSH key authentication, encrypted repository.
-
-See: `borg-user-audacious/README.md`, `root-backup-audacious/README.md`
-
-### Off-site Backups (BorgBase)
-Daily snapshots from Audacious, weekly from Astute. `audacious-home` stores Audacious home data; `astute-critical` stores lucii and Bitwarden exports. Append-only access for ransomware protection. Monthly repo checks.
-
-See: `root-offsite-audacious/README.md`, `root-offsite-astute/README.md`, `docs/offsite-backup.md`
-
-### Cold Storage Snapshots (Audacious)
-Monthly snapshots to the LUKS cold-storage drive with a reminder timer. Keeps 12 months of history.
-
-See: `cold-storage-audacious/README.md`
-
-### Dual EFI Synchronization (Audacious)
-Automatic mirroring of primary ESP to backup ESP whenever kernel images update. Both NVMe drives can boot independently.
-
-See: `root-efisync-audacious/README.md`
-
-### Boot Stack (Audacious)
-systemd-boot with Unified Kernel Images (UKI) instead of GRUB. ZFS root filesystem on encrypted RAID1.
-
-See: `docs/audacious/install-audacious.md`
-
----
-
 ## Documentation Map
 
 ### Per-Host Guides
