@@ -103,15 +103,6 @@ How these principles translate into practice:
 - **Minimal shared files:** `profile-common` and `bin-common` are the only shared configs; they don't create deployment dependencies between hosts
 - **Package inventory tracking:** Installed software lists and drift-check scripts track divergence from base Debian
 
-### Secrets Management
-Never committed to git:
-- SSH keys (`ssh-*/.ssh/id_*`)
-- Borg passphrases (`borg-user-*/.config/borg/passphrase`)
-- API tokens (`.config/*/api.token`)
-- SSH known_hosts
-
-Recovery location: Secrets USB (encrypted) contains all secrets.
-
 ---
 
 ## Pragmatic Exceptions
