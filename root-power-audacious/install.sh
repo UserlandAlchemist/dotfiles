@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install root-power-audacious package
 
-PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PKG_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-power-audacious (systemd units as real files)"

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install root-borg-astute package
 
-PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PKG_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-borg-astute (systemd units as real files)"

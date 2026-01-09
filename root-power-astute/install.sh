@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install root-power-astute package
 
-PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PKG_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-power-astute (Astute power policy)"

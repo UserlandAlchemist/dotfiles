@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install root-ssh-astute package
 
-PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PKG_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-ssh-astute (sshd hardening)"

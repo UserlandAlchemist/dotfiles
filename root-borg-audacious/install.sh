@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install root-borg-audacious package (local + offsite Borg backups)
 
-PKG_DIR="$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)"
+PKG_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 . "$(dirname "$PKG_DIR")/lib/install.sh"
 
 echo "Installing root-borg-audacious (systemd units as real files)"
