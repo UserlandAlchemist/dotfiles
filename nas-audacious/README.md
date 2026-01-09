@@ -8,10 +8,12 @@ and prevents Astute from sleeping while NAS is in use.
 ## Components
 
 **This package:**
+
 - `astute-nas.service` - User systemd service controlling the full lifecycle
 - `astute-nas.env` - Environment variables (NAS_PROVIDER_HOST, NAS_PROVIDER_MAC)
 
 **Dependencies (cross-package orchestration):**
+
 1. `bash-audacious/.bashrc.d/50-nas-helpers.sh` - Provides `nas-open` and `nas-close` functions
 2. `ssh-audacious/.ssh/config` - Defines `astute-nas` SSH host (restricted key, forced command)
 3. `root-sudoers-audacious/` - Allows passwordless sudo for srv-astute.mount control
@@ -21,6 +23,7 @@ and prevents Astute from sleeping while NAS is in use.
    - `root-power-astute/etc/sudoers.d/nas-inhibit.sudoers` - Allows alchemist to control nas-inhibit.service
 
 **System dependencies (not in repo):**
+
 - `/etc/fstab` entry: `astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0`
 - `/srv/astute` mount point
 - Astute NFS server running and exporting `/srv/nas`
@@ -58,27 +61,32 @@ and prevents Astute from sleeping while NAS is in use.
 ## Security Model
 
 **SSH key restriction:**
+
 - Dedicated key `id_ed25519_astute_nas` (no passphrase, for automation)
 - Authorized_keys forced command: only allows `start` or `stop` via SSH_ORIGINAL_COMMAND
 - No shell access, no port forwarding, no agent forwarding
 
 **Sudo restrictions:**
+
 - Audacious: Can only start/stop srv-astute.mount (NAS mount)
 - Astute: Can only start/stop nas-inhibit.service (sleep inhibitor)
 
 ## Edge Cases
 
 **Ungraceful service termination:**
+
 - If `systemctl --user kill astute-nas.service` happens, remote inhibitor stays active
 - Mitigation: nas-inhibit.service has 1-hour RuntimeMaxSec timeout (auto-cleanup)
 - Manual cleanup: `ssh astute sudo systemctl stop nas-inhibit.service`
 
 **Astute already awake:**
+
 - Service checks reachability before WOL
 - Skips wake, proceeds directly to mount
 - Saves ~15 seconds
 
 **Network unreachable:**
+
 - Service fails after 30-second timeout
 - No mount occurs, safe failure
 

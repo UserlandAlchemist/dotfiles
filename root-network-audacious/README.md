@@ -10,10 +10,12 @@ downloads when the Astute NAS is available.
 ### systemd-networkd configuration
 
 **Files**:
+
 - `etc/systemd/network/10-wired.link` — Matches enp7s0 interface by name
 - `etc/systemd/network/20-wired.network` — Configures DHCP on enp7s0
 
 **Why systemd-networkd?**
+
 - Faster boot than NetworkManager
 - Minimal dependencies
 - Direct integration with systemd
@@ -21,6 +23,7 @@ downloads when the Astute NAS is available.
 
 **Interface naming:**
 The interface name `enp7s0` is hardware-specific:
+
 - `en` — Ethernet
 - `p7` — PCI bus 7
 - `s0` — Slot 0
@@ -30,10 +33,12 @@ This is a predictable network interface name based on hardware topology, not a M
 ### APT proxy auto-detection
 
 **Files**:
+
 - `etc/apt/apt.conf.d/01proxy` — Configures APT to use proxy auto-detection script
 - `usr/local/bin/apt-proxy-detect.sh` — Detects if apt-cacher-ng on Astute is available
 
 **How it works:**
+
 1. APT calls `apt-proxy-detect.sh` before each package download
 2. Script checks if Astute (192.168.1.154:3142) is reachable via ping or TCP connection
 3. If available: Returns proxy URL (`http://192.168.1.154:3142`)
@@ -41,12 +46,14 @@ This is a predictable network interface name based on hardware topology, not a M
 
 **HTTPS behavior:**
 The config explicitly disables proxying for HTTPS (`Acquire::https::Proxy "false"`). This is correct because:
+
 - apt-cacher-ng cannot cache encrypted HTTPS traffic
 - Main Debian repos use HTTP + GPG signatures (transport encryption unnecessary)
 - Third-party repos (Jellyfin, PrismLauncher) use HTTPS and download directly
 - Package authenticity is verified via GPG regardless of HTTP vs HTTPS
 
 **Benefits:**
+
 - Fast package downloads for Debian repos when Astute is awake (cached packages)
 - Automatic fallback to direct downloads when Astute is suspended
 - No manual proxy switching required
@@ -63,6 +70,7 @@ sudo root-network-audacious/install.sh
 ```
 
 The install script:
+
 1. Deploys systemd-networkd configs as real files (not symlinks)
 2. Deploys APT proxy config and detection script
 3. Stows remaining files
@@ -101,16 +109,19 @@ sudo apt update  # Should use proxy if Astute is available
 ## Troubleshooting
 
 **Network not coming up:**
+
 - Check interface name: `ip link show`
 - If different from `enp7s0`, update both `.link` and `.network` files
 - Restart networkd: `sudo systemctl restart systemd-networkd`
 
 **APT proxy not working:**
+
 - Test script manually: `/usr/local/bin/apt-proxy-detect.sh`
 - Check Astute reachability: `ping 192.168.1.154`
 - Check apt-cacher-ng on Astute: `ssh astute systemctl status apt-cacher-ng`
 
 **DHCP not assigning address:**
+
 - Check router DHCP server status
 - Check networkd logs: `journalctl -u systemd-networkd`
 - Try manual renewal: `sudo networkctl renew enp7s0`

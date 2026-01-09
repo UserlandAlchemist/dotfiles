@@ -106,6 +106,7 @@ The reminder fires on the 1st of each month. Run backup procedure when notified.
 ## Backup Script Details
 
 **Sources backed up:**
+
 - /home/alchemist/personal
 - /home/alchemist/projects
 - /home/alchemist/Documents
@@ -115,6 +116,7 @@ The reminder fires on the 1st of each month. Run backup procedure when notified.
 - /home/alchemist/dotfiles
 
 **Excluded:**
+
 - Downloads/
 - .cache/
 - .local/share/Trash/
@@ -157,25 +159,30 @@ rsync -av /mnt/cold-storage/backups/audacious/latest/dotfiles/ ~/dotfiles-restor
 ## Troubleshooting
 
 **Drive not detected (no /dev/sda):**
+
 - Check USB cable connection
 - Try different USB port
 - Wait 5 seconds for kernel detection
 - Check: `dmesg | tail -20`
 
 **"Device or resource busy" when unmounting:**
+
 1. Find processes: `lsof /mnt/cold-storage`
 2. Close applications
 3. Force unmount if safe: `sudo umount -l /mnt/cold-storage`
 
 **Wrong LUKS passphrase or won't unlock:**
+
 - Verify passphrase in password manager (case-sensitive)
 - Check device: `sudo cryptsetup luksDump /dev/sda1`
 - If corruption suspected, DO NOT FORMAT - seek data recovery
 
 **Backup script fails "not mounted":**
+
 - Mount drive first (steps 2-3)
 - Verify: `findmnt /mnt/cold-storage`
 
 **Snapshot not created:**
+
 - Check disk space: `df -h /mnt/cold-storage`
 - Verify write permissions: `touch /mnt/cold-storage/test && rm /mnt/cold-storage/test`

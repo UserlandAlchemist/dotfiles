@@ -11,11 +11,13 @@ until DNS resolution is working.
 ### systemd-networkd configuration
 
 **Files**:
+
 - `etc/systemd/network/10-wired.link` — Matches enp0s31f6 interface by name
 - `etc/systemd/network/20-wired.network` — Configures DHCP on enp0s31f6
 - `etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf` — Limits wait-online to enp0s31f6 with 30s timeout
 
 **Why systemd-networkd + systemd-resolved?**
+
 - Proper network-online.target signaling for backup timers with WakeSystem
 - Direct integration with systemd
 - Consistent with Audacious configuration (both use networkd + resolved)
@@ -58,17 +60,20 @@ journalctl -u borg-offsite-audacious.service -n 30
 ## Troubleshooting
 
 **Network not coming up:**
+
 - Check interface name: `ip link show`
 - If different from `enp0s31f6`, update both `.link` and `.network` files
 - Restart networkd: `sudo systemctl restart systemd-networkd`
 
 **DHCP not assigning address:**
+
 - Check router DHCP server status
 - Verify DHCP reservation for MAC 60:45:cb:9b:ab:3b
 - Check networkd logs: `journalctl -u systemd-networkd`
 - Try manual renewal: `sudo networkctl renew enp0s31f6`
 
 **DNS not working:**
+
 - Check resolv.conf: `cat /etc/resolv.conf`
 - Should be symlink to `/run/systemd/resolve/stub-resolv.conf`
 - Check systemd-resolved status: `resolvectl status`

@@ -27,6 +27,7 @@ ss -tlnp
 ```
 
 Expected result:
+
 - `nftables` service active
 - No unexpected inbound listeners are reachable from LAN
 
