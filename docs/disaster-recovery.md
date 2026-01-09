@@ -58,7 +58,7 @@ Complete disaster recovery procedures for the Wolfpack. OS and infrastructure re
 - **Access:** Bitwarden master password
 - **Risk:** Single point of failure if Bitwarden account lost
 
-For detailed procedures on maintaining recovery kits, see `docs/secrets-maintenance.md`.
+For detailed procedures on maintaining recovery kits, see `docs/recovery-kit-maintenance.md`.
 
 ---
 
@@ -305,7 +305,7 @@ Recovery path:
 1. Rebuild from clean install (host install docs)
 2. Restore secrets (§1 and §1.1 if needed)
 3. Restore data from clean backups (§3 or §4)
-4. Rotate credentials and re-issue keys (`docs/secrets-recovery.md`)
+4. Rotate credentials and re-issue keys (see recovery kit maintenance doc)
 5. Post-restore checks (§5)
 
 ---

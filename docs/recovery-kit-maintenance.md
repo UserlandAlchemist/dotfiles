@@ -1,6 +1,6 @@
-# Secrets Maintenance Guide
+# Recovery Kit Maintenance Guide
 
-Create, update, and verify the Secrets USB and trusted copies. Emergency restore steps live in `docs/secrets-recovery.md`.
+Create, update, and verify the Secrets USB and trusted copies. Emergency restore procedures are in `docs/disaster-recovery.md`.
 
 ---
 
@@ -194,9 +194,8 @@ EOF
 
 ```sh
 mkdir -p /mnt/keyusb/docs
-cp ~/dotfiles/docs/secrets-recovery.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/secrets-maintenance.md /mnt/keyusb/docs/
-cp ~/dotfiles/docs/data-restore.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/disaster-recovery.md /mnt/keyusb/docs/
+cp ~/dotfiles/docs/recovery-kit-maintenance.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/install-audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/recovery-audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/astute/install-astute.md /mnt/keyusb/docs/
@@ -367,9 +366,8 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 │   │   └── api.token
 │   └── README.txt
 └── docs/
-    ├── secrets-recovery.md
-    ├── secrets-maintenance.md
-    ├── data-restore.md
+    ├── disaster-recovery.md
+    ├── recovery-kit-maintenance.md
     ├── install-audacious.md
     ├── recovery-audacious.md
     ├── install-astute.md
