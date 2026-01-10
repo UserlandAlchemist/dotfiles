@@ -67,6 +67,10 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-10 - Restore Ordered Lists
+
+Restored sequential numbering in recovery and VM workflow docs. (fc77d6d)
+
 ## 2026-01-10 - Markdownlint Spacing Fixes
 
 Markdownlint spacing fixes in core docs. (f35561a, 501b911)
