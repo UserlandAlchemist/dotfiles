@@ -1,30 +1,37 @@
 # Disaster Recovery Guide
 
-Complete disaster recovery procedures for the Wolfpack. OS and infrastructure repair steps live in per-host install/recovery docs.
+Complete disaster recovery procedures for the Wolfpack. OS and infrastructure
+repair steps live in per-host install/recovery docs.
 
 **Last Updated:** 2026-01-09
 
-**Current Hardware:** The Secrets USB is currently a blue SanDisk 32GB USB drive. The Trusted Copy is maintained by a trusted person off-site.
+**Current Hardware:** The Secrets USB is currently a blue SanDisk 32GB USB
+drive. The Trusted Copy is maintained by a trusted person off-site.
 
 ---
 
 ## Threat Scenarios
 
 ### Scenario 1: House Fire / Flood
+
 - **Lost:** Audacious, Astute, Secrets USB, cold storage HDD
-- **Survives:** BorgBase off-site, trusted person's USB copy, Google Drive bundle
+- **Survives:** BorgBase off-site, trusted person's USB copy, Google Drive
+  bundle
 - **RTO:** 1-3 days
 - **RPO:** 24 hours (last BorgBase backup)
 
 ### Scenario 2: Single System Failure
+
 - **Lost:** Audacious OR Astute (hardware failure, theft)
 - **Survives:** Other system, local Borg backups, Secrets USB
 - **RTO:** 4-8 hours
 - **RPO:** 6 hours (last local Borg backup)
 
 ### Scenario 3: Ransomware
+
 - **Encrypted:** Audacious and/or Astute filesystems
-- **Survives:** BorgBase off-site (append-only access), Secrets USB (offline), cold storage (offline)
+- **Survives:** BorgBase off-site (append-only access), Secrets USB (offline),
+  cold storage (offline)
 - **RTO:** 4-8 hours (restore from BorgBase)
 - **RPO:** 24 hours (last BorgBase backup)
 
@@ -33,6 +40,7 @@ Complete disaster recovery procedures for the Wolfpack. OS and infrastructure re
 ## Recovery Kit Locations
 
 ### Primary: Secrets USB (On-Site, Encrypted)
+
 - **Location:** Home, with cold storage drive
 - **Encryption:** LUKS (AES256)
 - **Update Frequency:** As secrets change
@@ -40,12 +48,14 @@ Complete disaster recovery procedures for the Wolfpack. OS and infrastructure re
 - **Risk:** Destroyed in same disaster as Audacious/Astute
 
 ### Secondary: Trusted Person USB (Off-Site, Encrypted)
+
 - **Location:** Trusted person, visits every ~6 months
 - **Content:** Full copy of Secrets USB
 - **Update Frequency:** Every 6 months during visit
 - **Risk:** 6-month staleness, relies on trusted person
 
 ### Tertiary: Google Drive Bundle (Cloud, Encrypted)
+
 - **Location:** Google Drive (external provider)
 - **Encryption:** GPG AES256 symmetric
 - **Update Frequency:** When secrets change, minimum quarterly
@@ -53,12 +63,14 @@ Complete disaster recovery procedures for the Wolfpack. OS and infrastructure re
 - **Risk:** Only as secure as GPG passphrase
 
 ### Quaternary: Bitwarden (Optional)
+
 - **Location:** Bitwarden cloud (external provider)
 - **Content:** Individual secrets as secure notes
 - **Access:** Bitwarden master password
 - **Risk:** Single point of failure if Bitwarden account lost
 
-For detailed procedures on maintaining recovery kits, see `docs/recovery-kit-maintenance.md`.
+For detailed procedures on maintaining recovery kits, see
+`docs/recovery-kit-maintenance.md`.
 
 ---
 
@@ -67,16 +79,23 @@ For detailed procedures on maintaining recovery kits, see `docs/recovery-kit-mai
 ### Prerequisites
 
 Have these before proceeding:
+
 1. Secrets USB (LUKS) and passphrase
-2. SSH keys and Borg passphrase (stored on Secrets USB)
-3. BorgBase credentials and repo keys (stored on Secrets USB)
-4. A working machine with internet access
+1. SSH keys and Borg passphrase (stored on Secrets USB)
+1. BorgBase credentials and repo keys (stored on Secrets USB)
+1. A working machine with internet access
 
-If the Secrets USB is unavailable, use the trusted person USB or the Google Drive recovery bundle.
+If the Secrets USB is unavailable, use the trusted person USB or the Google
+Drive recovery bundle.
 
-**Note:** If the issue is a single drive failure in a ZFS pool, follow the host recovery doc first. Data restore only applies once access to backups is required.
+**Note:** If the issue is a single drive failure in a ZFS pool, follow the host
+recovery doc first. Data restore only applies once access to backups is
+required.
 
-**If no secrets are available:** You cannot decrypt Borg or mount encrypted pools. Options are limited to rebuilding from scratch and re-issuing credentials. Treat this as a total data loss scenario, rebuild hosts cleanly, rotate all keys, and recreate recovery media immediately after rebuild.
+**If no secrets are available:** You cannot decrypt Borg or mount encrypted
+pools. Options are limited to rebuilding from scratch and re-issuing
+credentials. Treat this as a total data loss scenario, rebuild hosts cleanly,
+rotate all keys, and recreate recovery media immediately after rebuild.
 
 ---
 
@@ -85,6 +104,7 @@ If the Secrets USB is unavailable, use the trusted person USB or the Google Driv
 Required for any data loss beyond a single drive.
 
 Steps:
+
 1. Unlock and mount the Secrets USB:
 
 ```sh
@@ -94,7 +114,7 @@ sudo mkdir -p /mnt/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
 ```
 
-2. Restore SSH keys and config:
+1. Restore SSH keys and config:
 
 ```sh
 mkdir -p ~/.ssh
@@ -104,7 +124,7 @@ chmod 600 ~/.ssh/*
 chmod 644 ~/.ssh/*.pub 2>/dev/null || true
 ```
 
-3. Restore Borg passphrase and patterns:
+1. Restore Borg passphrase and patterns:
 
 ```sh
 mkdir -p ~/.config/borg
@@ -113,7 +133,8 @@ cp /mnt/keyusb/borg/patterns ~/.config/borg/
 chmod 600 ~/.config/borg/passphrase ~/.config/borg/patterns
 ```
 
-4. If restoring from BorgBase, keep the USB mounted and continue to §1.1. Otherwise, unmount:
+1. If restoring from BorgBase, keep the USB mounted and continue to §1.1.
+   Otherwise, unmount:
 
 ```sh
 sudo umount /mnt/keyusb
@@ -126,9 +147,11 @@ Expected result: SSH and Borg material restored locally.
 
 ## §1.1 BorgBase Access Prep
 
-Only needed if restoring from offsite backups. Assumes the Secrets USB is mounted at `/mnt/keyusb`. If not, re-open and mount it as in §1 step 1.
+Only needed if restoring from offsite backups. Assumes the Secrets USB is
+mounted at `/mnt/keyusb`. If not, re-open and mount it as in §1 step 1.
 
 Steps:
+
 1. Copy BorgBase credentials from the Secrets USB:
 
 ```sh
@@ -137,10 +160,12 @@ sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-audacious /root/.ssh/borgbase-of
 sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-astute /root/.ssh/borgbase-offsite-astute
 sudo cp /mnt/keyusb/borg/audacious-home.passphrase /root/.config/borg-offsite/
 sudo cp /mnt/keyusb/borg/astute-critical.passphrase /root/.config/borg-offsite/
-sudo chmod 600 /root/.ssh/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-astute /root/.config/borg-offsite/*.passphrase
+sudo chmod 600 /root/.ssh/borgbase-offsite-audacious \
+  /root/.ssh/borgbase-offsite-astute \
+  /root/.config/borg-offsite/*.passphrase
 ```
 
-2. Set environment variables for offsite commands:
+1. Set environment variables for offsite commands:
 
 ```sh
 export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
@@ -155,6 +180,7 @@ Expected result: BorgBase repo access works from the recovery host.
 Use when you need specific files and the cold storage drive is available.
 
 Steps:
+
 1. Unlock and mount cold storage:
 
 ```sh
@@ -163,14 +189,14 @@ sudo mkdir -p /mnt/cold-storage
 sudo mount /dev/mapper/coldstorage /mnt/cold-storage
 ```
 
-2. Locate snapshots and copy required files:
+1. Locate snapshots and copy required files:
 
 ```sh
 ls -la /mnt/cold-storage/backups/audacious/snapshots/
 cp -a /mnt/cold-storage/backups/audacious/snapshots/<date>/path/to/file ~/restored/
 ```
 
-3. Unmount and close:
+1. Unmount and close:
 
 ```sh
 sudo umount /mnt/cold-storage
@@ -183,9 +209,11 @@ For full details, see `cold-storage-audacious/README.md`.
 
 ## §3 Restore Audacious from Astute
 
-Use when Astute is online and the local Borg repository is intact (primary restore path).
+Use when Astute is online and the local Borg repository is intact (primary
+restore path).
 
 Steps:
+
 1. Confirm access:
 
 ```sh
@@ -193,7 +221,7 @@ ssh backup@astute
 borg list backup@astute:/mnt/backup/borg/audacious
 ```
 
-2. Restore the latest archive (staged restore):
+1. Restore the latest archive (staged restore):
 
 ```sh
 sudo mkdir -p /restore
@@ -202,7 +230,7 @@ borg extract --numeric-owner --destination /restore \
   backup@astute:/mnt/backup/borg/audacious::$(borg list --last 1 --short backup@astute:/mnt/backup/borg/audacious)
 ```
 
-3. Move into place after inspection:
+1. Move into place after inspection:
 
 ```sh
 sudo rsync -aHAXv /restore/home/alchemist/ /home/alchemist/
@@ -218,6 +246,7 @@ Expected result: Audacious home data restored from Astute.
 Use when Astute is unavailable or destroyed, and you must pull from offsite.
 
 Steps:
+
 1. Restore Audacious home data from BorgBase:
 
 ```sh
@@ -232,7 +261,7 @@ sudo borg extract \
   home/alchemist
 ```
 
-2. Restore Astute critical data (if rebuilding Astute):
+1. Restore Astute critical data (if rebuilding Astute):
 
 ```sh
 export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
@@ -247,20 +276,22 @@ sudo borg extract \
   srv/nas/bitwarden-exports
 ```
 
-Expected result: Data recovered from offsite to a staging host or rebuilt Astute.
+Expected result: Data recovered from offsite to a staging host or rebuilt
+Astute.
 
 ---
 
 ## §5 Post-Restore Checks
 
 Steps:
+
 1. Verify ZFS health:
 
 ```sh
 zpool status
 ```
 
-2. Verify backups are running:
+1. Verify backups are running:
 
 ```sh
 systemctl list-timers | grep borg
@@ -275,40 +306,45 @@ Expected result: Pools are healthy and backup timers are active.
 ### Catastrophic Loss (Fire/Flood)
 
 Primary path:
+
 1. Restore secrets (§1 and §1.1)
-2. Rebuild Astute (`docs/astute/install-astute.md`)
-3. Restore Astute data from BorgBase (§4 step 2)
-4. Rebuild Audacious (`docs/audacious/install-audacious.md`)
-5. Restore Audacious data from Astute (§3)
-6. Post-restore checks (§5)
+1. Rebuild Astute (`docs/astute/install-astute.md`)
+1. Restore Astute data from BorgBase (§4 step 2)
+1. Rebuild Audacious (`docs/audacious/install-audacious.md`)
+1. Restore Audacious data from Astute (§3)
+1. Post-restore checks (§5)
 
 ### Single System Loss (Hardware Failure)
 
 **Audacious lost:**
+
 1. Reinstall Audacious (`docs/audacious/install-audacious.md`)
-2. Restore secrets (§1)
-3. Restore data from Astute (§3)
-4. Post-restore checks (§5)
+1. Restore secrets (§1)
+1. Restore data from Astute (§3)
+1. Post-restore checks (§5)
 
 **Astute lost:**
+
 1. Rebuild Astute (`docs/astute/install-astute.md`)
-2. Restore secrets (§1 and §1.1)
-3. Restore data from BorgBase (§4 step 2)
-4. Post-restore checks (§5)
+1. Restore secrets (§1 and §1.1)
+1. Restore data from BorgBase (§4 step 2)
+1. Post-restore checks (§5)
 
 ### Ransomware Attack
 
 Immediate actions:
+
 1. Disconnect systems from the network
-2. Preserve evidence (do not reboot)
-3. Identify pre-infection backups
+1. Preserve evidence (do not reboot)
+1. Identify pre-infection backups
 
 Recovery path:
+
 1. Rebuild from clean install (host install docs)
-2. Restore secrets (§1 and §1.1 if needed)
-3. Restore data from clean backups (§3 or §4)
-4. Rotate credentials and re-issue keys (see recovery kit maintenance doc)
-5. Post-restore checks (§5)
+1. Restore secrets (§1 and §1.1 if needed)
+1. Restore data from clean backups (§3 or §4)
+1. Rotate credentials and re-issue keys (see recovery kit maintenance doc)
+1. Post-restore checks (§5)
 
 ---
 
@@ -317,15 +353,15 @@ Recovery path:
 ### Annual Recovery Drill
 
 1. Restore secrets on a test machine (§1)
-2. Verify BorgBase access and list archives (§4)
-3. Perform a small restore and verify integrity
-4. Record time taken and update RTO/RPO estimates
+1. Verify BorgBase access and list archives (§4)
+1. Perform a small restore and verify integrity
+1. Record time taken and update RTO/RPO estimates
 
 ### Quarterly Verification
 
 1. Run `scripts/verify-secrets-usb.sh`
-2. Verify BorgBase archives exist and use append-only access
-3. Verify Google Drive bundle is present and recent
-4. Confirm GPG passphrase recall
+1. Verify BorgBase archives exist and use append-only access
+1. Verify Google Drive bundle is present and recent
+1. Confirm GPG passphrase recall
 
 ---
