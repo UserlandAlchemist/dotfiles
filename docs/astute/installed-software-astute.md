@@ -1,6 +1,8 @@
 # Installed Software (Structured List)
 
-Curated inventory of manually installed packages on Astute. Sections reflect installation origin, not function. This list is derived from `apt-mark showmanual` and focuses on non-bootstrap additions.
+Curated inventory of manually installed packages on Astute. Sections reflect
+installation origin, not function. This list is derived from
+`apt-mark showmanual` and focuses on non-bootstrap additions.
 
 Last drift check: 2026-01-08
 
@@ -9,27 +11,33 @@ Last drift check: 2026-01-08
 ## Base System (via install-astute.md §1-7)
 
 ### Firmware & microcode
+
 - intel-microcode — CPU microcode updates
 - firmware-amd-graphics — AMD GPU firmware
 
 ### Crypto & storage
+
 - cryptsetup — LUKS tooling for the admin USB (optional)
 
 ### ZFS stack
+
 - zfs-dkms — ZFS kernel module build
 - zfsutils-linux — ZFS userland tools
 - zfs-zed — ZFS event daemon
 
 ### NAS & backup
+
 - nfs-kernel-server — NFS exports for /srv/nas
 - borgbackup — encrypted backup server
 
 ### Power & monitoring
+
 - powertop — power tuning
 - lm-sensors — sensor probes
 - smartmontools — SMART monitoring
 
 ### Utilities
+
 - ethtool — NIC tuning
 - git — version control
 - stow — dotfile deployment
@@ -47,10 +55,12 @@ Last drift check: 2026-01-08
 - systemd-resolved — systemd DNS resolver
 
 ### System management
+
 - unattended-upgrades — automated security updates
 - apt-cacher-ng — LAN apt cache
 
 ### Tasksel meta packages
+
 - task-ssh-server — SSH server task
 
 ---
