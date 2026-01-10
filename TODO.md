@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-10 - Markdownlint Sweep (All Docs)
+
+Completed a full markdownlint pass across repo READMEs and
+package docs; normalized wraps, lists, and code fences. (e8d665e)
+
 ## 2026-01-10 - Restore Ordered Lists
 
 Restored sequential numbering in recovery and VM workflow docs. (fc77d6d)
