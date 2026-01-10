@@ -67,6 +67,10 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-10 - Markdownlint Spacing Fixes
+
+Markdownlint spacing fixes in core docs. (f35561a, 501b911)
+
 ## 2026-01-09 - Install/Recovery Doc Consistency
 
 Aligned install/recovery docs (audacious ZFS altroot to /mnt + verification, disaster-recovery references, root-borg naming) and fixed astute SSH key path plus install test package list. (3a9b404)
