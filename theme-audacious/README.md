@@ -9,8 +9,10 @@ Workbench Dark theme for GTK3, fonts, icons, and wallpapers.
 Uses GTK3's override system instead of forking themes:
 
 - **Base theme:** Arc-Dark (well-maintained, apt-managed)
-- **Color override:** `~/.config/gtk-3.0/gtk.css` replaces Arc's blue-grays with Workbench pure grays
-- **Settings:** `~/.config/gtk-3.0/settings.ini` points to Arc-Dark and enables dark mode preference
+- **Color override:** `~/.config/gtk-3.0/gtk.css` replaces Arc's blue-grays with
+  Workbench pure grays
+- **Settings:** `~/.config/gtk-3.0/settings.ini` points to Arc-Dark and enables
+  dark mode preference
 
 ## Why This Approach
 
@@ -62,7 +64,8 @@ GTK apps will pick up the settings immediately (may need to restart running apps
 - **Theme preview:** `lxappearance`
 - **System dialogs:** Open any GTK app (Firefox ESR, GNOME apps, etc.)
 
-Expected result: GTK apps use Arc-Dark's design with Workbench's gray/blue color palette instead of Arc's blue-grays.
+Expected result: GTK apps use Arc-Dark's design with Workbench's gray/blue
+color palette instead of Arc's blue-grays.
 
 ## Workbench Aesthetic Consistency
 

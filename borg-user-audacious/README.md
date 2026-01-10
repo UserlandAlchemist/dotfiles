@@ -24,25 +24,25 @@ Not included in git:
 
 Systemd reads `.config/borg/env` directly using:
 
-```
+```text
 EnvironmentFile=%h/.config/borg/env
-```
+```text
 
 This file uses plain `KEY=VALUE` syntax (no `export` or quotes) compatible with
 systemd units. It defines values such as:
 
-```
+```text
 BORG_REPO=ssh://borg@astute/srv/backups/audacious-borg
 BORG_PASSCOMMAND=cat /home/alchemist/.config/borg/passphrase
 BORG_RSH=ssh -i /home/alchemist/.ssh/audacious-backup -T
 BORG_NONINTERACTIVE=1
-```
+```text
 
 When running Borg manually in a shell, use the helper script:
 
 ```bash
 ~/.config/borg/env.sh borg list
-```
+```text
 
 This wrapper reads the same file, exports its variables, and runs the command.
 
@@ -75,22 +75,22 @@ chmod 700 ~/.config/borg/env.sh
    ```bash
    mkdir -p ~/.config/borg
    chmod 700 ~/.config/borg
-   ```
+   ```text
 
 2. Stow the non-secret configuration:
 
    ```bash
    cd ~/dotfiles
    stow borg-user-audacious
-   ```
+   ```text
 
    This will create:
 
-   ```
+   ```text
    ~/.config/borg/patterns -> dotfiles/borg-user-audacious/.config/borg/patterns
    ~/.config/borg/env -> dotfiles/borg-user-audacious/.config/borg/env
    ~/.config/borg/env.sh -> dotfiles/borg-user-audacious/.config/borg/env.sh
-   ```
+   ```text
 
 3. Create or copy the Borg repository passphrase locally:
 
@@ -101,7 +101,7 @@ chmod 700 ~/.config/borg/env.sh
 
 4. Verify all files exist:
 
-   ```
+   ```text
    ~/.config/borg/patterns     (symlink from repo)
    ~/.config/borg/env          (symlink from repo)
    ~/.config/borg/env.sh       (symlink from repo)
@@ -120,7 +120,7 @@ The following systemd units depend on these files:
 
 Each unit references the environment file:
 
-```
+```text
 EnvironmentFile=%h/.config/borg/env
 ```
 

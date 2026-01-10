@@ -24,7 +24,8 @@ sudo systemctl enable --now efi-sync.path
 
 ## Notes
 
-- The `.path` unit triggers synchronization automatically whenever files under `/boot/efi/EFI/Linux/` change.
+- The `.path` unit triggers synchronization automatically
+  whenever files under `/boot/efi/EFI/Linux/` change.
 - You can manually sync at any time with:
 
       sudo systemctl start efi-sync.service

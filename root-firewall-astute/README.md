@@ -13,10 +13,10 @@ allowing only Audacious to reach core services.
 - Allow ICMP from LAN (ping)
 - Allow DHCP replies (UDP 67 -> 68) from LAN
 - Allow from Audacious only:
-  - SSH (22/tcp)
-  - NFSv4 (2049/tcp)
-  - RPC bind (111/tcp, 111/udp)
-  - apt-cacher-ng (3142/tcp)
+   - SSH (22/tcp)
+   - NFSv4 (2049/tcp)
+   - RPC bind (111/tcp, 111/udp)
+   - apt-cacher-ng (3142/tcp)
 - Log and drop other inbound traffic (rate-limited)
 
 ## Install

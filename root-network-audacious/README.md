@@ -28,7 +28,10 @@ The interface name `enp7s0` is hardware-specific:
 - `p7` — PCI bus 7
 - `s0` — Slot 0
 
-This is a predictable network interface name based on hardware topology, not a MAC-based name. If the motherboard or PCIe slot changes, this name may change and will need updating.
+This is a predictable network interface name based on
+hardware topology, not a MAC-based name. If the
+motherboard or PCIe slot changes, this name may change and
+will need updating.
 
 ### APT proxy auto-detection
 
@@ -40,27 +43,35 @@ This is a predictable network interface name based on hardware topology, not a M
 **How it works:**
 
 1. APT calls `apt-proxy-detect.sh` before each package download
-2. Script checks if Astute (192.168.1.154:3142) is reachable via ping or TCP connection
+2. Script checks if Astute (192.168.1.154:3142) is
+   reachable via ping or TCP connection
 3. If available: Returns proxy URL (`http://192.168.1.154:3142`)
 4. If unavailable: Returns `DIRECT` (download directly from mirrors)
 
 **HTTPS behavior:**
-The config explicitly disables proxying for HTTPS (`Acquire::https::Proxy "false"`). This is correct because:
+The config explicitly disables proxying for HTTPS
+(`Acquire::https::Proxy "false"`). This is correct
+because:
 
 - apt-cacher-ng cannot cache encrypted HTTPS traffic
-- Main Debian repos use HTTP + GPG signatures (transport encryption unnecessary)
-- Third-party repos (Jellyfin, PrismLauncher) use HTTPS and download directly
+- Main Debian repos use HTTP + GPG signatures (transport
+  encryption unnecessary)
+- Third-party repos (Jellyfin, PrismLauncher) use HTTPS
+  and download directly
 - Package authenticity is verified via GPG regardless of HTTP vs HTTPS
 
 **Benefits:**
 
-- Fast package downloads for Debian repos when Astute is awake (cached packages)
+- Fast package downloads for Debian repos when Astute is
+  awake (cached packages)
 - Automatic fallback to direct downloads when Astute is suspended
 - No manual proxy switching required
 - Majority of packages (Debian official repos) benefit from caching
 
 **Astute setup required:**
-This assumes apt-cacher-ng is installed and running on Astute at port 3142. See `docs/astute/install-astute.md` for setup instructions.
+This assumes apt-cacher-ng is installed and running on
+Astute at port 3142. See `docs/astute/install-astute.md`
+for setup instructions.
 
 ## Installation
 

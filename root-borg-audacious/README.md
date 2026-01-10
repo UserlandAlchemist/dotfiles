@@ -3,8 +3,10 @@
 Systemd timers and services for unattended BorgBackup on Audacious.
 
 Manages two independent backup streams:
+
 - **Local backups** → Astute NAS (daily, 7-day retention)
-- **Offsite backups** → BorgBase (daily, append-only for ransomware protection)
+- **Offsite backups** → BorgBase (daily, append-only for
+  ransomware protection)
 
 ---
 
@@ -35,13 +37,13 @@ systemctl list-timers | grep borg
 
 ## Local Backups (Astute NAS)
 
-### Units
+### Local Units
 
 - `borg-backup.service` / `.timer` — daily backups to Astute
 - `borg-check.service` / `.timer` — weekly integrity checks
 - `borg-check-deep.service` / `.timer` — monthly deep verification
 
-### Prerequisites
+### Local Prerequisites
 
 1. **Borg and configuration**
    - `borgbackup` package installed
@@ -52,31 +54,37 @@ systemctl list-timers | grep borg
 
 2. **SSH access to Astute**
    - Borg repository: `ssh://borg@astute/srv/backups/audacious-borg`
-   - `BORG_RSH` points to specific key: `ssh -i /home/alchemist/.ssh/audacious-backup -T`
+   - `BORG_RSH` points to specific key:
+     `ssh -i /home/alchemist/.ssh/audacious-backup -T`
    - Public key in `~borg/.ssh/authorized_keys` on Astute
    - Remote path exists and writable by borg user
 
 3. **Network reachability**
    - Astute must be online or reachable via Wake-on-LAN
-   - Scripts handle WOL and wait for repository (60s timeout)
+   - Scripts handle WOL and wait for repository
+     (60s timeout)
    - If unreachable, timer retries at next interval
 
-### Details
+### Local Details
 
-- `borg-backup.service` runs `/usr/local/lib/borg/run-backup.sh`:
-  1. Wake-on-LAN to Astute
-  2. `borg create` with progress and stats
-  3. `borg prune` (keep 7 daily backups)
-  4. `borg compact` to reclaim space
+- `borg-backup.service` runs
+  `/usr/local/lib/borg/run-backup.sh`:
+   1. Wake-on-LAN to Astute
+   2. `borg create` with progress and stats
+   3. `borg prune` (keep 7 daily backups)
+   4. `borg compact` to reclaim space
 
-  Runs as **root** under `systemd-inhibit --what=shutdown:sleep` to prevent shutdown during backup.
+  Runs as **root** under `systemd-inhibit --what=shutdown:sleep`
+  to prevent shutdown during backup.
 
-- `borg-check.service` runs as user `alchemist` with quick repository integrity checks
+- `borg-check.service` runs as user `alchemist` with quick
+  repository integrity checks
 - `borg-check-deep.service` performs full deep verification monthly
 
-### Troubleshooting
+### Local Troubleshooting
 
 **Timers show "enabled" but don't run:**
+
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl start borg-backup.timer borg-check.timer borg-check-deep.timer
@@ -86,13 +94,16 @@ systemctl list-timers | grep borg
 **Permission denied on Borg cache/config:**
 
 `borg-backup.service` runs as root and may create root-owned security files:
+
 ```bash
 sudo chown -R alchemist:alchemist ~/.config/borg/security/
 ```
 
-Note: Service uses separate cache (`/var/cache/borg/audacious-backup/`) to avoid conflicts.
+Note: Service uses separate cache
+(`/var/cache/borg/audacious-backup/`) to avoid conflicts.
 
 **Verify backups are running:**
+
 ```bash
 source ~/.config/borg/env
 borg list "$BORG_REPO"
@@ -105,12 +116,12 @@ journalctl -u borg-backup.timer -u borg-backup.service --since "1 week ago"
 
 ## Offsite Backups (BorgBase)
 
-### Units
+### Offsite Units
 
 - `borg-offsite-audacious.timer` — daily at 14:00 (Persistent + WakeSystem)
 - `borg-offsite-check.timer` — monthly (Persistent + WakeSystem)
 
-### Prerequisites
+### Offsite Prerequisites
 
 1. BorgBackup installed (borg 1.x)
 2. BorgBase SSH key installed:
@@ -122,17 +133,21 @@ journalctl -u borg-backup.timer -u borg-backup.service --since "1 week ago"
 5. Audacious Borg patterns stowed for `alchemist`:
    - `/home/alchemist/.config/borg/patterns`
 
-### Details
+### Offsite Details
 
 Backs up Audacious home data → `audacious-home` repository.
 
-**Critical:** Append-only SSH key assignment required for ransomware protection. See `docs/offsite-backup.md` for verification, repo initialization, and restore steps.
+**Critical:** Append-only SSH key assignment required for
+ransomware protection. See `docs/offsite-backup.md` for
+verification, repo initialization, and restore steps.
 
-**Important:** `audacious-home` uses append-only access; do not prune or compact from Audacious.
+**Important:** `audacious-home` uses append-only access;
+do not prune or compact from Audacious.
 
-### Troubleshooting
+### Offsite Troubleshooting
 
 Check logs:
+
 ```bash
 journalctl -u borg-offsite-*.service
 ```

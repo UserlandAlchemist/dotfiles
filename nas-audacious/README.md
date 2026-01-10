@@ -14,17 +14,24 @@ and prevents Astute from sleeping while NAS is in use.
 
 **Dependencies (cross-package orchestration):**
 
-1. `bash-audacious/.bashrc.d/50-nas-helpers.sh` - Provides `nas-open` and `nas-close` functions
-2. `ssh-audacious/.ssh/config` - Defines `astute-nas` SSH host (restricted key, forced command)
-3. `root-sudoers-audacious/` - Allows passwordless sudo for srv-astute.mount control
+1. `bash-audacious/.bashrc.d/50-nas-helpers.sh` - Provides `nas-open` and
+   `nas-close` functions
+2. `ssh-audacious/.ssh/config` - Defines `astute-nas` SSH host (restricted key,
+   forced command)
+3. `root-sudoers-audacious/` - Allows passwordless sudo for
+   srv-astute.mount control
 4. **Remote (Astute):**
-   - `root-power-astute/usr/local/libexec/astute-nas-inhibit.sh` - SSH forced command script
-   - `root-power-astute/etc/systemd/system/nas-inhibit.service` - Sleep inhibitor service
-   - `root-power-astute/etc/sudoers.d/nas-inhibit.sudoers` - Allows alchemist to control nas-inhibit.service
+  - `root-power-astute/usr/local/libexec/astute-nas-inhibit.sh` - SSH forced
+    command script
+  - `root-power-astute/etc/systemd/system/nas-inhibit.service` - Sleep inhibitor
+    service
+  - `root-power-astute/etc/sudoers.d/nas-inhibit.sudoers` - Allows alchemist to
+    control nas-inhibit.service
 
 **System dependencies (not in repo):**
 
-- `/etc/fstab` entry: `astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0`
+- `/etc/fstab` entry:
+  `astute:/srv/nas  /srv/astute  nfs4  _netdev,noatime,noauto  0  0`
 - `/srv/astute` mount point
 - Astute NFS server running and exporting `/srv/nas`
 - SSH key: `~/.ssh/id_ed25519_astute_nas` (secret, not in repo)

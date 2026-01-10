@@ -14,7 +14,8 @@ until DNS resolution is working.
 
 - `etc/systemd/network/10-wired.link` — Matches enp0s31f6 interface by name
 - `etc/systemd/network/20-wired.network` — Configures DHCP on enp0s31f6
-- `etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf` — Limits wait-online to enp0s31f6 with 30s timeout
+- `etc/systemd/system/systemd-networkd-wait-online.service.d/override.conf` —
+  Limits wait-online to enp0s31f6 with 30s timeout
 
 **Why systemd-networkd + systemd-resolved?**
 
@@ -25,13 +26,23 @@ until DNS resolution is working.
 - Fixes DNS resolution failures after system wake
 
 **Interface naming:**
-The interface name `enp0s31f6` is hardware-specific (predictable network interface name based on PCI topology). If the hardware changes, this name may change and will need updating.
+The interface name `enp0s31f6` is hardware-specific
+(predictable network interface name based on PCI topology).
+If the hardware changes, this name may change and will
+need updating.
 
 **DHCP reservation:**
-Astute uses DHCP with a router-side reservation. The BT Smart Hub 2 is configured to always assign 192.168.1.154 to Astute's MAC address (60:45:cb:9b:ab:3b). No static IP configuration needed on Astute.
+Astute uses DHCP with a router-side reservation. The BT
+Smart Hub 2 is configured to always assign 192.168.1.154
+to Astute's MAC address (60:45:cb:9b:ab:3b). No static IP
+configuration needed on Astute.
 
 **wait-online override:**
-The systemd-networkd-wait-online service is configured to only wait for enp0s31f6 with a 30-second timeout and IPv4-only check. This prevents boot hangs while ensuring network-online.target is properly signaled for services that depend on it (like offsite backups).
+The systemd-networkd-wait-online service is configured to
+only wait for enp0s31f6 with a 30-second timeout and
+IPv4-only check. This prevents boot hangs while ensuring
+network-online.target is properly signaled for services
+that depend on it (like offsite backups).
 
 ## Installation
 

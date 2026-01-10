@@ -14,7 +14,7 @@ Monthly cold storage snapshots with manual reminder timer.
 
 Snapshots live on the cold storage mount:
 
-```
+```text
 /mnt/cold-storage/backups/audacious/
 ├── latest/              # current mirror
 └── snapshots/YYYY-MM/   # monthly snapshots (hard-link based)
@@ -125,7 +125,8 @@ The reminder fires on the 1st of each month. Run backup procedure when notified.
 - target/ (Rust)
 - __pycache__/
 
-**Method:** rsync with --link-dest for deduplication (unchanged files hardlinked to previous snapshot).
+**Method:** rsync with --link-dest for deduplication (unchanged files
+hardlinked to previous snapshot).
 
 **Retention:** Keeps 12 most recent monthly snapshots, auto-prunes older.
 
