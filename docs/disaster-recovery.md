@@ -85,7 +85,7 @@ Have these before proceeding:
 3. BorgBase credentials and repo keys (stored on Secrets USB)
 4. A working machine with internet access
 
-If the Secrets USB is unavailable, use the trusted person USB or the Google
+   If the Secrets USB is unavailable, use the trusted person USB or the Google
 Drive recovery bundle.
 
 **Note:** If the issue is a single drive failure in a ZFS pool, follow the host
@@ -107,41 +107,41 @@ Steps:
 
 1. Unlock and mount the Secrets USB:
 
-```sh
-lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE
-sudo cryptsetup open /dev/sdX1 keyusb
-sudo mkdir -p /mnt/keyusb
-sudo mount /dev/mapper/keyusb /mnt/keyusb
-```
+   ```sh
+   lsblk -e7 -o NAME,SIZE,TYPE,MOUNTPOINT,FSTYPE
+   sudo cryptsetup open /dev/sdX1 keyusb
+   sudo mkdir -p /mnt/keyusb
+   sudo mount /dev/mapper/keyusb /mnt/keyusb
+   ```
 
 2. Restore SSH keys and config:
 
-```sh
-mkdir -p ~/.ssh
-cp -a /mnt/keyusb/ssh-backup/* ~/.ssh/
-chmod 700 ~/.ssh
-chmod 600 ~/.ssh/*
-chmod 644 ~/.ssh/*.pub 2>/dev/null || true
-```
+   ```sh
+   mkdir -p ~/.ssh
+   cp -a /mnt/keyusb/ssh-backup/* ~/.ssh/
+   chmod 700 ~/.ssh
+   chmod 600 ~/.ssh/*
+   chmod 644 ~/.ssh/*.pub 2>/dev/null || true
+   ```
 
 3. Restore Borg passphrase and patterns:
 
-```sh
-mkdir -p ~/.config/borg
-cp /mnt/keyusb/borg/passphrase ~/.config/borg/
-cp /mnt/keyusb/borg/patterns ~/.config/borg/
-chmod 600 ~/.config/borg/passphrase ~/.config/borg/patterns
-```
+   ```sh
+   mkdir -p ~/.config/borg
+   cp /mnt/keyusb/borg/passphrase ~/.config/borg/
+   cp /mnt/keyusb/borg/patterns ~/.config/borg/
+   chmod 600 ~/.config/borg/passphrase ~/.config/borg/patterns
+   ```
 
 4. If restoring from BorgBase, keep the USB mounted and continue to §1.1.
    Otherwise, unmount:
 
-```sh
-sudo umount /mnt/keyusb
-sudo cryptsetup close keyusb
-```
+   ```sh
+   sudo umount /mnt/keyusb
+   sudo cryptsetup close keyusb
+   ```
 
-Expected result: SSH and Borg material restored locally.
+   Expected result: SSH and Borg material restored locally.
 
 ---
 
@@ -154,24 +154,24 @@ Steps:
 
 1. Copy BorgBase credentials from the Secrets USB:
 
-```sh
-sudo install -d -m 0700 /root/.ssh /root/.config/borg-offsite
-sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-audacious
-sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-astute /root/.ssh/borgbase-offsite-astute
-sudo cp /mnt/keyusb/borg/audacious-home.passphrase /root/.config/borg-offsite/
-sudo cp /mnt/keyusb/borg/astute-critical.passphrase /root/.config/borg-offsite/
-sudo chmod 600 /root/.ssh/borgbase-offsite-audacious \
-  /root/.ssh/borgbase-offsite-astute \
-  /root/.config/borg-offsite/*.passphrase
-```
+   ```sh
+   sudo install -d -m 0700 /root/.ssh /root/.config/borg-offsite
+   sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-audacious /root/.ssh/borgbase-offsite-audacious
+   sudo cp /mnt/keyusb/ssh-backup/borgbase-offsite-astute /root/.ssh/borgbase-offsite-astute
+   sudo cp /mnt/keyusb/borg/audacious-home.passphrase /root/.config/borg-offsite/
+   sudo cp /mnt/keyusb/borg/astute-critical.passphrase /root/.config/borg-offsite/
+   sudo chmod 600 /root/.ssh/borgbase-offsite-audacious \
+     /root/.ssh/borgbase-offsite-astute \
+     /root/.config/borg-offsite/*.passphrase
+   ```
 
 2. Set environment variables for offsite commands:
 
-```sh
-export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
-```
+   ```sh
+   export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
+   ```
 
-Expected result: BorgBase repo access works from the recovery host.
+   Expected result: BorgBase repo access works from the recovery host.
 
 ---
 
@@ -183,25 +183,25 @@ Steps:
 
 1. Unlock and mount cold storage:
 
-```sh
-sudo cryptsetup open /dev/sdX1 coldstorage
-sudo mkdir -p /mnt/cold-storage
-sudo mount /dev/mapper/coldstorage /mnt/cold-storage
-```
+   ```sh
+   sudo cryptsetup open /dev/sdX1 coldstorage
+   sudo mkdir -p /mnt/cold-storage
+   sudo mount /dev/mapper/coldstorage /mnt/cold-storage
+   ```
 
 2. Locate snapshots and copy required files:
 
-```sh
-ls -la /mnt/cold-storage/backups/audacious/snapshots/
-cp -a /mnt/cold-storage/backups/audacious/snapshots/<date>/path/to/file ~/restored/
-```
+   ```sh
+   ls -la /mnt/cold-storage/backups/audacious/snapshots/
+   cp -a /mnt/cold-storage/backups/audacious/snapshots/<date>/path/to/file ~/restored/
+   ```
 
 3. Unmount and close:
 
-```sh
-sudo umount /mnt/cold-storage
-sudo cryptsetup close coldstorage
-```
+   ```sh
+   sudo umount /mnt/cold-storage
+   sudo cryptsetup close coldstorage
+   ```
 
 For full details, see `cold-storage-audacious/README.md`.
 
@@ -216,28 +216,28 @@ Steps:
 
 1. Confirm access:
 
-```sh
-ssh backup@astute
-borg list backup@astute:/mnt/backup/borg/audacious
-```
+   ```sh
+   ssh backup@astute
+   borg list backup@astute:/mnt/backup/borg/audacious
+   ```
 
 2. Restore the latest archive (staged restore):
 
-```sh
-sudo mkdir -p /restore
-sudo chown $USER:$USER /restore
-borg extract --numeric-owner --destination /restore \
-  backup@astute:/mnt/backup/borg/audacious::$(borg list --last 1 --short backup@astute:/mnt/backup/borg/audacious)
-```
+   ```sh
+   sudo mkdir -p /restore
+   sudo chown $USER:$USER /restore
+   borg extract --numeric-owner --destination /restore \
+     backup@astute:/mnt/backup/borg/audacious::$(borg list --last 1 --short backup@astute:/mnt/backup/borg/audacious)
+   ```
 
 3. Move into place after inspection:
 
-```sh
-sudo rsync -aHAXv /restore/home/alchemist/ /home/alchemist/
-sudo chown -R alchemist:alchemist /home/alchemist
-```
+   ```sh
+   sudo rsync -aHAXv /restore/home/alchemist/ /home/alchemist/
+   sudo chown -R alchemist:alchemist /home/alchemist
+   ```
 
-Expected result: Audacious home data restored from Astute.
+   Expected result: Audacious home data restored from Astute.
 
 ---
 
@@ -249,35 +249,31 @@ Steps:
 
 1. Restore Audacious home data from BorgBase:
 
-```sh
-export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
-export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+   ```sh
+   export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
+   export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+   borg_repo="ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo"
 
-sudo borg list \
-  ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo
-
-sudo borg extract \
-  ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo::audacious-home-YYYY-MM-DD \
-  home/alchemist
-```
+   sudo borg list "$borg_repo"
+   sudo borg extract "${borg_repo}::audacious-home-YYYY-MM-DD" \
+     home/alchemist
+   ```
 
 2. Restore Astute critical data (if rebuilding Astute):
 
-```sh
-export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
-export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase"
+   ```sh
+   export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
+   export BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase"
+   borg_repo="ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo"
 
-sudo borg list \
-  ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo
+   sudo borg list "$borg_repo"
+   sudo borg extract "${borg_repo}::astute-critical-YYYY-MM-DD" \
+     srv/nas/lucii \
+     srv/nas/bitwarden-exports
+   ```
 
-sudo borg extract \
-  ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo::astute-critical-YYYY-MM-DD \
-  srv/nas/lucii \
-  srv/nas/bitwarden-exports
-```
-
-Expected result: Data recovered from offsite to a staging host or rebuilt
-Astute.
+   Expected result: Data recovered from offsite to a staging host or rebuilt
+   Astute.
 
 ---
 
@@ -287,17 +283,17 @@ Steps:
 
 1. Verify ZFS health:
 
-```sh
-zpool status
-```
+   ```sh
+   zpool status
+   ```
 
 2. Verify backups are running:
 
-```sh
-systemctl list-timers | grep borg
-```
+   ```sh
+   systemctl list-timers | grep borg
+   ```
 
-Expected result: Pools are healthy and backup timers are active.
+   Expected result: Pools are healthy and backup timers are active.
 
 ---
 

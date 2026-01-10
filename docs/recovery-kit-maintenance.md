@@ -1,6 +1,7 @@
 # Recovery Kit Maintenance Guide
 
-Create, update, and verify the Secrets USB and trusted copies. Emergency restore procedures are in `docs/disaster-recovery.md`.
+Create, update, and verify the Secrets USB and trusted copies. Emergency
+restore procedures are in `docs/disaster-recovery.md`.
 
 ---
 
@@ -11,38 +12,39 @@ Create, update, and verify the Secrets USB and trusted copies. Emergency restore
 Use when a trusted person is on-site and you need a fresh copy quickly.
 
 Steps:
+
 1. Mount the Secrets USB (primary):
 
-```sh
-sudo cryptsetup luksOpen /dev/sdX1 keyusb
-sudo mkdir -p /mnt/keyusb
-sudo mount /dev/mapper/keyusb /mnt/keyusb
-```
+   ```sh
+   sudo cryptsetup luksOpen /dev/sdX1 keyusb
+   sudo mkdir -p /mnt/keyusb
+   sudo mount /dev/mapper/keyusb /mnt/keyusb
+   ```
 
 2. Mount the trusted person USB:
 
-```sh
-sudo cryptsetup luksOpen /dev/sdY1 trustedusb
-sudo mkdir -p /mnt/trustedusb
-sudo mount /dev/mapper/trustedusb /mnt/trustedusb
-```
+   ```sh
+   sudo cryptsetup luksOpen /dev/sdY1 trustedusb
+   sudo mkdir -p /mnt/trustedusb
+   sudo mount /dev/mapper/trustedusb /mnt/trustedusb
+   ```
 
 3. Copy everything:
 
-```sh
-rsync -aHAXv /mnt/keyusb/ /mnt/trustedusb/
-sync
-```
+   ```sh
+   rsync -aHAXv /mnt/keyusb/ /mnt/trustedusb/
+   sync
+   ```
 
 4. Unmount both:
 
-```sh
-sudo umount /mnt/keyusb /mnt/trustedusb
-sudo cryptsetup luksClose keyusb
-sudo cryptsetup luksClose trustedusb
-```
+   ```sh
+   sudo umount /mnt/keyusb /mnt/trustedusb
+   sudo cryptsetup luksClose keyusb
+   sudo cryptsetup luksClose trustedusb
+   ```
 
-Expected result: trusted person USB contains a fresh copy of the Secrets USB.
+   Expected result: trusted person USB contains a fresh copy of the Secrets USB.
 
 ---
 
@@ -51,61 +53,63 @@ Expected result: trusted person USB contains a fresh copy of the Secrets USB.
 Initial setup of Secrets USB with LUKS encryption.
 
 Prerequisites:
+
 - USB flash drive (8GB minimum, 16GB+ recommended)
 - Strong passphrase (25+ characters, stored in password manager)
 
 **DANGER:** This will erase all data on the USB drive. Verify device name carefully.
 
 Steps:
+
 1. Identify device:
 
-```sh
-lsblk
-```
+   ```sh
+   lsblk
+   ```
 
 2. Verify device:
 
-```sh
-sudo fdisk -l /dev/sdX
-```
+   ```sh
+   sudo fdisk -l /dev/sdX
+   ```
 
 3. Unmount if auto-mounted:
 
-```sh
-sudo umount /dev/sdX1 2>/dev/null || true
-```
+   ```sh
+   sudo umount /dev/sdX1 2>/dev/null || true
+   ```
 
 4. Create GPT and partition:
 
-```sh
-sudo parted /dev/sdX mklabel gpt
-sudo parted /dev/sdX mkpart primary 1MiB 100%
-```
+   ```sh
+   sudo parted /dev/sdX mklabel gpt
+   sudo parted /dev/sdX mkpart primary 1MiB 100%
+   ```
 
 5. Encrypt and format:
 
-```sh
-sudo cryptsetup luksFormat /dev/sdX1
-sudo cryptsetup luksOpen /dev/sdX1 keyusb
-sudo mkfs.ext4 -L "BLUE_USB_RECOVERY" /dev/mapper/keyusb
-```
+   ```sh
+   sudo cryptsetup luksFormat /dev/sdX1
+   sudo cryptsetup luksOpen /dev/sdX1 keyusb
+   sudo mkfs.ext4 -L "BLUE_USB_RECOVERY" /dev/mapper/keyusb
+   ```
 
 6. Create directory structure:
 
-```sh
-sudo mkdir -p /mnt/keyusb
-sudo mount /dev/mapper/keyusb /mnt/keyusb
-sudo mkdir -p /mnt/keyusb/{ssh-backup,borg,pgp,docs,tokens}
-sudo chown -R $(id -u):$(id -g) /mnt/keyusb
-```
+   ```sh
+   sudo mkdir -p /mnt/keyusb
+   sudo mount /dev/mapper/keyusb /mnt/keyusb
+   sudo mkdir -p /mnt/keyusb/{ssh-backup,borg,pgp,docs,tokens}
+   sudo chown -R $(id -u):$(id -g) /mnt/keyusb
+   ```
 
 7. Write a marker:
 
-```sh
-echo "Secrets USB Recovery - Created $(date)" > /mnt/keyusb/README.txt
-```
+   ```sh
+   echo "Secrets USB Recovery - Created $(date)" > /mnt/keyusb/README.txt
+   ```
 
-Expected result: encrypted USB mounted and ready for population.
+   Expected result: encrypted USB mounted and ready for population.
 
 ---
 
@@ -121,7 +125,7 @@ cp ~/.ssh/audacious-backup.pub /mnt/keyusb/ssh-backup/
 cp ~/.ssh/id_ed25519_astute_nas /mnt/keyusb/ssh-backup/
 cp ~/.ssh/id_ed25519_astute_nas.pub /mnt/keyusb/ssh-backup/
 cp -L ~/.ssh/config /mnt/keyusb/ssh-backup/
-```
+```text
 
 Document passphrases:
 
@@ -143,14 +147,16 @@ EOF
 ### §2.2 Borg passphrase and patterns
 
 ```sh
-cp ~/.config/borg/passphrase /mnt/keyusb/borg/
-cp -L ~/.config/borg/patterns /mnt/keyusb/borg/patterns
-borg key export borg@astute:/srv/backups/audacious-borg /mnt/keyusb/borg/repo-key-export.txt
+   cp ~/.config/borg/passphrase /mnt/keyusb/borg/
+   cp -L ~/.config/borg/patterns /mnt/keyusb/borg/patterns
+   borg_repo="borg@astute:/srv/backups/audacious-borg"
+   borg key export "$borg_repo" /mnt/keyusb/borg/repo-key-export.txt
 ```
 
 ### §2.3 BorgBase keys and credentials
 
-Run after BorgBase repo initialization (see `docs/offsite-backup.md`) or any credential rotation.
+Run after BorgBase repo initialization (see `docs/offsite-backup.md`) or any
+credential rotation.
 
 Prereq: Secrets USB mounted at `/mnt/keyusb`.
 
@@ -159,10 +165,11 @@ Audacious (as root):
 ```sh
 install -d -m 0700 /root/tmp-borg-keys
 
-BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes" \
-BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase" \
-  borg key export ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo \
-  /root/tmp-borg-keys/audacious-home-key.txt
+   BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
+   BORG_PASSCOMMAND="cat /root/.config/borg-offsite/audacious-home.passphrase"
+   borg_repo="ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo"
+
+   borg key export "$borg_repo" /root/tmp-borg-keys/audacious-home-key.txt
 
 cp /root/tmp-borg-keys/audacious-home-key.txt /mnt/keyusb/borg/
 cp /root/.ssh/borgbase-offsite-audacious /mnt/keyusb/ssh-backup/
@@ -177,10 +184,11 @@ Astute (as root), then on Audacious:
 ```sh
 install -d -m 0700 /root/tmp-borg-keys
 
-BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes" \
-BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase" \
-  borg key export ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo \
-  /root/tmp-borg-keys/astute-critical-key.txt
+   BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
+   BORG_PASSCOMMAND="cat /root/.config/borg-offsite/astute-critical.passphrase"
+   borg_repo="ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo"
+
+   borg key export "$borg_repo" /root/tmp-borg-keys/astute-critical-key.txt
 
 install -d -m 0700 /root/tmp-borgbase-creds
 cp /root/tmp-borg-keys/astute-critical-key.txt /root/tmp-borgbase-creds/
@@ -231,7 +239,8 @@ cat > /mnt/keyusb/tokens/README.txt <<EOF
 API Tokens and Credentials
 ==========================
 
-jellyfin/api.token - Jellyfin server API access (idle-shutdown.sh remote playback check)
+jellyfin/api.token - Jellyfin server API access
+  (idle-shutdown.sh remote playback check)
 EOF
 ```
 
@@ -285,6 +294,7 @@ SECRETS USB RECOVERY QUICK-START
 6. NEXT:
    - Install: docs/audacious/install-audacious.md or docs/astute/install-astute.md
    - Restore data: docs/disaster-recovery.md
+
 EOF
 ```
 
@@ -297,29 +307,32 @@ Create an encrypted bundle for off-site access when the Secrets USB is unavailab
 Prereq: Secrets USB mounted at `/mnt/keyusb`.
 
 Steps:
+
 1. Run the bundle script:
 
-```sh
-scripts/create-gdrive-recovery-bundle.sh
-```
+   ```sh
+   scripts/create-gdrive-recovery-bundle.sh
+   ```
 
 2. Upload the generated `.gpg` file to Google Drive (path is printed by the script).
 
-Expected result: encrypted recovery bundle stored off-site.
+   Expected result: encrypted recovery bundle stored off-site.
 
 ---
 
 ## §3 Update cadence
 
 Update the Secrets USB when:
+
 - SSH keys rotate
 - Borg passphrases change
 - BorgBase credentials change
 - Tokens are added or updated
 - Recovery docs change substantially
- - Google Drive bundle needs refresh
+- Google Drive bundle needs refresh
 
 Steps:
+
 1. Mount the Secrets USB.
 2. Update relevant files.
 3. Record update in `/mnt/keyusb/README.txt`.
@@ -332,20 +345,21 @@ Steps:
 Run quarterly or before major travel.
 
 Steps:
+
 1. Mount the Secrets USB.
 2. Verify file list and spot-check reads:
 
-```sh
-ls -la /mnt/keyusb
-cat /mnt/keyusb/QUICK-START.txt
-```
+   ```sh
+   ls -la /mnt/keyusb
+   cat /mnt/keyusb/QUICK-START.txt
+   ```
 
 3. Record verification:
 
-```sh
-echo "Verified: $(date) - All secrets present and readable" >> /mnt/keyusb/README.txt
-sync
-```
+   ```sh
+   echo "Verified: $(date) - All secrets present and readable" >> /mnt/keyusb/README.txt
+   sync
+   ```
 
 4. Unmount and close.
 
@@ -370,7 +384,7 @@ sync
 sudo umount /mnt/keyusb
 sudo e2fsck -f /dev/mapper/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
-```
+```text
 
 ---
 
@@ -417,4 +431,4 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
     ├── recovery-audacious.md
     ├── install-astute.md
     └── recovery-astute.md
-```
+   ```

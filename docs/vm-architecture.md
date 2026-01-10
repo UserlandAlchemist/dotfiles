@@ -117,13 +117,13 @@ faithful emulation of Wolfpack host disk layouts (Audacious/Astute).
 
 **Naming Convention:**
 
-```
+```text
 test-audacious-vda.qcow2
 test-audacious-vdb.qcow2
 test-astute-vda.qcow2
 test-astute-vdb.qcow2
 test-astute-vdc.qcow2
-```
+```text
 
 **Alternative:** Raw images for performance
 
@@ -139,14 +139,14 @@ test-astute-vdc.qcow2
 
 **Configuration:**
 
-```
+```text
 Host (audacious)
   ├─ br0 (192.168.1.147)
   │   ├─ enp7s0 (physical)
   │   ├─ vnet0 → test-audacious
   │   └─ vnet1 → test-astute
   └─ Router (192.168.1.1)
-```
+```text
 
 **IP Allocation:**
 

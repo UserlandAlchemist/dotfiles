@@ -1,6 +1,7 @@
 # Installed Software (Structured List)
 
-Machine-readable inventory of manually installed software. Sections reflect installation origin, not function. Enables auditable, reproducible system state.
+Machine-readable inventory of manually installed software. Sections reflect
+installation origin, not function. Enables auditable, reproducible system state.
 
 Last drift check: 2026-01-08
 
@@ -9,6 +10,7 @@ Last drift check: 2026-01-08
 ## Base System (via install-audacious.md §1-13)
 
 ### Boot & filesystem
+
 - cryptsetup — LUKS encryption for ZFS unlock
 - zfs-initramfs — ZFS support during early boot
 - linux-headers-amd64 — module build headers
@@ -20,6 +22,7 @@ Last drift check: 2026-01-08
 - plymouth-themes — boot theme package
 
 ### Network & firmware
+
 - openssh-client — SSH connectivity
 - iproute2 — modern networking tools
 - iputils-ping — ping utility
@@ -27,9 +30,11 @@ Last drift check: 2026-01-08
 - firmware-realtek — NIC firmware
 
 ### Build tools (baseline)
+
 - build-essential — compiler and build tools metapackage
 
-### System utilities
+### System utilities (desktop)
+
 - sudo — privilege escalation
 - apt-listchanges — package changelog viewer
 - usb.ids — USB device database
@@ -40,6 +45,7 @@ Last drift check: 2026-01-08
 ## Desktop Infrastructure (via install-audacious.md §14)
 
 ### Compositor & session
+
 - sway — Wayland compositor
 - swaybg — wallpaper management
 - swayidle — power/idle controller
@@ -51,6 +57,7 @@ Last drift check: 2026-01-08
 - mate-polkit — authentication agent
 
 ### Desktop utilities
+
 - grim — screenshot tool
 - slurp — region selection tool
 - wl-clipboard — clipboard manager
@@ -58,6 +65,7 @@ Last drift check: 2026-01-08
 - xdg-desktop-portal-wlr — Wayland portal implementation
 
 ### Audio subsystem
+
 - pipewire-audio — audio engine
 - pipewire-jack — JACK compatibility layer
 - wireplumber — policy/session manager
@@ -66,6 +74,7 @@ Last drift check: 2026-01-08
 - playerctl — MPRIS media controller (critical for idle-shutdown)
 
 ### Development & dotfiles
+
 - git — version control
 - stow — dotfile deployment
 - wget — HTTP download utility
@@ -85,31 +94,37 @@ Last drift check: 2026-01-08
 - ripgrep — recursive regex search tool (Emacs xref backend)
 
 ### Storage & backup
+
 - borgbackup — encrypted backups
 - nfs-common — NFS client utilities
 - wakeonlan — WOL magic packet sender
 - hdparm — drive tuning
 
 ### Power management
+
 - power-profiles-daemon — power profile control
 - powertop — power optimization diagnostics
 
 ### Fonts
+
 - fonts-jetbrains-mono — primary UI font
 - fonts-dejavu — general fallback set
 - fonts-noto — multilingual family
 - fonts-symbola — Unicode symbol/emoji fallback
 
 ### Themes
+
 - desktop-base — Debian branding defaults
 
 ### System utilities
+
 - profile-sync-daemon — reduces browser write amplification
 - nftables — firewall subsystem
 - plocate — file indexer
 - ncdu — interactive disk-usage inspector
 
 ### Virtualization (VM testing environment)
+
 - qemu-system-x86 — QEMU/KVM hypervisor for x86_64
 - libvirt-daemon-system — libvirt management daemon
 - libvirt-clients — virsh CLI and libvirt client tools
@@ -123,9 +138,11 @@ Last drift check: 2026-01-08
 
 ## Integral 1.0 Audio Workstation
 
-**See:** `~/personal/audio-workstation-notes.md` for complete documentation of the Integral audio workstation stack.
+**See:** `~/personal/audio-workstation-notes.md` for complete documentation of
+the Integral audio workstation stack.
 
 ### Core packages (summary)
+
 - ardour — DAW/recording software
 - surge-xt — polyphonic synthesizer
 - dragonfly-reverb-lv2 — reverb effect suite
@@ -135,6 +152,7 @@ Last drift check: 2026-01-08
 - golang-go — Go compiler (for Faust tooling + boot.dev CLI)
 
 ### Supporting libraries
+
 - libmxml1 — XML parsing (audio plugin dependency)
 - lilv-utils — LV2 plugin tools
 
@@ -143,11 +161,13 @@ Last drift check: 2026-01-08
 ## User Applications (post-installation)
 
 ### Web & communication
+
 - firefox-esr — primary web browser
 - discord — VoIP and community client
 - zoom — video conferencing client
 
 ### Gaming
+
 - heroic — Epic/GOG/Prime Gaming launcher (local deb install)
 - steam-installer — Steam client (non-free)
 - lutris — multi-platform game launcher
@@ -155,10 +175,12 @@ Last drift check: 2026-01-08
 - openjdk-21-jdk — Java runtime for Minecraft
 
 ### Desktop appearance
+
 - arc-theme — GTK theme for Ardour UI polish
 - lxappearance — GTK theme switcher (for Ardour look-and-feel adjustments)
 
 ### Media
+
 - jellyfin-media-player — Jellyfin client
 - imv — Wayland image viewer
 - ncmpcpp — TUI music player client
@@ -167,6 +189,7 @@ Last drift check: 2026-01-08
 - imagemagick — image manipulation CLI tools
 
 ### Documents
+
 - zathura — PDF/document viewer
 - zathura-pdf-poppler — rendering backend
 - poppler-utils — PDF extraction toolkit
@@ -176,12 +199,16 @@ Last drift check: 2026-01-08
 
 ## Non-APT Software (manual installations)
 
-**Rationale:** Software installed outside Debian package management for specific development workflows or unavailability in repositories.
+**Rationale:** Software installed outside Debian package management for specific
+development workflows or unavailability in repositories.
 
 ### Audio production tools
-**Documentation:** See `docs/audacious/install-audio-tools.md` for complete installation procedures.
+
+**Documentation:** See `docs/audacious/install-audio-tools.md` for complete
+installation procedures.
 
 **Installed:**
+
 - sfizz → `/usr/local/lib/lv2/sfizz.lv2` — SFZ sample-based synthesizer
 - ZynAddSubFX Fusion → `/opt/zyn-fusion` — Advanced software synthesizer
 - VCV Rack → `/opt/vcv-rack/` — Virtual modular synthesizer
