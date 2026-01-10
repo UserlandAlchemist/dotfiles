@@ -217,31 +217,31 @@ sudo wget [Debian ISO URL]
 ### Phase 1: Host Preparation
 
 1. Install virtualization packages
-1. Enable libvirtd service
-1. Add user to libvirt group
-1. Set up bridge networking (if not NAT)
+2. Enable libvirtd service
+3. Add user to libvirt group
+4. Set up bridge networking (if not NAT)
 
 ### Phase 2: Create VMs
 
 1. Create disk images (qcow2)
-1. Define VM with virt-install
-1. Attach disks, network, ISO
-1. Set UEFI firmware
+2. Define VM with virt-install
+3. Attach disks, network, ISO
+4. Set UEFI firmware
 
 ### Phase 3: Test Installation
 
 1. Boot from ISO
-1. Follow INSTALL.*.md documentation
-1. Document deviations/issues
-1. Snapshot after successful install
-1. Test recovery procedures
+2. Follow INSTALL.*.md documentation
+3. Document deviations/issues
+4. Snapshot after successful install
+5. Test recovery procedures
 
 ### Phase 4: Iterate
 
 1. Destroy VM
-1. Restore from snapshot or recreate
-1. Test again with fixes
-1. Update documentation
+2. Restore from snapshot or recreate
+3. Test again with fixes
+4. Update documentation
 
 ---
 
@@ -252,9 +252,9 @@ sudo wget [Debian ISO URL]
 **Snapshots to Create:**
 
 1. `fresh` - After VM creation, before first boot
-1. `post-install` - After successful base install
-1. `post-dotfiles` - After dotfiles deployment
-1. `working` - Rolling snapshot before risky changes
+2. `post-install` - After successful base install
+3. `post-dotfiles` - After dotfiles deployment
+4. `working` - Rolling snapshot before risky changes
 
 **Commands:**
 
@@ -298,38 +298,38 @@ virsh console test-astute
 ### Test Scenario 1: Fresh Audacious Install
 
 1. Boot test-audacious from Debian ISO
-1. Follow install-audacious.md step-by-step
-1. Note any deviations or unclear instructions
-1. Test ZFS mirror creation, encryption, dual ESP
-1. Verify systemd-boot UKI boots correctly
-1. Deploy dotfiles from git
-1. Test recovery procedures in recovery-audacious.md
-1. Document time taken (~2-3 hours expected)
+2. Follow install-audacious.md step-by-step
+3. Note any deviations or unclear instructions
+4. Test ZFS mirror creation, encryption, dual ESP
+5. Verify systemd-boot UKI boots correctly
+6. Deploy dotfiles from git
+7. Test recovery procedures in recovery-audacious.md
+8. Document time taken (~2-3 hours expected)
 
 ### Test Scenario 2: Fresh Astute Install
 
 1. Boot test-astute from Debian ISO
-1. Follow install-astute.md step-by-step
-1. Test ZFS data pool creation
-1. Configure NFS exports
-1. Test NFS mount from test-audacious
-1. Deploy dotfiles
-1. Test recovery procedures in recovery-astute.md
-1. Document time taken (~1-2 hours expected)
+2. Follow install-astute.md step-by-step
+3. Test ZFS data pool creation
+4. Configure NFS exports
+5. Test NFS mount from test-audacious
+6. Deploy dotfiles
+7. Test recovery procedures in recovery-astute.md
+8. Document time taken (~1-2 hours expected)
 
 ### Test Scenario 3: Drive Replacement
 
 1. Simulate drive failure (detach vdb from test-audacious)
-1. Follow recovery-audacious.md §9.2.2 (drive replacement)
-1. Verify resilver completes successfully
-1. Test all systems operational after replacement
+2. Follow recovery-audacious.md §9.2.2 (drive replacement)
+3. Verify resilver completes successfully
+4. Test all systems operational after replacement
 
 ### Test Scenario 4: Documentation Gaps
 
 1. Maintain notes during each test
-1. Identify missing steps, unclear instructions
-1. Update documentation immediately
-1. Re-test updated sections
+2. Identify missing steps, unclear instructions
+3. Update documentation immediately
+4. Re-test updated sections
 
 ---
 
@@ -432,13 +432,13 @@ sudo virt-sparsify --in-place test-audacious-vda.qcow2
 **Setup tasks:**
 
 1. Install libvirt/QEMU packages on Audacious
-1. Set up bridge networking (or NAT if preferred)
-1. Create disk images for test-audacious and test-astute
-1. Define VMs with virt-install commands
-1. Download Debian Trixie ISO
-1. Walk through first test installation
-1. Document any issues found during testing
-1. Set up snapshots for quick rollback
+2. Set up bridge networking (or NAT if preferred)
+3. Create disk images for test-audacious and test-astute
+4. Define VMs with virt-install commands
+5. Download Debian Trixie ISO
+6. Walk through first test installation
+7. Document any issues found during testing
+8. Set up snapshots for quick rollback
 
 **Decisions required:**
 

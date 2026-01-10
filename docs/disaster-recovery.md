@@ -81,9 +81,9 @@ For detailed procedures on maintaining recovery kits, see
 Have these before proceeding:
 
 1. Secrets USB (LUKS) and passphrase
-1. SSH keys and Borg passphrase (stored on Secrets USB)
-1. BorgBase credentials and repo keys (stored on Secrets USB)
-1. A working machine with internet access
+2. SSH keys and Borg passphrase (stored on Secrets USB)
+3. BorgBase credentials and repo keys (stored on Secrets USB)
+4. A working machine with internet access
 
 If the Secrets USB is unavailable, use the trusted person USB or the Google
 Drive recovery bundle.
@@ -114,7 +114,7 @@ sudo mkdir -p /mnt/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
 ```
 
-1. Restore SSH keys and config:
+2. Restore SSH keys and config:
 
 ```sh
 mkdir -p ~/.ssh
@@ -124,7 +124,7 @@ chmod 600 ~/.ssh/*
 chmod 644 ~/.ssh/*.pub 2>/dev/null || true
 ```
 
-1. Restore Borg passphrase and patterns:
+3. Restore Borg passphrase and patterns:
 
 ```sh
 mkdir -p ~/.config/borg
@@ -133,7 +133,7 @@ cp /mnt/keyusb/borg/patterns ~/.config/borg/
 chmod 600 ~/.config/borg/passphrase ~/.config/borg/patterns
 ```
 
-1. If restoring from BorgBase, keep the USB mounted and continue to §1.1.
+4. If restoring from BorgBase, keep the USB mounted and continue to §1.1.
    Otherwise, unmount:
 
 ```sh
@@ -165,7 +165,7 @@ sudo chmod 600 /root/.ssh/borgbase-offsite-audacious \
   /root/.config/borg-offsite/*.passphrase
 ```
 
-1. Set environment variables for offsite commands:
+2. Set environment variables for offsite commands:
 
 ```sh
 export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-audacious -T -o IdentitiesOnly=yes"
@@ -189,14 +189,14 @@ sudo mkdir -p /mnt/cold-storage
 sudo mount /dev/mapper/coldstorage /mnt/cold-storage
 ```
 
-1. Locate snapshots and copy required files:
+2. Locate snapshots and copy required files:
 
 ```sh
 ls -la /mnt/cold-storage/backups/audacious/snapshots/
 cp -a /mnt/cold-storage/backups/audacious/snapshots/<date>/path/to/file ~/restored/
 ```
 
-1. Unmount and close:
+3. Unmount and close:
 
 ```sh
 sudo umount /mnt/cold-storage
@@ -221,7 +221,7 @@ ssh backup@astute
 borg list backup@astute:/mnt/backup/borg/audacious
 ```
 
-1. Restore the latest archive (staged restore):
+2. Restore the latest archive (staged restore):
 
 ```sh
 sudo mkdir -p /restore
@@ -230,7 +230,7 @@ borg extract --numeric-owner --destination /restore \
   backup@astute:/mnt/backup/borg/audacious::$(borg list --last 1 --short backup@astute:/mnt/backup/borg/audacious)
 ```
 
-1. Move into place after inspection:
+3. Move into place after inspection:
 
 ```sh
 sudo rsync -aHAXv /restore/home/alchemist/ /home/alchemist/
@@ -261,7 +261,7 @@ sudo borg extract \
   home/alchemist
 ```
 
-1. Restore Astute critical data (if rebuilding Astute):
+2. Restore Astute critical data (if rebuilding Astute):
 
 ```sh
 export BORG_RSH="ssh -i /root/.ssh/borgbase-offsite-astute -T -o IdentitiesOnly=yes"
@@ -291,7 +291,7 @@ Steps:
 zpool status
 ```
 
-1. Verify backups are running:
+2. Verify backups are running:
 
 ```sh
 systemctl list-timers | grep borg
@@ -308,43 +308,43 @@ Expected result: Pools are healthy and backup timers are active.
 Primary path:
 
 1. Restore secrets (§1 and §1.1)
-1. Rebuild Astute (`docs/astute/install-astute.md`)
-1. Restore Astute data from BorgBase (§4 step 2)
-1. Rebuild Audacious (`docs/audacious/install-audacious.md`)
-1. Restore Audacious data from Astute (§3)
-1. Post-restore checks (§5)
+2. Rebuild Astute (`docs/astute/install-astute.md`)
+3. Restore Astute data from BorgBase (§4 step 2)
+4. Rebuild Audacious (`docs/audacious/install-audacious.md`)
+5. Restore Audacious data from Astute (§3)
+6. Post-restore checks (§5)
 
 ### Single System Loss (Hardware Failure)
 
 **Audacious lost:**
 
 1. Reinstall Audacious (`docs/audacious/install-audacious.md`)
-1. Restore secrets (§1)
-1. Restore data from Astute (§3)
-1. Post-restore checks (§5)
+2. Restore secrets (§1)
+3. Restore data from Astute (§3)
+4. Post-restore checks (§5)
 
 **Astute lost:**
 
 1. Rebuild Astute (`docs/astute/install-astute.md`)
-1. Restore secrets (§1 and §1.1)
-1. Restore data from BorgBase (§4 step 2)
-1. Post-restore checks (§5)
+2. Restore secrets (§1 and §1.1)
+3. Restore data from BorgBase (§4 step 2)
+4. Post-restore checks (§5)
 
 ### Ransomware Attack
 
 Immediate actions:
 
 1. Disconnect systems from the network
-1. Preserve evidence (do not reboot)
-1. Identify pre-infection backups
+2. Preserve evidence (do not reboot)
+3. Identify pre-infection backups
 
 Recovery path:
 
 1. Rebuild from clean install (host install docs)
-1. Restore secrets (§1 and §1.1 if needed)
-1. Restore data from clean backups (§3 or §4)
-1. Rotate credentials and re-issue keys (see recovery kit maintenance doc)
-1. Post-restore checks (§5)
+2. Restore secrets (§1 and §1.1 if needed)
+3. Restore data from clean backups (§3 or §4)
+4. Rotate credentials and re-issue keys (see recovery kit maintenance doc)
+5. Post-restore checks (§5)
 
 ---
 
@@ -353,15 +353,15 @@ Recovery path:
 ### Annual Recovery Drill
 
 1. Restore secrets on a test machine (§1)
-1. Verify BorgBase access and list archives (§4)
-1. Perform a small restore and verify integrity
-1. Record time taken and update RTO/RPO estimates
+2. Verify BorgBase access and list archives (§4)
+3. Perform a small restore and verify integrity
+4. Record time taken and update RTO/RPO estimates
 
 ### Quarterly Verification
 
 1. Run `scripts/verify-secrets-usb.sh`
-1. Verify BorgBase archives exist and use append-only access
-1. Verify Google Drive bundle is present and recent
-1. Confirm GPG passphrase recall
+2. Verify BorgBase archives exist and use append-only access
+3. Verify Google Drive bundle is present and recent
+4. Confirm GPG passphrase recall
 
 ---
