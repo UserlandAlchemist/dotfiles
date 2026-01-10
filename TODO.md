@@ -1,6 +1,6 @@
 # PROJECT SHIPSHAPE - WORK QUEUE
 
-Updated: 2026-01-09 01:27
+Updated: 2026-01-10 12:10
 
 Project Shipshape: Dotfiles and configuration management for the Wolfpack.
 The Wolfpack: Audacious (workstation), Astute (NAS/server), Artful (cloud), Steam Deck (portable).
@@ -162,6 +162,10 @@ Added fdisk, dhcpcd-base, and usbutils to the Astute inventory and install list 
 ## 2026-01-08 01:44 - Astute Tasksel Cleanup
 
 Removed task-english from the Astute inventory and install list after marking it auto. (3a125ce)
+
+## 2026-01-10 12:10 - Audacious Audio Docs Lint
+
+Normalized audacious install docs to satisfy markdownlint formatting. (ee3902c)
 
 ## 2026-01-09 01:27 - README Key Subsystems Removal
 
