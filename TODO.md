@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shellspec Error Expectations
+
+Aligned shellspec error assertions and made borg offsite runners executable.
+(d088b22, 35c1f0f)
+
 ## 2026-01-12 - Shellspec Helper Load
 
 Require spec_helper in shellspec options and add a script stub so env-based
