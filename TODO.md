@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Backup Verification Script
+
+Added a privileged backup verification helper plus docs for backup/power
+checks. (47d7db3)
+
 ## 2026-01-12 - Gate Unprivileged Checks
 
 Skip sudoers/nft checks in the unprivileged runner and update testing docs.
