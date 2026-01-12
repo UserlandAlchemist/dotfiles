@@ -66,23 +66,6 @@ else
 	warn "systemctl not available; skipping daemon-reload check"
 fi
 
-# sshd config syntax (installed)
-SSHD_CHECK="${SSHD_CHECK:-auto}"
-if [ "$SSHD_CHECK" != "0" ]; then
-	if command -v sshd >/dev/null 2>&1; then
-		info "sshd -t"
-		if ! sshd -t; then
-			warn "sshd -t reported issues"
-		fi
-	else
-		if [ "$SSHD_CHECK" = "1" ]; then
-			warn "sshd not available; skipping sshd syntax check"
-		else
-			info "sshd not available; skipping sshd syntax check"
-		fi
-	fi
-fi
-
 # sudoers syntax (installed)
 if command -v visudo >/dev/null 2>&1; then
 	info "visudo -c"

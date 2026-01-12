@@ -40,7 +40,7 @@ Expected results:
 
 1. Install scripts complete for the current host.
 2. `systemd` reloads cleanly and no units are failed.
-3. `sshd`, `sudoers`, and `nftables` configs parse cleanly.
+3. `sudoers` and `nftables` configs parse cleanly.
 
 ---
 
@@ -72,7 +72,7 @@ Privileged suite:
 
 - Host install script regression run.
 - Installed systemd unit verification and daemon reload.
-- Installed `sshd`, `sudoers`, and `nftables` syntax checks.
+- Installed `sudoers` and `nftables` syntax checks.
 
 Notes:
 
