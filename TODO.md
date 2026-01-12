@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Privileged SSHD Check Gate
+
+Gate the sshd syntax check in the privileged test runner with an explicit
+toggle and auto mode. (10131dc)
+
 ## 2026-01-12 - Install Script Path Fix
 
 Fix test install script lookup under sudo by deriving repo root from script
