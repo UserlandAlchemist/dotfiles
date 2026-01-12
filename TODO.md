@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shellspec Root Fix
+
+Use SHELLSPEC_PROJECT_ROOT in the spec helper so BDD specs resolve repo paths.
+(4a1a63d)
+
 ## 2026-01-12 - Shellspec Project Anchor
 
 Added .shellspec to anchor shellspec to the repo root so specs run without
