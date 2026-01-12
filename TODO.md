@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Gate Unprivileged Checks
+
+Skip sudoers/nft checks in the unprivileged runner and update testing docs.
+(bdc54a3)
+
 ## 2026-01-12 - Remove SSHD Check
 
 Removed the sshd syntax check from privileged tests and updated testing docs.
