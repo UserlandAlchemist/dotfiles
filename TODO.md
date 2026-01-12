@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shellspec Helper Load
+
+Require spec_helper in shellspec options and add a script stub so env-based
+specs run target scripts. (c2c6898)
+
 ## 2026-01-12 - Shellspec Root Fix
 
 Use SHELLSPEC_PROJECT_ROOT in the spec helper so BDD specs resolve repo paths.
