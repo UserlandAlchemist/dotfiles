@@ -16,11 +16,11 @@ install_config etc/systemd/system/systemd-journald.service.d/wait-for-var.conf
 echo "→ Stowing package (excluding systemd configs)"
 cd "$DOTFILES_DIR"
 stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^README\.md$' \
-  --ignore='^etc/systemd' \
-  root-journald-audacious
+	--ignore='^install\.sh$' \
+	--ignore='^\.stow-local-ignore$' \
+	--ignore='^README\.md$' \
+	--ignore='^etc/systemd' \
+	root-journald-audacious
 
 reload_systemd
 install_success

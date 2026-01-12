@@ -15,8 +15,8 @@ export BORG_PASSCOMMAND="$PASSCMD"
 echo "Starting Borg deep check at $(date)"
 
 borg check \
-  --verify-data \
-  --progress \
-  "$REPO"
+	--verify-data \
+	--progress \
+	"$REPO"
 
 echo "Completed Borg deep check at $(date)"

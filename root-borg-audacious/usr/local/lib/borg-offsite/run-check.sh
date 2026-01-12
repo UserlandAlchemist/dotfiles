@@ -16,8 +16,8 @@ export BORG_PASSCOMMAND="cat $PASSFILE"
 export BORG_BASE_DIR BORG_CONFIG_DIR BORG_SECURITY_DIR BORG_CACHE_DIR
 
 if [ ! -f "$PASSFILE" ]; then
-  echo "ERROR: missing passphrase file: $PASSFILE" >&2
-  exit 1
+	echo "ERROR: missing passphrase file: $PASSFILE" >&2
+	exit 1
 fi
 
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"

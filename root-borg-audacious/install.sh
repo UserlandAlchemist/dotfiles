@@ -29,12 +29,12 @@ install_script usr/local/lib/borg-offsite/run-check.sh
 echo "→ Stowing package (excluding systemd units)"
 cd "$DOTFILES_DIR"
 stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^README\.md$' \
-  --ignore='^etc/systemd/system' \
-  --ignore='^usr/local/lib' \
-  root-borg-audacious
+	--ignore='^install\.sh$' \
+	--ignore='^\.stow-local-ignore$' \
+	--ignore='^README\.md$' \
+	--ignore='^etc/systemd/system' \
+	--ignore='^usr/local/lib' \
+	root-borg-audacious
 
 reload_systemd
 install_success

@@ -17,32 +17,32 @@ export BORG_PASSCOMMAND="cat $PASSFILE"
 export BORG_BASE_DIR BORG_CONFIG_DIR BORG_SECURITY_DIR BORG_CACHE_DIR
 
 if [ ! -d "$SRC" ]; then
-  echo "ERROR: missing source directory: $SRC" >&2
-  exit 1
+	echo "ERROR: missing source directory: $SRC" >&2
+	exit 1
 fi
 
 if [ ! -f "$PATTERNS" ]; then
-  echo "ERROR: missing Borg patterns file: $PATTERNS" >&2
-  exit 1
+	echo "ERROR: missing Borg patterns file: $PATTERNS" >&2
+	exit 1
 fi
 
 if [ ! -f "$KEY" ]; then
-  echo "ERROR: missing BorgBase SSH key: $KEY" >&2
-  exit 1
+	echo "ERROR: missing BorgBase SSH key: $KEY" >&2
+	exit 1
 fi
 
 if [ ! -f "$PASSFILE" ]; then
-  echo "ERROR: missing passphrase file: $PASSFILE" >&2
-  exit 1
+	echo "ERROR: missing passphrase file: $PASSFILE" >&2
+	exit 1
 fi
 
 mkdir -p "$BORG_CONFIG_DIR" "$BORG_SECURITY_DIR" "$BORG_CACHE_DIR"
 
 borg create \
-  --verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
-  --lock-wait 60 --one-file-system \
-  --patterns-from "$PATTERNS" \
-  "${REPO}::audacious-home-{now}"
+	--verbose --stats --progress --checkpoint-interval 60 --compression lz4 \
+	--lock-wait 60 --one-file-system \
+	--patterns-from "$PATTERNS" \
+	"${REPO}::audacious-home-{now}"
 
 # Note: This repo should use append-only access in BorgBase for ransomware protection.
 # Prune operations are disabled - manage retention manually via BorgBase web UI.

@@ -8,8 +8,8 @@ echo "Installing root-sudoers-audacious (NAS mount policy)"
 
 echo "→ Installing sudoers rule (nas-mount)"
 install -o root -g root -m 0440 \
-  "$PKG_DIR/etc/sudoers.d/nas-mount.sudoers" \
-  /etc/sudoers.d/nas-mount.sudoers
+	"$PKG_DIR/etc/sudoers.d/nas-mount.sudoers" \
+	/etc/sudoers.d/nas-mount.sudoers
 
 echo "→ Validating sudoers"
 visudo -c

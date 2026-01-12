@@ -12,11 +12,11 @@ install_unit efi-sync.path
 echo "→ Stowing package (excluding systemd units)"
 cd "$DOTFILES_DIR"
 stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^README\.md$' \
-  --ignore='^etc/systemd/system' \
-  root-efisync-audacious
+	--ignore='^install\.sh$' \
+	--ignore='^\.stow-local-ignore$' \
+	--ignore='^README\.md$' \
+	--ignore='^etc/systemd/system' \
+	root-efisync-audacious
 
 reload_systemd
 install_success

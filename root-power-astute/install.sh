@@ -19,8 +19,8 @@ install_libexec astute-nas-inhibit.sh
 
 echo "→ Installing sudoers rule (nas-inhibit)"
 install -o root -g root -m 0440 \
-  "$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers" \
-  /etc/sudoers.d/nas-inhibit
+	"$PKG_DIR/etc/sudoers.d/nas-inhibit.sudoers" \
+	/etc/sudoers.d/nas-inhibit
 
 reload_systemd
 

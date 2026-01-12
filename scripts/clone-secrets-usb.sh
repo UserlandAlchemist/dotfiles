@@ -18,9 +18,9 @@ echo
 
 # Check Secrets USB is mounted
 if [ ! -d "$SECRETS_USB" ]; then
-  echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
-  echo "Mount first: sudo cryptsetup luksOpen /dev/sdX keyusb && sudo mount /dev/mapper/keyusb /mnt/keyusb"
-  exit 1
+	echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
+	echo "Mount first: sudo cryptsetup luksOpen /dev/sdX keyusb && sudo mount /dev/mapper/keyusb /mnt/keyusb"
+	exit 1
 fi
 
 echo "✓ Secrets USB mounted at $SECRETS_USB"
@@ -33,18 +33,18 @@ echo
 read -r -p "Enter target USB device (e.g., sdc): " TARGET_DEV
 
 if [ -z "$TARGET_DEV" ]; then
-  echo "ERROR: No device specified"
-  exit 1
+	echo "ERROR: No device specified"
+	exit 1
 fi
 
 # Add /dev/ prefix if not present
 if [[ ! "$TARGET_DEV" == /dev/* ]]; then
-  TARGET_DEV="/dev/$TARGET_DEV"
+	TARGET_DEV="/dev/$TARGET_DEV"
 fi
 
 if [ ! -b "$TARGET_DEV" ]; then
-  echo "ERROR: $TARGET_DEV is not a block device"
-  exit 1
+	echo "ERROR: $TARGET_DEV is not a block device"
+	exit 1
 fi
 
 # Safety check
@@ -55,8 +55,8 @@ echo
 read -r -p "Type 'yes' to continue: " CONFIRM
 
 if [ "$CONFIRM" != "yes" ]; then
-  echo "Aborted."
-  exit 1
+	echo "Aborted."
+	exit 1
 fi
 
 echo
@@ -76,13 +76,13 @@ sleep 2
 PARTITION="${TARGET_DEV}1"
 
 if [ ! -b "$PARTITION" ]; then
-  # Some devices use p1 instead of 1
-  PARTITION="${TARGET_DEV}p1"
+	# Some devices use p1 instead of 1
+	PARTITION="${TARGET_DEV}p1"
 fi
 
 if [ ! -b "$PARTITION" ]; then
-  echo "ERROR: Partition $PARTITION not found"
-  exit 1
+	echo "ERROR: Partition $PARTITION not found"
+	exit 1
 fi
 
 echo "✓ Created partition: $PARTITION"
@@ -131,20 +131,20 @@ SECRETS_CHECKSUMS="/tmp/secrets-checksums-$$.txt"
 TRUSTED_CHECKSUMS="/tmp/trusted-checksums-$$.txt"
 
 echo "Computing Secrets USB checksums..."
-(cd "$SECRETS_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) > "$SECRETS_CHECKSUMS"
+(cd "$SECRETS_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) >"$SECRETS_CHECKSUMS"
 
 echo "Computing trusted USB checksums..."
-(cd "$TRUSTED_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) > "$TRUSTED_CHECKSUMS"
+(cd "$TRUSTED_USB" && sudo find . -type f -exec sha256sum {} \; | sort -k2) >"$TRUSTED_CHECKSUMS"
 
-if diff -q "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" > /dev/null; then
-  echo "✓ Verification PASSED - all files match"
-  VERIFIED=1
+if diff -q "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" >/dev/null; then
+	echo "✓ Verification PASSED - all files match"
+	VERIFIED=1
 else
-  echo "✗ Verification FAILED - files differ"
-  echo
-  echo "Differences:"
-  diff "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" || true
-  VERIFIED=0
+	echo "✗ Verification FAILED - files differ"
+	echo
+	echo "Differences:"
+	diff "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS" || true
+	VERIFIED=0
 fi
 
 rm "$SECRETS_CHECKSUMS" "$TRUSTED_CHECKSUMS"
@@ -158,21 +158,21 @@ sudo rmdir "$TRUSTED_USB"
 
 echo
 if [ $VERIFIED -eq 1 ]; then
-  echo "=== Success ==="
-  echo "Trusted Copy created and verified."
-  echo
-  echo "Next steps:"
-  echo "1. Document handoff date in maintenance log"
-  echo "2. Label USB: 'Secrets USB - Trusted Copy - Updated $(date +%Y-%m-%d)'"
-  echo "3. Hand off to trusted person"
-  echo "4. Store off-site (different physical location)"
-  echo
-  echo "To unlock this USB in the future:"
-  echo "  sudo cryptsetup luksOpen $PARTITION keyusb-trusted"
-  echo "  sudo mount /dev/mapper/keyusb-trusted /mnt/keyusb-trusted"
+	echo "=== Success ==="
+	echo "Trusted Copy created and verified."
+	echo
+	echo "Next steps:"
+	echo "1. Document handoff date in maintenance log"
+	echo "2. Label USB: 'Secrets USB - Trusted Copy - Updated $(date +%Y-%m-%d)'"
+	echo "3. Hand off to trusted person"
+	echo "4. Store off-site (different physical location)"
+	echo
+	echo "To unlock this USB in the future:"
+	echo "  sudo cryptsetup luksOpen $PARTITION keyusb-trusted"
+	echo "  sudo mount /dev/mapper/keyusb-trusted /mnt/keyusb-trusted"
 else
-  echo "=== FAILED ==="
-  echo "Verification failed. Do not use this USB for disaster recovery."
-  echo "Re-run this script to try again."
-  exit 1
+	echo "=== FAILED ==="
+	echo "Verification failed. Do not use this USB for disaster recovery."
+	echo "Re-run this script to try again."
+	exit 1
 fi

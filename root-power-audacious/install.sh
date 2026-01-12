@@ -17,13 +17,13 @@ install_udev_rule 99-input-nosuspend.rules
 echo "→ Stowing package (excluding systemd units)"
 cd "$DOTFILES_DIR"
 stow -t / \
-  --ignore='^install\.sh$' \
-  --ignore='^\.stow-local-ignore$' \
-  --ignore='^README\.md$' \
-  --ignore='^etc/systemd/system' \
-  --ignore='^etc/udev' \
-  --ignore='^usr/local/sbin' \
-  root-power-audacious
+	--ignore='^install\.sh$' \
+	--ignore='^\.stow-local-ignore$' \
+	--ignore='^README\.md$' \
+	--ignore='^etc/systemd/system' \
+	--ignore='^etc/udev' \
+	--ignore='^usr/local/sbin' \
+	root-power-audacious
 
 reload_systemd
 install_success

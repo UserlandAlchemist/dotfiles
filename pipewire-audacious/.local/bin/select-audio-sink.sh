@@ -19,22 +19,22 @@ current="$(pactl get-default-sink 2>/dev/null || true)"
 # Build a tab-separated menu: "label<TAB>name"
 menu_lines=""
 while IFS= read -r sink_name; do
-  # Try to fetch a nice Description from pactl
-  desc="$(pactl list sinks 2>/dev/null | awk -v n="$sink_name" '
+	# Try to fetch a nice Description from pactl
+	desc="$(pactl list sinks 2>/dev/null | awk -v n="$sink_name" '
     $1=="Name:" && $2==n {f=1}
     f && $1=="Description:" {sub(/^Description: /,""); print; exit}
   ')"
-  [ -z "$desc" ] && desc="$sink_name"  # fallback
+	[ -z "$desc" ] && desc="$sink_name" # fallback
 
-  # Apply override label if present
-  label="${OVERRIDE[$sink_name]:-$desc}"
+	# Apply override label if present
+	label="${OVERRIDE[$sink_name]:-$desc}"
 
-  # Mark current default with a bullet
-  if [ "$sink_name" = "$current" ]; then
-    label="• $label"
-  fi
+	# Mark current default with a bullet
+	if [ "$sink_name" = "$current" ]; then
+		label="• $label"
+	fi
 
-  menu_lines="${menu_lines}${label}\t${sink_name}\n"
+	menu_lines="${menu_lines}${label}\t${sink_name}\n"
 done <<EOF
 $(pactl list short sinks | awk '{print $2}')
 EOF
@@ -51,5 +51,5 @@ pactl set-default-sink "$sink"
 
 # Optional: notify (requires mako/libnotify-bin)
 if command -v notify-send >/dev/null 2>&1; then
-  notify-send -a "Audio Output" "Audio output switched" "$choice"
+	notify-send -a "Audio Output" "Audio output switched" "$choice"
 fi

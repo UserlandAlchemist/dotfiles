@@ -9,7 +9,7 @@ WORK_DIR="/tmp/recovery-bundle-$$"
 OUTPUT_DIR="$HOME"
 
 if [ -n "${SUDO_USER:-}" ] && [ "$SUDO_USER" != "root" ]; then
-  OUTPUT_DIR="/home/$SUDO_USER"
+	OUTPUT_DIR="/home/$SUDO_USER"
 fi
 
 OUTPUT_FILE="$OUTPUT_DIR/borgbase-recovery-bundle-$(date +%Y%m%d).tar.gz.gpg"
@@ -22,32 +22,32 @@ echo
 
 # Check Secrets USB is mounted
 if [ ! -d "$SECRETS_USB" ]; then
-  echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
-  echo "Mount first: cryptsetup luksOpen /dev/sdX keyusb && mount /dev/mapper/keyusb /mnt/keyusb"
-  exit 1
+	echo "ERROR: Secrets USB not mounted at $SECRETS_USB"
+	echo "Mount first: cryptsetup luksOpen /dev/sdX keyusb && mount /dev/mapper/keyusb /mnt/keyusb"
+	exit 1
 fi
 
 # Verify Secrets USB has required files
 echo "Verifying Secrets USB contents..."
 MISSING=0
 for file in \
-  "$SECRETS_USB/borg/audacious-home-key.txt" \
-  "$SECRETS_USB/borg/astute-critical-key.txt" \
-  "$SECRETS_USB/borg/passphrase" \
-  "$SECRETS_USB/borg/audacious-home.passphrase" \
-  "$SECRETS_USB/borg/astute-critical.passphrase" \
-  "$SECRETS_USB/ssh-backup/borgbase-offsite-audacious" \
-  "$SECRETS_USB/ssh-backup/borgbase-offsite-astute"; do
-  if [ ! -f "$file" ]; then
-    echo "ERROR: Missing $file"
-    MISSING=$((MISSING + 1))
-  fi
+	"$SECRETS_USB/borg/audacious-home-key.txt" \
+	"$SECRETS_USB/borg/astute-critical-key.txt" \
+	"$SECRETS_USB/borg/passphrase" \
+	"$SECRETS_USB/borg/audacious-home.passphrase" \
+	"$SECRETS_USB/borg/astute-critical.passphrase" \
+	"$SECRETS_USB/ssh-backup/borgbase-offsite-audacious" \
+	"$SECRETS_USB/ssh-backup/borgbase-offsite-astute"; do
+	if [ ! -f "$file" ]; then
+		echo "ERROR: Missing $file"
+		MISSING=$((MISSING + 1))
+	fi
 done
 
 if [ $MISSING -gt 0 ]; then
-  echo "ERROR: Secrets USB incomplete. Run scripts/verify-secrets-usb.sh first."
-  echo "See docs/secrets-maintenance.md for BorgBase credential backup procedure."
-  exit 1
+	echo "ERROR: Secrets USB incomplete. Run scripts/verify-secrets-usb.sh first."
+	echo "See docs/secrets-maintenance.md for BorgBase credential backup procedure."
+	exit 1
 fi
 
 echo "✓ Secrets USB verified"
@@ -70,7 +70,7 @@ cp "$SECRETS_USB/ssh-backup/borgbase-offsite-astute" .
 chmod 600 borgbase-offsite-audacious borgbase-offsite-astute
 
 # Create recovery instructions
-cat > RECOVERY-INSTRUCTIONS.md << 'EOF'
+cat >RECOVERY-INSTRUCTIONS.md <<'EOF'
 # BorgBase Disaster Recovery
 
 This bundle contains all secrets needed to access BorgBase off-site backups after total on-premises loss (Audacious + Astute + Secrets USB destroyed).
@@ -176,7 +176,7 @@ If stuck, see:
 EOF
 
 # Create metadata file
-cat > METADATA.txt << EOF
+cat >METADATA.txt <<EOF
 Recovery Bundle Created: $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)
 Created On: $(hostname)
 Created By: $(whoami)

@@ -2,5 +2,5 @@
 # Adds ~/.cargo/bin to PATH for cargo, rustc, rust-analyzer, etc.
 
 if [ -f "$HOME/.cargo/env" ]; then
-    . "$HOME/.cargo/env"
+	. "$HOME/.cargo/env"
 fi
