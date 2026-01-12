@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROOT="${SHELLSPEC_PROJECT_ROOT:-$PWD}"
 export ROOT
 
 export PATH="$ROOT/spec/support/bin:$PATH"
