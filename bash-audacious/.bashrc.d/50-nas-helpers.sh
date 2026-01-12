@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # NAS mount/unmount helpers
 # Provides commands for managing the Astute NAS mount
 

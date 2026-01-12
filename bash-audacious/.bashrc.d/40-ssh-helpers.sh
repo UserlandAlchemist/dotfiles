@@ -1,3 +1,4 @@
+# shellcheck shell=bash
 # SSH connectivity helpers
 # Provides smart wake-on-demand SSH functions for remote hosts
 

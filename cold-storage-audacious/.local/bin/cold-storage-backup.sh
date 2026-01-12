@@ -54,7 +54,7 @@ rsync -a --delete --link-dest="${LATEST_DIR}" \
 
 rsync -a --delete "${SNAPSHOT_DIR}/" "${LATEST_DIR}/"
 
-mapfile -t snapshots < <(ls -1d "${BASE}/snapshots/"* 2>/dev/null | sort)
+mapfile -t snapshots < <(find "${BASE}/snapshots" -mindepth 1 -maxdepth 1 -type d -print 2>/dev/null | sort)
 snapshot_count="${#snapshots[@]}"
 if ((snapshot_count > KEEP_SNAPSHOTS)); then
 	remove_count=$((snapshot_count - KEEP_SNAPSHOTS))

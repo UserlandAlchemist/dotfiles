@@ -111,13 +111,17 @@ echo
 
 if [[ -n "$not_installed" ]]; then
 	echo "Documented but NOT installed:"
-	echo "$not_installed" | sed 's/^/  - /'
+	while IFS= read -r pkg; do
+		[ -n "$pkg" ] && printf '  - %s\n' "$pkg"
+	done <<<"$not_installed"
 	echo
 fi
 
 if [[ -n "$not_documented" ]]; then
 	echo "Installed but NOT documented:"
-	echo "$not_documented" | sed 's/^/  - /'
+	while IFS= read -r pkg; do
+		[ -n "$pkg" ] && printf '  - %s\n' "$pkg"
+	done <<<"$not_documented"
 	echo
 fi
 
