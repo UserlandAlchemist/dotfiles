@@ -67,13 +67,20 @@ else
 fi
 
 # sshd config syntax (installed)
-if command -v sshd >/dev/null 2>&1; then
-	info "sshd -t"
-	if ! sshd -t; then
-		warn "sshd -t reported issues"
+SSHD_CHECK="${SSHD_CHECK:-auto}"
+if [ "$SSHD_CHECK" != "0" ]; then
+	if command -v sshd >/dev/null 2>&1; then
+		info "sshd -t"
+		if ! sshd -t; then
+			warn "sshd -t reported issues"
+		fi
+	else
+		if [ "$SSHD_CHECK" = "1" ]; then
+			warn "sshd not available; skipping sshd syntax check"
+		else
+			info "sshd not available; skipping sshd syntax check"
+		fi
 	fi
-else
-	warn "sshd not available; skipping sshd syntax check"
 fi
 
 # sudoers syntax (installed)
