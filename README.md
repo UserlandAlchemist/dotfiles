@@ -152,6 +152,14 @@ common hardware.
 
 ---
 
+## Testing and Validation
+
+- Run `./scripts/test-dotfiles.sh` after config changes
+- Run `sudo ./scripts/test-dotfiles-privileged.sh` after install or systemd edits
+- See [`docs/testing.md`](docs/testing.md) for full coverage and guidance
+
+---
+
 ## Pragmatic Exceptions
 
 Balances principled self-hosting with practical constraints. External services
