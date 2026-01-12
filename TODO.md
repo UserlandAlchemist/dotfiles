@@ -1,6 +1,6 @@
 # PROJECT SHIPSHAPE - WORK QUEUE
 
-Updated: 2026-01-10 13:03
+Updated: 2026-01-12 16:06
 
 Project Shipshape: Dotfiles and configuration management for the Wolfpack. The
 Wolfpack: Audacious (workstation), Astute (NAS/server), Artful (cloud), Steam
@@ -85,6 +85,11 @@ DEFERRED (Prerequisites required):
 ────────────────────────────────────────────────────────────────
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
+
+## 2026-01-12 - Legacy Tooling Cleanup
+
+Removed legacy tooling references from ignore rules and backup patterns; marked
+the cleanup task complete. (564e09a)
 
 ## 2026-01-10 - Markdownlint Sweep (All Docs)
 
