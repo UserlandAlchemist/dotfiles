@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Install Script Path Fix
+
+Fix test install script lookup under sudo by deriving repo root from script
+path. (44bfb71)
+
 ## 2026-01-12 - Shellcheck Cleanup
 
 Annotated bash fragments for shellcheck and cleaned lint nits in drift and
