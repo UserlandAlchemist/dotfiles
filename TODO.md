@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shellcheck Cleanup
+
+Annotated bash fragments for shellcheck and cleaned lint nits in drift and
+cold-storage scripts. (a3fe978)
+
 ## 2026-01-12 - Shfmt Pass and Test Runner Fixes
 
 Applied shfmt across shell scripts, fixed markdown list nesting in testing docs,
