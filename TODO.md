@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shellspec Project Anchor
+
+Added .shellspec to anchor shellspec to the repo root so specs run without
+extra flags. (dff7340)
+
 ## 2026-01-12 - Privileged SSHD Check Gate
 
 Gate the sshd syntax check in the privileged test runner with an explicit
