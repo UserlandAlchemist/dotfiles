@@ -156,6 +156,7 @@ common hardware.
 
 - Run `./scripts/test-dotfiles.sh` after config changes
 - Run `sudo ./scripts/test-dotfiles-privileged.sh` after install or systemd edits
+- Run `sudo ./scripts/test-backups.sh` after backup tooling or patterns changes
 - See [`docs/testing.md`](docs/testing.md) for full coverage and guidance
 
 ---

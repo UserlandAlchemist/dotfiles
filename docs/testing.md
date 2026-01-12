@@ -48,7 +48,7 @@ Expected results:
 
 ## BDD Specs (Shellspec)
 
-Shellspec is optional but recommended for scripted behavior checks.
+Shellspec is the BDD framework for scripted behavior checks.
 
 1. Install `shellspec` using your preferred package source.
 2. Run the specs:
@@ -58,6 +58,78 @@ Shellspec is optional but recommended for scripted behavior checks.
     ```
 
 The unprivileged suite runs `shellspec` automatically when it is available.
+
+---
+
+## Change Requirements
+
+1. For behavior changes, add or update Shellspec specs (or other relevant
+   tests) and review coverage for the affected package/host.
+2. Keep unprivileged and privileged suites clean after each change.
+3. When editing Markdown, run markdown lint and resolve findings.
+
+---
+
+## Backup Verification (Privileged)
+
+Run after changing borg tooling, backup units, or patterns files.
+
+1. Execute the backup verification script:
+
+    ```bash
+    sudo ./scripts/test-backups.sh
+    ```
+
+2. Optional: include a patterns dry run (scans sources without writing an
+   archive):
+
+    ```bash
+    sudo BACKUP_VERIFY_PATTERNS=1 ./scripts/test-backups.sh
+    ```
+
+3. Optional: skip offsite checks if offline:
+
+    ```bash
+    sudo CHECK_OFFSITE=0 ./scripts/test-backups.sh
+    ```
+
+Expected results:
+
+1. Local repository listing completes successfully.
+2. Offsite repository listings complete successfully (unless skipped).
+3. Patterns dry run completes when enabled.
+
+---
+
+## Power Management Verification
+
+Run after changing swayidle or idle-shutdown logic. Use the stubs in
+`spec/support/bin` to avoid real shutdowns.
+
+1. Verify inhibitor handling (no poweroff):
+
+    ```bash
+    PATH="$PWD/spec/support/bin:$PATH" \
+      SYSTEMD_INHIBIT_OUTPUT=shutdown \
+      JELLYFIN_CHECK_REMOTE=0 \
+      MEDIA_WINDOW_SEC=1 CHECK_INTERVAL_SEC=1 \
+      ./bin-audacious/.local/bin/idle-shutdown.sh
+    ```
+
+2. Verify shutdown path (stubbed poweroff output):
+
+    ```bash
+    PATH="$PWD/spec/support/bin:$PATH" \
+      JELLYFIN_CHECK_REMOTE=0 \
+      MEDIA_WINDOW_SEC=0 BUSY_WINDOW_SEC=0 \
+      SYSTEMCTL_POWEROFF_OUTPUT=poweroff \
+      ./bin-audacious/.local/bin/idle-shutdown.sh
+    ```
+
+Expected results:
+
+1. Inhibitor test exits without triggering `poweroff`.
+2. Shutdown test emits the stubbed `poweroff` output.
 
 ---
 
