@@ -4,10 +4,6 @@
 *.bak
 .DS_Store
 
-# Claude Code CLI directory (only settings.local.json is versioned)
-.claude/
-!.claude/settings.local.json
-
 # LLM collaboration files (ephemeral state, not permanent docs)
 AGENTS.md
 

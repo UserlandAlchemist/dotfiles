@@ -75,7 +75,7 @@ PHASE 6 - Quality of Life (Ongoing, as needed):
 
 SCHEDULED (Post 2026-01-12):
 
-- [ ] 20. REMOVE CLAUDE TOOLING - Transition to Codex-only workflow
+- [x] 20. ~~REMOVE LEGACY TOOLING - Transition to single-agent workflow~~
 
 DEFERRED (Prerequisites required):
 
@@ -162,7 +162,7 @@ docs from 600 to 644 permissions. (08c2e89, b72ad04)
 ## 2026-01-08 00:15 - Agent Coordination File Cleanup
 
 Condensed TODO.md from 2046 to 85 lines (96% reduction). Streamlined AGENTS.md
-from 228 to 119 lines. Updated ~/.claude/CLAUDE.md to match new condensed
+from 228 to 119 lines. Updated agent instructions to match new condensed
 session notes approach. Session notes now 2-3 lines with commit hashes;
 detailed work lives in git. (e700360)
 
