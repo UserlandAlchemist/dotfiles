@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ "$1" = "showmanual" ]; then
+  if [ -n "${APT_MARK_SHOWMANUAL:-}" ]; then
+    printf '%s\n' "${APT_MARK_SHOWMANUAL}"
+  fi
+  exit 0
+fi
+
+echo "Unsupported apt-mark args: $*" >&2
+exit 1

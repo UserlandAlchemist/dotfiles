@@ -2,7 +2,7 @@
 # Verify Secrets USB has all secrets needed for disaster recovery
 set -e
 
-SECRETS_USB="/mnt/keyusb"
+SECRETS_USB="${SECRETS_USB:-/mnt/keyusb}"
 CHECKSUMS_FILE="$SECRETS_USB/.checksums.txt"
 ERRORS=0
 SAVE_CHECKSUMS=0

@@ -19,10 +19,10 @@ set -euo pipefail
 # - Long critical jobs must use systemd-inhibit
 # -------------------------------------------------------------------
 
-CHECK_INTERVAL_SEC=180        # 3 minutes
-MEDIA_WINDOW_SEC=0            # immediate check after swayidle trigger
-BUSY_WINDOW_SEC=5400          # 90 minutes
-NET_RATE_LIMIT_BPS=100000     # 100 KB/s RX threshold
+: "${CHECK_INTERVAL_SEC:=180}"        # 3 minutes
+: "${MEDIA_WINDOW_SEC:=0}"            # immediate check after swayidle trigger
+: "${BUSY_WINDOW_SEC:=5400}"          # 90 minutes
+: "${NET_RATE_LIMIT_BPS:=100000}"     # 100 KB/s RX threshold
 
 # Remote Jellyfin (optional, fail-open)
 : "${JELLYFIN_CHECK_REMOTE:=1}"

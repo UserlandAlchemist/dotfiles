@@ -8,6 +8,7 @@ REPO="ssh://borg@astute/srv/backups/audacious-borg"
 
 KEY="$HOME/.ssh/audacious-backup"
 PASSCMD="cat $HOME/.config/borg/passphrase"
+WAKEONLAN_BIN="${WAKEONLAN_BIN:-/usr/bin/wakeonlan}"
 
 # Sanity check (helps immediately if something is wrong)
 : "${KEY:?}"
@@ -23,7 +24,7 @@ export BORG_PASSCOMMAND="$PASSCMD"
 
 # Wake Astute
 echo "Sending WOL to Astute..."
-/usr/bin/wakeonlan "60:45:cb:9b:ab:3b"
+"$WAKEONLAN_BIN" "60:45:cb:9b:ab:3b"
 
 # Wait for repo to be reachable (~60s)
 echo "Waiting for repository to become available..."

@@ -1,9 +1,9 @@
 #!/bin/sh
 
-ASTUTE_IP="192.168.1.154"
-ASTUTE_MAC="60:45:cb:9b:ab:3b"
-ASTUTE_PORT=22
-STATE_FILE="/tmp/astute-waking"
+ASTUTE_IP="${ASTUTE_IP:-192.168.1.154}"
+ASTUTE_MAC="${ASTUTE_MAC:-60:45:cb:9b:ab:3b}"
+ASTUTE_PORT="${ASTUTE_PORT:-22}"
+STATE_FILE="${STATE_FILE:-/tmp/astute-waking}"
 
 # TCP probe: succeeds only if Astute is fully awake
 probe() {

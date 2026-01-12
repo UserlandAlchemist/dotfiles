@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "${TIMEOUT_MOCK:-fail}" in
+  success)
+    exit 0
+    ;;
+  fail)
+    exit 1
+    ;;
+esac
+
+exit 1

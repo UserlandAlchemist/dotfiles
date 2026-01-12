@@ -1,6 +1,7 @@
 #!/bin/sh
 ASTUTE_IP="192.168.1.154"
 MAC="60:45:cb:9b:ab:3b"
+WAKEONLAN_BIN="${WAKEONLAN_BIN:-/usr/bin/wakeonlan}"
 
 # Quick ping check if already reachable before sending WOL
 if ping -c1 -W1 -q "$ASTUTE_IP" >/dev/null 2>&1; then
@@ -10,7 +11,7 @@ fi
 
 # Host is down, send WOL
 logger -t borg-backup "Sending WOL to astute"
-/usr/bin/wakeonlan "$MAC"
+"$WAKEONLAN_BIN" "$MAC"
 
 # Wait for astute to respond to ping (check every 2s for up to 60s)
 i=0

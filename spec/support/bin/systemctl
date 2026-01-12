@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$1" in
+  is-active)
+    exit "${SYSTEMCTL_IS_ACTIVE_STATUS:-1}"
+    ;;
+  show)
+    printf '%s\n' "${SYSTEMCTL_SHOW_OUTPUT:-inactive}"
+    exit 0
+    ;;
+  poweroff)
+    printf '%s\n' "${SYSTEMCTL_POWEROFF_OUTPUT:-poweroff}"
+    exit 0
+    ;;
+esac
+
+exit 0

@@ -1,0 +1,13 @@
+#!/bin/sh
+
+case "${PING_MOCK:-success}" in
+  success)
+    printf '%s\n' '1 received'
+    exit 0
+    ;;
+  fail)
+    exit 1
+    ;;
+esac
+
+exit 1

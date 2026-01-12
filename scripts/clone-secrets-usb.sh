@@ -4,8 +4,8 @@
 
 set -e
 
-SECRETS_USB="/mnt/keyusb"
-TRUSTED_USB="/mnt/keyusb-trusted"
+SECRETS_USB="${SECRETS_USB:-/mnt/keyusb}"
+TRUSTED_USB="${TRUSTED_USB:-/mnt/keyusb-trusted}"
 
 echo "=== Secrets USB Clone Utility ==="
 echo

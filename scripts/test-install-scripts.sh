@@ -7,6 +7,11 @@ HOSTNAME=$(hostname)
 DOTFILES_DIR="$HOME/dotfiles"
 FAILURES=0
 SUCCESSES=0
+SUDO=()
+
+if [ "$(id -u)" -ne 0 ]; then
+  SUDO=(sudo)
+fi
 
 echo "=== Testing Install Scripts on $HOSTNAME ==="
 echo
@@ -50,7 +55,7 @@ test_package() {
   echo "---"
 
   # Run install script and capture output
-  if sudo "$INSTALL_SCRIPT" 2>&1; then
+  if "${SUDO[@]}" "$INSTALL_SCRIPT" 2>&1; then
     echo "✓ $PKG - installed successfully"
     SUCCESSES=$((SUCCESSES + 1))
     echo

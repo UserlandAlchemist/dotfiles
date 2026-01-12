@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ -n "${WOFI_CHOICE:-}" ]; then
+  printf '%s\n' "${WOFI_CHOICE}"
+fi
+
+exit 0

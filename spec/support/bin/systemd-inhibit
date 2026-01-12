@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ -n "${SYSTEMD_INHIBIT_OUTPUT:-}" ]; then
+  printf '%s\n' "${SYSTEMD_INHIBIT_OUTPUT}"
+  exit 0
+fi
+
+exit 0

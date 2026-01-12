@@ -11,14 +11,15 @@ SOURCE_DIRS=(
   "/home/alchemist/dotfiles"
 )
 
-BASE="/mnt/cold-storage/backups/audacious"
+COLD_STORAGE_MOUNT="${COLD_STORAGE_MOUNT:-/mnt/cold-storage}"
+BASE="${COLD_STORAGE_MOUNT}/backups/audacious"
 SNAPSHOT_DATE="$(date +%Y-%m)"
 LATEST_DIR="${BASE}/latest"
 SNAPSHOT_DIR="${BASE}/snapshots/${SNAPSHOT_DATE}"
 KEEP_SNAPSHOTS=12
 
-if [[ ! -d /mnt/cold-storage ]]; then
-  echo "cold-storage-backup: /mnt/cold-storage is not mounted." >&2
+if [[ ! -d "${COLD_STORAGE_MOUNT}" ]]; then
+  echo "cold-storage-backup: ${COLD_STORAGE_MOUNT} is not mounted." >&2
   exit 1
 fi
 

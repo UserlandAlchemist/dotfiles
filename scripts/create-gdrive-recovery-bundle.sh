@@ -4,7 +4,7 @@
 
 set -e
 
-SECRETS_USB="/mnt/keyusb"
+SECRETS_USB="${SECRETS_USB:-/mnt/keyusb}"
 WORK_DIR="/tmp/recovery-bundle-$$"
 OUTPUT_DIR="$HOME"
 
