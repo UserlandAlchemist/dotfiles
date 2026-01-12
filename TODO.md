@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Shfmt Pass and Test Runner Fixes
+
+Applied shfmt across shell scripts, fixed markdown list nesting in testing docs,
+and set the test runner executable bit. (887f390)
+
 ## 2026-01-12 - Regression Test Suite Expansion
 
 Added shellspec BDD coverage with stubs, expanded dotfiles checks, and added a
