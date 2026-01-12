@@ -86,6 +86,12 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Regression Test Suite Expansion
+
+Added shellspec BDD coverage with stubs, expanded dotfiles checks, and added a
+privileged test runner. Documented testing workflow and coverage. (681e890,
+9e591be)
+
 ## 2026-01-12 - Legacy Tooling Cleanup
 
 Removed legacy tooling references from ignore rules and backup patterns; marked
