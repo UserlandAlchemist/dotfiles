@@ -19,8 +19,10 @@ validation.
 Expected results:
 
 1. Shell linting and formatting checks complete.
-2. Unit files, sudoers, and nftables parse cleanly (when tools are present).
+2. Unit files parse cleanly (when tools are present).
 3. Shellspec specs run when `shellspec` is installed.
+
+Sudoers and nftables syntax checks run in the privileged suite.
 
 ---
 
@@ -65,7 +67,7 @@ Unprivileged suite:
 
 - Shell linting and format checks for tracked scripts.
 - Systemd unit file verification against repo units.
-- Syntax checks for nftables, sudoers, and JSONC configs.
+- Syntax checks for JSONC configs.
 - Shellspec specs for key scripts and regressions.
 
 Privileged suite:

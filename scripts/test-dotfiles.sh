@@ -64,15 +64,28 @@ fi
 nft_files=()
 while IFS= read -r f; do nft_files+=("$f"); done < <(rg --files --hidden --no-ignore-vcs -g 'nftables.conf' -g '!.git/*' root-*)
 if [ "${#nft_files[@]}" -gt 0 ]; then
-	if command -v nft >/dev/null 2>&1; then
-		info "nft -c check (${#nft_files[@]} files)"
-		for f in "${nft_files[@]}"; do
-			if ! nft -c -f "$f"; then
-				warn "nft -c failed: $f"
-			fi
-		done
+	if [ "$(id -u)" -ne 0 ]; then
+		info "nftables syntax check requires root; run privileged checks"
 	else
-		warn "nft not installed; skipping nftables syntax check"
+		nft_bin="$(command -v nft 2>/dev/null || true)"
+		if [ -z "$nft_bin" ]; then
+			for bin in /usr/local/sbin/nft /usr/sbin/nft /sbin/nft; do
+				if [ -x "$bin" ]; then
+					nft_bin="$bin"
+					break
+				fi
+			done
+		fi
+		if [ -n "$nft_bin" ]; then
+			info "nft -c check (${#nft_files[@]} files)"
+			for f in "${nft_files[@]}"; do
+				if ! "$nft_bin" -c -f "$f"; then
+					warn "nft -c failed: $f"
+				fi
+			done
+		else
+			warn "nft not installed; skipping nftables syntax check"
+		fi
 	fi
 fi
 
@@ -80,15 +93,28 @@ fi
 sudoers_files=()
 while IFS= read -r f; do sudoers_files+=("$f"); done < <(rg --files --hidden --no-ignore-vcs -g '*.sudoers' -g '!.git/*' root-*)
 if [ "${#sudoers_files[@]}" -gt 0 ]; then
-	if command -v visudo >/dev/null 2>&1; then
-		info "visudo check (${#sudoers_files[@]} files)"
-		for f in "${sudoers_files[@]}"; do
-			if ! visudo -cf "$f"; then
-				warn "visudo -cf failed: $f"
-			fi
-		done
+	if [ "$(id -u)" -ne 0 ]; then
+		info "sudoers syntax check requires root; run privileged checks"
 	else
-		warn "visudo not installed; skipping sudoers syntax check"
+		visudo_bin="$(command -v visudo 2>/dev/null || true)"
+		if [ -z "$visudo_bin" ]; then
+			for bin in /usr/local/sbin/visudo /usr/sbin/visudo /sbin/visudo; do
+				if [ -x "$bin" ]; then
+					visudo_bin="$bin"
+					break
+				fi
+			done
+		fi
+		if [ -n "$visudo_bin" ]; then
+			info "visudo check (${#sudoers_files[@]} files)"
+			for f in "${sudoers_files[@]}"; do
+				if ! "$visudo_bin" -cf "$f"; then
+					warn "visudo -cf failed: $f"
+				fi
+			done
+		else
+			warn "visudo not installed; skipping sudoers syntax check"
+		fi
 	fi
 fi
 
