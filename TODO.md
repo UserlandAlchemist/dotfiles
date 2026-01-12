@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-12 - Remove SSHD Check
+
+Removed the sshd syntax check from privileged tests and updated testing docs.
+(31840f2)
+
 ## 2026-01-12 - Shellspec Error Expectations
 
 Aligned shellspec error assertions and made borg offsite runners executable.
