@@ -345,6 +345,11 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 16:03 - Reload systemd before sshd restart
+
+Added daemon-reload to root-ssh-astute install to avoid reload warning on
+restart. (c5ba9f7)
+
 ## 2026-01-14 15:55 - Broaden lint coverage
 
 Lint shebang shell scripts, align markdownlint config, and format newly
