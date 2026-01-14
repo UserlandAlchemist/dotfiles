@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
 
-REPO="ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo"
-SRC1="/srv/nas/lucii"
-SRC2="/srv/nas/bitwarden-exports"
-KEY="/root/.ssh/borgbase-offsite-astute"
-PASSFILE="/root/.config/borg-offsite/astute-critical.passphrase"
+REPO="${REPO:-ssh://y7pc8k07@y7pc8k07.repo.borgbase.com/./repo}"
+SRC1="${SRC1:-/srv/nas/lucii}"
+SRC2="${SRC2:-/srv/nas/bitwarden-exports}"
+KEY="${KEY:-/root/.ssh/borgbase-offsite-astute}"
+PASSFILE="${PASSFILE:-/root/.config/borg-offsite/astute-critical.passphrase}"
 
 BORG_BASE_DIR="/var/lib/borg-offsite/astute-critical"
 BORG_CONFIG_DIR="$BORG_BASE_DIR/config"

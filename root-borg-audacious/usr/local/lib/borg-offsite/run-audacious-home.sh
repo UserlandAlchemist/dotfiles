@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
 
-REPO="ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo"
-SRC="/home/alchemist"
-PATTERNS="/home/alchemist/.config/borg/patterns"
-KEY="/root/.ssh/borgbase-offsite-audacious"
-PASSFILE="/root/.config/borg-offsite/audacious-home.passphrase"
+REPO="${REPO:-ssh://j31cxd2v@j31cxd2v.repo.borgbase.com/./repo}"
+SRC="${SRC:-/home/alchemist}"
+PATTERNS="${PATTERNS:-/home/alchemist/.config/borg/patterns}"
+KEY="${KEY:-/root/.ssh/borgbase-offsite-audacious}"
+PASSFILE="${PASSFILE:-/root/.config/borg-offsite/audacious-home.passphrase}"
 
 BORG_BASE_DIR="/var/lib/borg-offsite/audacious-home"
 BORG_CONFIG_DIR="$BORG_BASE_DIR/config"
