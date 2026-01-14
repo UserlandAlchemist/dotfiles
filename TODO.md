@@ -345,6 +345,11 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 16:12 - Borg offsite test overrides
+
+Added env overrides for borg offsite scripts and updated specs to isolate
+missing-key checks. (2507e60)
+
 ## 2026-01-14 16:03 - Reload systemd before sshd restart
 
 Added daemon-reload to root-ssh-astute install to avoid reload warning on
