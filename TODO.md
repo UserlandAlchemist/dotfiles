@@ -345,6 +345,11 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 15:42 - Host-scoped unit verification
+
+Scoped unprivileged systemd unit checks to host packages; updated testing
+coverage note. (e38d0b5)
+
 ## 2026-01-07 18:30 - Security Audit Complete (Phase 2, Tasks #7-8)
 
 Comprehensive security audit + crypto/SSH key inventory. Overall security
