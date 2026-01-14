@@ -40,7 +40,8 @@ $(pactl list short sinks | awk '{print $2}')
 EOF
 
 # Show menu (label only), capture the selected line
-choice="$(printf "%b" "$menu_lines" | cut -f1 | wofi --dmenu --prompt 'Audio Output:' -i)"
+labels="$(printf "%b" "$menu_lines" | awk -F'\t' '{print $1}')"
+choice="$(printf "%s\n" "$labels" | wofi --dmenu --prompt 'Audio Output:' -i)"
 [ -z "$choice" ] && exit 0
 
 # Map label back to sink name
