@@ -23,7 +23,20 @@ info "Running dotfiles checks from $ROOT"
 
 # Shell linting
 sh_files=()
-while IFS= read -r f; do sh_files+=("$f"); done < <(rg --files --hidden --no-ignore-vcs -g '*.sh' -g '!.git/*')
+declare -A sh_seen
+add_sh_file() {
+	local f=$1
+	if [ -z "${sh_seen[$f]:-}" ]; then
+		sh_seen["$f"]=1
+		sh_files+=("$f")
+	fi
+}
+while IFS= read -r f; do add_sh_file "$f"; done < <(rg --files --hidden --no-ignore-vcs -g '*.sh' -g '!.git/*')
+while IFS= read -r f; do
+	if [ -x "$f" ]; then
+		add_sh_file "$f"
+	fi
+done < <(rg -l --hidden --no-ignore-vcs '^#!.*\\b(sh|bash)\\b' -g '!.git/*')
 
 if command -v shellcheck >/dev/null 2>&1; then
 	if [ "${#sh_files[@]}" -gt 0 ]; then
@@ -257,6 +270,9 @@ elif command -v mdl >/dev/null 2>&1; then
 	mdlint_bin="mdl"
 	# Exclude MD013 (line length) for technical documentation
 	mdlint_args=("-r" "~MD013")
+fi
+if [ "$mdlint_bin" = "markdownlint" ] && [ -f "$ROOT/.markdownlint.json" ]; then
+	mdlint_args=("-c" "$ROOT/.markdownlint.json")
 fi
 if [ -n "$mdlint_bin" ] && [ "${#md_files[@]}" -gt 0 ]; then
 	info "markdownlint (${#md_files[@]} files) via $mdlint_bin"

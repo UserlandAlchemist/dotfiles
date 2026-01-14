@@ -1,36 +1,36 @@
 #!/bin/sh
 
 case "$1" in
-  get-default-sink)
-    if [ -n "${PACTL_DEFAULT_SINK:-}" ]; then
-      printf '%s\n' "${PACTL_DEFAULT_SINK}"
-    fi
-    exit 0
-    ;;
-  list)
-    if [ "$2" = "short" ] && [ "$3" = "sinks" ]; then
-      if [ -n "${PACTL_SINKS:-}" ]; then
-        i=0
-        printf '%s\n' "${PACTL_SINKS}" | while IFS= read -r sink; do
-          printf '%s %s\n' "$i" "$sink"
-          i=$((i + 1))
-        done
-      fi
-      exit 0
-    fi
-    if [ "$2" = "sinks" ]; then
-      if [ -n "${PACTL_SINKS:-}" ]; then
-        printf '%s\n' "${PACTL_SINKS}" | while IFS= read -r sink; do
-          printf 'Name: %s\n' "$sink"
-          printf 'Description: %s\n' "$sink"
-        done
-      fi
-      exit 0
-    fi
-    ;;
-  set-default-sink)
-    exit 0
-    ;;
+get-default-sink)
+	if [ -n "${PACTL_DEFAULT_SINK:-}" ]; then
+		printf '%s\n' "${PACTL_DEFAULT_SINK}"
+	fi
+	exit 0
+	;;
+list)
+	if [ "$2" = "short" ] && [ "$3" = "sinks" ]; then
+		if [ -n "${PACTL_SINKS:-}" ]; then
+			i=0
+			printf '%s\n' "${PACTL_SINKS}" | while IFS= read -r sink; do
+				printf '%s %s\n' "$i" "$sink"
+				i=$((i + 1))
+			done
+		fi
+		exit 0
+	fi
+	if [ "$2" = "sinks" ]; then
+		if [ -n "${PACTL_SINKS:-}" ]; then
+			printf '%s\n' "${PACTL_SINKS}" | while IFS= read -r sink; do
+				printf 'Name: %s\n' "$sink"
+				printf 'Description: %s\n' "$sink"
+			done
+		fi
+		exit 0
+	fi
+	;;
+set-default-sink)
+	exit 0
+	;;
 esac
 
 exit 0

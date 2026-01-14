@@ -2,25 +2,25 @@
 
 last=""
 for arg in "$@"; do
-  last="$arg"
+	last="$arg"
 done
 
 case "$1" in
-  list)
-    if [ -n "${ZFS_LIST_MISSING:-}" ]; then
-      if printf ',%s,' "$ZFS_LIST_MISSING" | grep -q ",$last,"; then
-        exit 1
-      fi
-    fi
-    if [ "${ZFS_LIST_FAIL:-}" = "1" ]; then
-      exit 1
-    fi
-    exit 0
-    ;;
-  get)
-    printf '%s\n' "${ZFS_MOUNTED:-yes}"
-    exit 0
-    ;;
+list)
+	if [ -n "${ZFS_LIST_MISSING:-}" ]; then
+		if printf ',%s,' "$ZFS_LIST_MISSING" | grep -q ",$last,"; then
+			exit 1
+		fi
+	fi
+	if [ "${ZFS_LIST_FAIL:-}" = "1" ]; then
+		exit 1
+	fi
+	exit 0
+	;;
+get)
+	printf '%s\n' "${ZFS_MOUNTED:-yes}"
+	exit 0
+	;;
 esac
 
 exit 0

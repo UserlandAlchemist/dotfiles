@@ -1,13 +1,13 @@
 #!/bin/sh
 
 if [ $# -lt 1 ]; then
-  printf '%s\n' "usage: script <script> [args...]" >&2
-  exit 2
+	printf '%s\n' "usage: script <script> [args...]" >&2
+	exit 2
 fi
 
 if [ -n "${SHELLSPEC_SHELL:-}" ]; then
-  # SHELLSPEC_SHELL may include arguments, so use eval to preserve them.
-  eval "exec $SHELLSPEC_SHELL \"\$@\""
+	# SHELLSPEC_SHELL may include arguments, so use eval to preserve them.
+	eval "exec $SHELLSPEC_SHELL \"\$@\""
 fi
 
 exec "$@"
