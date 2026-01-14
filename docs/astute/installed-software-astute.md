@@ -13,6 +13,7 @@ Last drift check: 2026-01-08
 ### Firmware & microcode
 
 - intel-microcode — CPU microcode updates
+- firmware-linux-free — base firmware collection
 - firmware-amd-graphics — AMD GPU firmware
 
 ### Crypto & storage
@@ -44,6 +45,10 @@ Last drift check: 2026-01-08
 - htop — process monitor
 - vim — editor
 - nano — fallback editor
+- shellcheck — shell linting
+- shfmt — shell formatting
+- ruby — Ruby runtime (mdl)
+- ruby-dev — Ruby headers for gem installs
 - tree — directory inspection
 - jq — JSON processor
 - rsync — file sync utility

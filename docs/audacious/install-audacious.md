@@ -344,7 +344,7 @@ Steps:
 1. Install firmware packages:
 
    ```sh
-   apt install -y firmware-amd-graphics intel-microcode firmware-realtek
+   apt install -y firmware-linux-free firmware-amd-graphics intel-microcode firmware-realtek
    ```
 
    **Note:** For AMD CPUs, also install:

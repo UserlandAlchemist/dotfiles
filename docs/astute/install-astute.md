@@ -176,7 +176,7 @@ Steps:
      powertop git stow ethtool vim nano htop lm-sensors \
      cpufrequtils smartmontools unattended-upgrades apt-cacher-ng \
      nftables usbutils systemd-resolved iproute2 iputils-ping \
-     intel-microcode firmware-amd-graphics task-ssh-server
+     intel-microcode firmware-linux-free firmware-amd-graphics task-ssh-server
    ```
 
 3. Install kernel headers and build ZFS for the running kernel:

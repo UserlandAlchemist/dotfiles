@@ -26,6 +26,7 @@ Last drift check: 2026-01-08
 - openssh-client — SSH connectivity
 - iproute2 — modern networking tools
 - iputils-ping — ping utility
+- firmware-linux-free — base firmware collection
 - firmware-amd-graphics — AMD GPU firmware
 - firmware-realtek — NIC firmware
 

@@ -26,6 +26,46 @@ Sudoers and nftables syntax checks run in the privileged suite.
 
 ---
 
+## Tooling Installation (Debian)
+
+Install the unprivileged tooling with apt, then install `shellspec` and `mdl`
+locally.
+
+Steps:
+
+1. Install apt packages:
+
+    ```bash
+    sudo apt install shellcheck shfmt ruby ruby-dev
+    ```
+
+2. Install shellspec (user-local):
+
+    ```bash
+    git clone https://github.com/shellspec/shellspec ~/.local/share/shellspec
+    ln -s ~/.local/share/shellspec/shellspec ~/.local/bin/shellspec
+    ```
+
+3. Install markdown lint (user-local):
+
+    ```bash
+    GEM_SPEC_CACHE="$HOME/.local/share/gem-cache" \
+      gem install --user-install mdl
+    ```
+
+4. Ensure the gem bin dir is on `PATH`:
+
+    ```bash
+    export PATH="$HOME/.local/share/gem/ruby/3.3.0/bin:$PATH"
+    ```
+
+Expected results:
+
+1. `shellcheck`, `shfmt`, and `shellspec` report versions.
+2. `mdl --version` runs without a path error.
+
+---
+
 ## Privileged Checks
 
 Run privileged checks after installing or updating host packages.
