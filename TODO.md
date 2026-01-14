@@ -345,6 +345,11 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 15:55 - Broaden lint coverage
+
+Lint shebang shell scripts, align markdownlint config, and format newly
+included scripts. (db41eff)
+
 ## 2026-01-14 15:51 - Fix shellspec broken pipe warning
 
 Removed cut pipeline from audio sink selector to avoid broken pipe warnings.
