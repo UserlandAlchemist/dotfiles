@@ -345,6 +345,10 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 16:14 - Add gem bin PATH on astute
+
+Add bash drop-in to include user gem executables in PATH. (81d2a9d)
+
 ## 2026-01-14 16:12 - Borg offsite test overrides
 
 Added env overrides for borg offsite scripts and updated specs to isolate
