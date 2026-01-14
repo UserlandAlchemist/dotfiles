@@ -47,8 +47,23 @@ else
 fi
 
 # systemd unit verification (best-effort)
+host="$(hostname -s 2>/dev/null || hostname)"
+unit_dirs=()
+case "$host" in
+audacious | astute)
+	unit_dirs=(root-*-"$host")
+	;;
+*)
+	warn "unknown host '$host'; verifying all repo units"
+	unit_dirs=(root-*)
+	;;
+esac
+if [ "${#unit_dirs[@]}" -eq 0 ]; then
+	warn "no unit directories found for host '$host'; verifying all repo units"
+	unit_dirs=(root-*)
+fi
 unit_files=()
-while IFS= read -r f; do unit_files+=("$f"); done < <(rg --files --hidden --no-ignore-vcs -g '*.service' -g '*.timer' -g '*.path' -g '!.git/*' root-*)
+while IFS= read -r f; do unit_files+=("$f"); done < <(rg --files --hidden --no-ignore-vcs -g '*.service' -g '*.timer' -g '*.path' -g '!.git/*' "${unit_dirs[@]}")
 if [ "${#unit_files[@]}" -gt 0 ]; then
 	if command -v systemd-analyze >/dev/null 2>&1; then
 		info "systemd-analyze verify (${#unit_files[@]} units)"

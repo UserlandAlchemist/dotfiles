@@ -138,7 +138,7 @@ Expected results:
 Unprivileged suite:
 
 - Shell linting and format checks for tracked scripts.
-- Systemd unit file verification against repo units.
+- Systemd unit file verification against repo units for the current host.
 - Syntax checks for JSONC configs.
 - Shellspec specs for key scripts and regressions.
 
