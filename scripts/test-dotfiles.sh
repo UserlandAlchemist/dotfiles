@@ -67,8 +67,22 @@ while IFS= read -r f; do unit_files+=("$f"); done < <(rg --files --hidden --no-i
 if [ "${#unit_files[@]}" -gt 0 ]; then
 	if command -v systemd-analyze >/dev/null 2>&1; then
 		info "systemd-analyze verify (${#unit_files[@]} units)"
-		if ! SYSTEMD_PAGER=cat SYSTEMD_LOG_LEVEL=warning systemd-analyze verify "${unit_files[@]}"; then
-			warn "systemd-analyze verify reported issues (see output above)"
+		verify_args=()
+		if [ "$(id -u)" -ne 0 ]; then
+			verify_args=(--generators=no)
+		fi
+		verify_output=""
+		if ! verify_output=$(SYSTEMD_PAGER=cat SYSTEMD_LOG_LEVEL=warning systemd-analyze \
+			"${verify_args[@]}" verify "${unit_files[@]}" 2>&1); then
+			filtered_output="$(printf '%s\n' "$verify_output" | rg -v 'SO_PASSCRED failed' || true)"
+			if [ -n "$filtered_output" ]; then
+				printf '%s\n' "$filtered_output" >&2
+				warn "systemd-analyze verify reported issues (see output above)"
+			else
+				info "systemd-analyze verify skipped (SO_PASSCRED not permitted)"
+			fi
+		elif [ -n "$verify_output" ]; then
+			printf '%s\n' "$verify_output"
 		fi
 	else
 		warn "systemd-analyze not available; skipping unit verification"
