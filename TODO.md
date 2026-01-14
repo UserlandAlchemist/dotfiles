@@ -345,6 +345,11 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 16:21 - Document firmware + test tooling
+
+Documented firmware-linux-free and test tooling installs for both hosts.
+(c51ae6e)
+
 ## 2026-01-14 16:16 - Format gem PATH drop-in
 
 Aligned shfmt output for the gem PATH bash drop-in. (232d31c)
