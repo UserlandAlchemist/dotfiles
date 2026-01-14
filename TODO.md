@@ -345,6 +345,10 @@ ransomware protection. Changed astute-critical to weekly schedule (Sunday
 both backups working. (d5eee2f, 6ff1039, ~30+ earlier commits in feature
 branch)
 
+## 2026-01-14 15:48 - Suppress SO_PASSCRED noise
+
+Filtered systemd-analyze verify output in unprivileged checks. (2c8ceab)
+
 ## 2026-01-14 15:42 - Host-scoped unit verification
 
 Scoped unprivileged systemd unit checks to host packages; updated testing
