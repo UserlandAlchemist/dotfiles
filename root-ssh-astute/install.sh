@@ -12,6 +12,8 @@ install_config etc/systemd/system/ssh.service.d/wait-for-network.conf
 echo "→ Validating sshd config"
 sshd -t
 
+reload_systemd
+
 echo "→ Restarting sshd"
 systemctl restart ssh
 
