@@ -139,7 +139,7 @@ Last drift check: 2026-01-08
 
 ## Integral 1.0 Audio Workstation
 
-**See:** `~/personal/audio-workstation-notes.md` for complete documentation of
+**See:** `~/personal/project-integral.md` for complete documentation of
 the Integral audio workstation stack.
 
 ### Core packages (summary)
