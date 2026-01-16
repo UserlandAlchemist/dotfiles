@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-16 - Private History Scrub + Inventory Update
+
+Scrubbed private identifiers from git history and added git-filter-repo to the
+Audacious software inventory. (1cc16a9)
+
 ## 2026-01-16 - Recovery Kit Doc Split
 
 Separated public recovery kit guidance from private identity steps and aligned
