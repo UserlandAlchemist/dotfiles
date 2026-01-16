@@ -6,6 +6,7 @@
 
 # LLM collaboration files (ephemeral state, not permanent docs)
 AGENTS.md
+docs/recovery-kit-maintenance.private.md
 
 # Emacs-generated state and caches
 */.emacs.d/eln-cache/

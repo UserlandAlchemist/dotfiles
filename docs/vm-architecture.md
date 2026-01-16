@@ -123,7 +123,7 @@ test-audacious-vdb.qcow2
 test-astute-vda.qcow2
 test-astute-vdb.qcow2
 test-astute-vdc.qcow2
-```text
+```
 
 **Alternative:** Raw images for performance
 
@@ -145,8 +145,8 @@ Host (audacious)
   │   ├─ enp7s0 (physical)
   │   ├─ vnet0 → test-audacious
   │   └─ vnet1 → test-astute
-  └─ Router (192.168.1.1)
-```text
+  └─ Router (192.168.1.254)
+```
 
 **IP Allocation:**
 
@@ -183,7 +183,7 @@ Host (audacious)
 
 **Allocation:**
 
-```
+```text
 test-audacious: 4GB RAM, 2 vCPUs
 test-astute: 2GB RAM, 2 vCPUs
 ---

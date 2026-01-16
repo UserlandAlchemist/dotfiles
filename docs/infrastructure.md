@@ -171,7 +171,6 @@ A detailed per-device accounting is not required for core Wolfpack documentation
 
 **DNS/Domains:**
 
-- private.example (personal)
 - userlandlab.org (projects/general)
 - Cloudflare free plan (DNS + proxy)
 

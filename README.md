@@ -8,7 +8,7 @@ via install scripts. Designed for clarity, reproducibility, and fast recovery.
 
 ## Project Overview
 
-**Project Shipshape** — This dotfiles repository managing the Wolfpack.
+**Project Shipshape** — This dotfiles repository manages the Wolfpack.
 
 **The Wolfpack** is the fleet of machines managed by this repository:
 

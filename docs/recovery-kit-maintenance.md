@@ -3,6 +3,9 @@
 Create, update, and verify the Secrets USB and trusted copies. Emergency
 restore procedures are in `docs/disaster-recovery.md`.
 
+Private recovery notes live in `docs/recovery-kit-maintenance.private.md`
+(gitignored). Keep private identity material there.
+
 ---
 
 ## Quick Tasks
@@ -125,7 +128,7 @@ cp ~/.ssh/audacious-backup.pub /mnt/keyusb/ssh-backup/
 cp ~/.ssh/id_ed25519_astute_nas /mnt/keyusb/ssh-backup/
 cp ~/.ssh/id_ed25519_astute_nas.pub /mnt/keyusb/ssh-backup/
 cp -L ~/.ssh/config /mnt/keyusb/ssh-backup/
-```text
+```
 
 Document passphrases:
 
@@ -213,14 +216,13 @@ rm ~/astute-critical-key.txt ~/borgbase-offsite-astute ~/astute-critical.passphr
 
 ### §2.4 PGP keys
 
+Export public project identity keys here. Also copy private identity keys; the
+commands for this setup are in `docs/recovery-kit-maintenance.private.md`.
+
 ```sh
 gpg --armor --export alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_public.asc
 gpg --armor --export-secret-keys alchemist@userlandlab.org > /mnt/keyusb/pgp/alchemist_private.asc
 gpg --output /mnt/keyusb/pgp/alchemist_revocation.asc --gen-revoke alchemist@userlandlab.org
-
-gpg --armor --export private@example.invalid > /mnt/keyusb/pgp/private_public.asc
-gpg --armor --export-secret-keys private@example.invalid > /mnt/keyusb/pgp/private_private.asc
-gpg --output /mnt/keyusb/pgp/private_revocation.asc --gen-revoke private@example.invalid
 ```
 
 ```sh
@@ -250,6 +252,9 @@ EOF
 mkdir -p /mnt/keyusb/docs
 cp ~/dotfiles/docs/disaster-recovery.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/recovery-kit-maintenance.md /mnt/keyusb/docs/
+if [ -f ~/dotfiles/docs/recovery-kit-maintenance.private.md ]; then
+  cp ~/dotfiles/docs/recovery-kit-maintenance.private.md /mnt/keyusb/docs/
+fi
 cp ~/dotfiles/docs/audacious/install-audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/audacious/recovery-audacious.md /mnt/keyusb/docs/
 cp ~/dotfiles/docs/astute/install-astute.md /mnt/keyusb/docs/
@@ -384,13 +389,13 @@ Steps:
 sudo umount /mnt/keyusb
 sudo e2fsck -f /dev/mapper/keyusb
 sudo mount /dev/mapper/keyusb /mnt/keyusb
-```text
+```
 
 ---
 
 ## Appendix A: Secrets USB File Structure
 
-```
+```text
 /mnt/keyusb/
 ├── README.txt
 ├── QUICK-START.txt
@@ -416,10 +421,7 @@ sudo mount /dev/mapper/keyusb /mnt/keyusb
 ├── pgp/
 │   ├── alchemist_public.asc
 │   ├── alchemist_private.asc
-│   ├── alchemist_revocation.asc
-│   ├── private_public.asc
-│   ├── private_private.asc
-│   └── private_revocation.asc
+│   └── alchemist_revocation.asc
 ├── tokens/
 │   ├── jellyfin/
 │   │   └── api.token
