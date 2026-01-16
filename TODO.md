@@ -358,6 +358,11 @@ Aligned shfmt output for the gem PATH bash drop-in. (232d31c)
 
 Add bash drop-in to include user gem executables in PATH. (81d2a9d)
 
+## 2026-01-16 16:49 - Integral doc reference rename
+
+Updated the audacious software list to point to the renamed
+project-integral.md notes. (b29971f)
+
 ## 2026-01-14 16:12 - Borg offsite test overrides
 
 Added env overrides for borg offsite scripts and updated specs to isolate
