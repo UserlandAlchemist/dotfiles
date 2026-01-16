@@ -86,6 +86,11 @@ DEFERRED (Prerequisites required):
 RECENT SESSION NOTES
 ────────────────────────────────────────────────────────────────
 
+## 2026-01-16 - Recovery Kit Doc Split
+
+Separated public recovery kit guidance from private identity steps and aligned
+doc details for consistency. (2688f22)
+
 ## 2026-01-12 - Backup Verification Script
 
 Added a privileged backup verification helper plus docs for backup/power
