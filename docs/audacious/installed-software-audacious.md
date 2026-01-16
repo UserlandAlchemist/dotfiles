@@ -77,6 +77,7 @@ Last drift check: 2026-01-08
 ### Development & dotfiles
 
 - git — version control
+- git-filter-repo — git history rewrite tool
 - stow — dotfile deployment
 - wget — HTTP download utility
 - rsync — file/directory synchronization
